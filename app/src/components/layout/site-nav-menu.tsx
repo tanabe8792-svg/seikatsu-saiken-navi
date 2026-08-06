@@ -99,9 +99,6 @@ export function SiteNavMenu() {
                 ))}
               </ul>
             </nav>
-            <p className="border-t px-4 py-3 text-xs text-muted-foreground">
-              表示（明るい／暗い）は「設定」から変更できます
-            </p>
           </div>
         </div>
       )}

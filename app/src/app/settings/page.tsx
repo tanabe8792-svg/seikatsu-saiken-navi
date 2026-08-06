@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSettings } from "@/providers/settings-provider";
 import { FONT_SIZE_LABELS, type FontSize } from "@/lib/settings";
-import { ThemeToggleButtons } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const FONT_OPTIONS: FontSize[] = ["normal", "large", "xlarge"];
@@ -35,18 +34,6 @@ export default function SettingsPage() {
         >
           <IdentityRegistrationPanel />
         </Suspense>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>表示（明るい／暗い）</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-base text-muted-foreground">
-              画面の明るさを切り替えます。はじめは明るい表示をおすすめしています（読みやすさ・ロゴとの一体感のため）。
-            </p>
-            <ThemeToggleButtons />
-          </CardContent>
-        </Card>
 
         <Card>
           <CardHeader>

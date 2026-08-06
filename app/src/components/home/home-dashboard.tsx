@@ -586,22 +586,18 @@ export function HomeDashboard() {
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden border-0 bg-gradient-to-b from-sky-950 via-slate-900 to-stone-900 text-stone-50 shadow-none">
+      <Card className="border border-border bg-card shadow-sm">
         <CardContent className="space-y-4 p-5">
-          <p className="text-sm tracking-wide text-sky-100/80">
+          <p className="text-sm font-medium text-muted-foreground">
             令和8年（2026年）7月28日 · 熊本地震
           </p>
-          <p className="text-sm leading-relaxed text-stone-200/95">
+          <p className="text-sm leading-relaxed text-foreground">
             再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理いたします。
           </p>
-          <Button
-            asChild
-            size="lg"
-            className="h-14 w-full bg-stone-50 text-lg text-stone-900 hover:bg-white"
-          >
+          <Button asChild size="lg" className="h-14 w-full text-lg">
             <Link href="/start">質問をはじめる</Link>
           </Button>
-          <p className="text-center text-xs text-stone-300/90">
+          <p className="text-center text-xs text-muted-foreground">
             登録不要 · 無料 · 約2分です
           </p>
         </CardContent>

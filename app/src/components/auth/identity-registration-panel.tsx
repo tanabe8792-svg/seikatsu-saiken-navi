@@ -223,7 +223,7 @@ export function IdentityRegistrationPanel() {
             {method === "line" && (
               <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  LINEアカウントでログインすると、本人確認済みとして登録されます。公式アカウントへの友だち追加とは別の操作です。
+                  LINEアカウントでログインすると、本人確認済みとして登録されます。
                 </p>
                 <Button
                   type="button"

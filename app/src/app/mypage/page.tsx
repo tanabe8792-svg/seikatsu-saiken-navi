@@ -23,7 +23,6 @@ import {
 } from "@/lib/case-management/action-queue";
 import { J00_DISASTER_EVENT_LABEL } from "@/lib/j00-hearing";
 import { useAuth } from "@/providers/auth-provider";
-import { OfficialLineFriendCard } from "@/components/line/official-line-friend-card";
 import { useUserSession } from "@/hooks/use-user-session";
 
 export default function MyPage() {
@@ -72,8 +71,6 @@ export default function MyPage() {
             </Button>
           </CardContent>
         </Card>
-
-        <OfficialLineFriendCard />
 
         <Card className="border-border bg-card">
           <CardContent className="space-y-3 p-5">

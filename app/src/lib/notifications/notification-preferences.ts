@@ -43,7 +43,7 @@ export const NOTIFICATION_CHANNEL_OPTIONS: {
     id: "line",
     label: "LINEで最新情報をすぐ受け取る",
     description:
-      "公式LINE（@272pshvm）を友だち追加したうえで選んでください。新しい支援案内などをお知らせします（任意・配信連携は順次準備中）。",
+      "LINEアカウントでログインして本人確認します（任意）。",
     requiresContact: true,
   },
 ];

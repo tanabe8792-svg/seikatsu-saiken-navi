@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |------|------|
-| 目的 | マイページ登録＝**本人確認**（通知配信ではない） |
-| 公式LINE ID | `@272pshvm`（友だち追加とは別に **LINE Login** が必要） |
+| 目的 | マイページ登録＝**本人確認**（アカウント登録のみ） |
+| 公式LINE | **不要**（LINE Login チャネルのみ使用） |
 
 ---
 
@@ -19,7 +19,7 @@
          進捗データをクラウドに保存（端末をまたいで引き継ぎ）
 ```
 
-**Messaging API（メッセージ配信）は不要**です。LINE Login チャネルだけ作ればOKです。
+**Messaging API も公式LINEアカウントも不要**です。LINE Login チャネルだけ作ればOKです。
 
 ---
 
@@ -61,8 +61,8 @@ Supabase **SQL Editor** で `/database/supabase-schema.sql` を実行（未実�
 
 ## ステップ4 — LINE Login（本人確認用）
 
-> ⚠️ **Messaging API チャネル ≠ LINE Login チャネル**  
-> 公式アカウント `@272pshvm` とは別に、または紐づけて **LINE Login** チャネルを作成します。
+> ⚠️ **Messaging API / 公式LINEアカウントは不要**  
+> **LINE Login** チャネルだけを作成します。
 
 ### 4-1. LINE Developers Console
 
@@ -109,16 +109,6 @@ https://<your-supabase-project-ref>.supabase.co/auth/v1/callback
 | メールが届かない | Supabase の Email provider、迷惑メールフォルダ |
 | LINEログインが始まらない | Supabase で LINE provider ON、Callback URL 一致 |
 | ログイン後に進捗が消える | SQL extension 実行済みか、同じメール/LINEで再ログイン |
-
----
-
-## 公式LINE（@272pshvm）との関係
-
-| 機能 | 必要なもの |
-|------|-----------|
-| 友だち追加リンク | 公式アカウント Basic ID だけ（済） |
-| **本人確認ログイン** | LINE **Login** チャネル + Supabase |
-| プッシュ通知配信 | Messaging API（**今回は不要**） |
 
 ---
 

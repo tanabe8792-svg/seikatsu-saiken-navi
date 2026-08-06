@@ -100,7 +100,7 @@ export default function AboutPage() {
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
             <li>メール：確認メールのリンクをタップして登録</li>
-            <li>LINE：LINEログイン画面で認証（友だち追加とは別）</li>
+            <li>LINE：LINEログイン画面で認証</li>
             <li>登録しなくても、やることの確認はすべて利用できます</li>
           </ul>
           <p className="text-sm text-muted-foreground">

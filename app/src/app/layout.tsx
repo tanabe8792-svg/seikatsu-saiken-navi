@@ -28,10 +28,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#141820" },
-  ],
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -42,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className="min-h-screen bg-background pb-20">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" forcedTheme="light" enableSystem={false}>
           <AuthProvider>
             <SettingsProvider>
               <SessionProvider>
