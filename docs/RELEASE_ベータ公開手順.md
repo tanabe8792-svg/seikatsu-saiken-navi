@@ -109,8 +109,12 @@ E〜H は「後からでよい」です。ドメインなしでも `*.vercel.app
   - 到達を確実にするには `RESEND_API_KEY` と `RESEND_FROM_EMAIL`（Resend で認証した From）も設定し Redeploy
   - 未設定だとフォームは「送信の準備がまだです」と表示されます
 - 活動費のご支援リンク（任意）
-  - ofuse / Buy Me a Coffee / PayPay.me などで公開ページを作り、Vercel に `NEXT_PUBLIC_SUPPORT_DONATION_URL` を設定して Redeploy
-  - 「このサービスについて」の「活動を続けるために」にボタンが出ます
+  - おすすめ: [Stripe Payment Links](https://stripe.com/jp/payments/payment-links)
+    - Apple Pay・クレジットカードに標準対応。ダッシュボードで PayPay も有効化できる
+    - 「顧客が金額を選択」のリンクを1本作る → Vercel に `NEXT_PUBLIC_SUPPORT_DONATION_URL`
+    - または 300/500/1000/3000 円の固定リンクを作り `NEXT_PUBLIC_SUPPORT_DONATION_URL_300` などに設定
+  - 補助: [PayPay.me](https://paypay.ne.jp/guide/paypay-me/) のURLを `NEXT_PUBLIC_SUPPORT_PAYPAY_URL` に
+  - 設定後 Redeploy。「このサービスについて」→「活動を続けるために」に金額ボタンが出ます
 - 問題が出たら Cursor に「この URL でこう壊れた」と伝える
 
 ---

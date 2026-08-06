@@ -59,16 +59,49 @@ export const TRUST_CONTINUITY_SUPPORT = {
   body: [
     "このナビは、田辺 優が一人で開発・更新を続けています。",
     "続けていくために、活動費のご支援（任意）がとても助かります。メールでの応援メッセージはありがたいのですが、数が増えると十分にお返事できないことがあります。",
-    "応援してくださる方は、まず下の「活動費で応援する」からお願いします。どうしても伝えたいことがある方だけ、その下のフォームをご利用ください。",
+    "金額はお好きなもので大丈夫です。スマホなら Apple Pay・PayPay・クレジットカードで簡単に送れます。",
   ],
   donationButtonLabel: "活動費で応援する（任意）",
   donationNote:
-    "外部の決済ページが開きます。金額はお好きな額で大丈夫です。強制ではありません。",
+    "外部の決済ページが開きます。強制ではありません。お気持ちだけで十分です。",
   donationPending:
-    "支援用のリンクを準備しています。しばらくお待ちください。",
+    "支援用の決済リンクを準備しています。もうしばらくお待ちください。",
+  paymentMethodsNote: "Apple Pay・クレジットカード・PayPay などに対応予定です（決済画面で選べます）。",
   formLead:
     "どうしても伝えたいことだけ書いてください（任意）。改善のご意見は上の「改善の声」へ。",
 } as const;
+
+/** 活動費の金額案（高額に見せず、用途が分かるように） */
+export const SUPPORT_DONATION_TIERS = [
+  {
+    yen: 300,
+    id: "300",
+    title: "300円",
+    purpose: "ひと息つくコーヒー代に",
+    detail: "開発の合間の休憩代になります",
+  },
+  {
+    yen: 500,
+    id: "500",
+    title: "500円",
+    purpose: "月の維持の足しに",
+    detail: "サーバー・メール配信などの運営費の一部に",
+  },
+  {
+    yen: 1000,
+    id: "1000",
+    title: "1,000円",
+    purpose: "情報の更新作業に",
+    detail: "制度・リンクの確認と案内の直しに充てます",
+  },
+  {
+    yen: 3000,
+    id: "3000",
+    title: "3,000円",
+    purpose: "改善の開発時間に",
+    detail: "使いやすさや新機能の実装の足しに",
+  },
+] as const;
 
 export const TRUST_FAQ_OPERATOR_ANSWER =
   "熊本で学ぶ田辺 優（たなべ ゆう）が、ボランティアなどの活動を通じて感じた課題をもとに作っています。詳しくは「その他」→「このサービスについて」をご覧ください。";
@@ -79,8 +112,33 @@ export function getTrustFeedbackFormUrl(): string | undefined {
   return url || undefined;
 }
 
-/** ofuse / Buy Me a Coffee / PayPay.me 等の支援リンク */
-export function getSupportDonationUrl(): string | undefined {
-  const url = process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL?.trim();
+function trimEnvUrl(value: string | undefined): string | undefined {
+  const url = value?.trim();
   return url || undefined;
+}
+
+/** 共通の支援リンク（Stripe の「金額を選ぶ」リンクなど） */
+export function getSupportDonationUrl(): string | undefined {
+  return trimEnvUrl(process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL);
+}
+
+/** 金額別リンク（未設定なら共通リンクへ） */
+export function getSupportDonationTierUrl(tierId: string): string | undefined {
+  const byTier: Record<string, string | undefined> = {
+    "300": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_300,
+    "500": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_500,
+    "1000": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_1000,
+    "3000": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_3000,
+  };
+  return trimEnvUrl(byTier[tierId]) ?? getSupportDonationUrl();
+}
+
+/** PayPay.me など PayPay 専用（任意） */
+export function getSupportPayPayUrl(): string | undefined {
+  return trimEnvUrl(process.env.NEXT_PUBLIC_SUPPORT_PAYPAY_URL);
+}
+
+export function hasAnySupportDonationLink(): boolean {
+  if (getSupportDonationUrl() || getSupportPayPayUrl()) return true;
+  return SUPPORT_DONATION_TIERS.some((t) => getSupportDonationTierUrl(t.id));
 }
