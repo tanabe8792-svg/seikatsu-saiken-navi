@@ -31,9 +31,12 @@ interface AuthContextValue {
   identity: VerifiedIdentity | null;
   identityLabel: string | null;
   sendEmailVerificationLink: (
-    email: string
+    email: string,
+    nextPath?: string
   ) => Promise<{ ok: true } | { ok: false; message: string }>;
-  signInWithLine: () => Promise<{ ok: true } | { ok: false; message: string }>;
+  signInWithLine: (
+    nextPath?: string
+  ) => Promise<{ ok: true } | { ok: false; message: string }>;
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
 }

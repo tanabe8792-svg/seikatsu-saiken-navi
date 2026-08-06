@@ -81,7 +81,11 @@ export function IdentityRegistrationPanel({
     setBusy(true);
     setError(null);
     setEmailSent(false);
-    const result = await sendEmailVerificationLink(email);
+    const next =
+      afterLoginHref.includes("?")
+        ? `${afterLoginHref}&verified=email`
+        : `${afterLoginHref}?verified=email`;
+    const result = await sendEmailVerificationLink(email, next);
     setBusy(false);
     if (!result.ok) {
       setError(toUserFacingAuthError(result.message));
@@ -99,7 +103,11 @@ export function IdentityRegistrationPanel({
     }
     setBusy(true);
     setError(null);
-    const result = await signInWithLine();
+    const next =
+      afterLoginHref.includes("?")
+        ? `${afterLoginHref}&verified=line`
+        : `${afterLoginHref}?verified=line`;
+    const result = await signInWithLine(next);
     setBusy(false);
     if (!result.ok) {
       setError(toUserFacingAuthError(result.message));

@@ -20,7 +20,8 @@ export async function getAuthUser(): Promise<User | null> {
 }
 
 export async function sendEmailVerificationLink(
-  email: string
+  email: string,
+  nextPath = "/mypage?verified=email"
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   if (!isSupabaseConfigured()) {
     return {
@@ -43,7 +44,7 @@ export async function sendEmailVerificationLink(
   const { error } = await supabase.auth.signInWithOtp({
     email: trimmed,
     options: {
-      emailRedirectTo: getAuthCallbackUrl("/mypage?verified=email"),
+      emailRedirectTo: getAuthCallbackUrl(nextPath),
       shouldCreateUser: true,
     },
   });
@@ -55,9 +56,9 @@ export async function sendEmailVerificationLink(
   return { ok: true };
 }
 
-export async function signInWithLineOAuth(): Promise<
-  { ok: true } | { ok: false; message: string }
-> {
+export async function signInWithLineOAuth(
+  nextPath = "/mypage?verified=line"
+): Promise<{ ok: true } | { ok: false; message: string }> {
   if (!isSupabaseConfigured()) {
     return {
       ok: false,
@@ -80,7 +81,7 @@ export async function signInWithLineOAuth(): Promise<
     // @ts-expect-error custom OAuth provider id (e.g. custom:line)
     provider: lineProvider,
     options: {
-      redirectTo: getAuthCallbackUrl("/mypage?verified=line"),
+      redirectTo: getAuthCallbackUrl(nextPath),
       scopes: "profile openid",
       queryParams: {
         bot_prompt: "normal",

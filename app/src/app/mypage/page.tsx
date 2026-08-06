@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -19,12 +19,18 @@ import {
 import { SiteHeader } from "@/components/layout/site-header";
 import { IdentityRegistrationPanel } from "@/components/auth/identity-registration-panel";
 import { CaseAccessCard } from "@/components/case/case-access-card";
+import { CaseSharePanel } from "@/components/case/case-share-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   formatCaseSituation,
   getCaseProgress,
 } from "@/lib/case-management/action-queue";
+import { CASE_ACCESS_LEVEL_LABELS } from "@/lib/case-management/case-sharing";
+import {
+  loadLocalCaseShare,
+  type LocalCaseShareState,
+} from "@/lib/case-management/case-share-storage";
 import { buildPostJ00ProfileBullets } from "@/lib/onboarding/onboarding-copy";
 import { J00_DISASTER_EVENT_LABEL } from "@/lib/j00-hearing";
 import { useAuth } from "@/providers/auth-provider";
@@ -35,6 +41,11 @@ export default function MyPage() {
   const { session, loading, resetSession } = useUserSession();
   const { identity, identityLabel, loading: authLoading } = useAuth();
   const { caseFile, profile } = session;
+  const [shareState, setShareState] = useState<LocalCaseShareState | null>(null);
+
+  useEffect(() => {
+    setShareState(loadLocalCaseShare());
+  }, [caseFile?.caseId, identity?.userId]);
 
   if (loading || authLoading) {
     return (
@@ -55,6 +66,14 @@ export default function MyPage() {
     <>
       <SiteHeader title="マイページ" />
       <main className="space-y-5 px-4 py-4 pb-28">
+        {shareState && !shareState.isOwner && (
+          <p className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm leading-relaxed">
+            共有ケースに参加中です（
+            {CASE_ACCESS_LEVEL_LABELS[shareState.accessLevel]}
+            ）。アカウントの共有ではなく、このケースだけが共有されています。
+          </p>
+        )}
+
         {!identity && (
           <Suspense
             fallback={
@@ -138,6 +157,7 @@ export default function MyPage() {
             </Card>
 
             <CaseAccessCard caseFile={caseFile} />
+            <CaseSharePanel caseFile={caseFile} />
           </>
         )}
 
@@ -193,6 +213,12 @@ export default function MyPage() {
             icon={Settings}
             label="設定"
             note="文字サイズなど"
+          />
+          <MenuLink
+            href="/invite"
+            icon={LogIn}
+            label="招待コードで参加"
+            note="家族から共有されたケースへ"
           />
           <MenuLink
             href="/settings#mypage-register"

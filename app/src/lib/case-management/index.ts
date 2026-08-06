@@ -150,6 +150,20 @@ export type {
   PublicCaseId,
   CaseMemberDraft,
 } from "./case-access";
+export {
+  canAccessLevel,
+  accessLevelAllows,
+  familyInviteUrl,
+  isValidInviteCode,
+  normalizeInviteCode,
+  CASE_ACCESS_LEVEL_LABELS,
+  OPERATIONAL_CASE_STATUS_LABELS,
+} from "./case-sharing";
+export type {
+  CaseAccessLevel,
+  OperationalCaseStatus,
+  CaseMembershipSummary,
+} from "./case-sharing";
 export type {
   CaseFile,
   FamilyAttributes,

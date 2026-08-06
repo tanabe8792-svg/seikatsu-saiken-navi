@@ -59,6 +59,14 @@ import {
 } from "@/lib/supabase/browser";
 import { getAuthUser } from "@/lib/supabase/auth";
 import {
+  clearLocalCaseShare,
+  loadLocalCaseShare,
+} from "@/lib/case-management/case-share-storage";
+import {
+  publishOwnedCase,
+  updateSharedCaseFile,
+} from "@/lib/supabase/cases";
+import {
   identityFromSupabaseUser,
   isAnonymousSupabaseUser,
 } from "@/lib/auth/identity";
@@ -134,6 +142,30 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         await saveSessionToSupabase(id, updated);
       } catch (error) {
         console.error("Failed to sync session:", error);
+      }
+    }
+
+    // 共有ケースへ（所有者または編集可メンバー）— 失敗してもローカル保存は維持
+    const share = loadLocalCaseShare();
+    if (
+      share &&
+      updated.caseFile &&
+      (share.isOwner || share.accessLevel === "edit") &&
+      isSupabaseConfigured()
+    ) {
+      try {
+        if (share.isOwner && updated.caseFile.publicCaseId) {
+          await publishOwnedCase({
+            publicCaseId: updated.caseFile.publicCaseId,
+            internalCaseId: updated.caseFile.caseId,
+            caseFile: updated.caseFile,
+            municipalityCode: updated.caseFile.municipalityCode,
+          });
+        } else if (!share.isOwner) {
+          await updateSharedCaseFile(share.remoteCaseId, updated.caseFile);
+        }
+      } catch (error) {
+        console.error("Failed to sync shared case:", error);
       }
     }
   }, []);
@@ -425,6 +457,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const resetSession = useCallback(() => {
     clearWalkthroughProgress();
+    clearLocalCaseShare();
     void import("@/lib/case-management/photo-store").then(({ clearAllPhotos }) =>
       clearAllPhotos().catch(() => undefined)
     );

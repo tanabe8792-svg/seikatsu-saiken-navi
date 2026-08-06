@@ -54,6 +54,8 @@ Supabase **SQL Editor** で `/database/supabase-schema.sql` を実行（未実�
 
 続けて `/database/supabase-schema-auth-extension.sql` も実行（進捗の引き継ぎ用カラム追加）。
 
+**ケース共有（家族招待）を使う場合**は、続けて `/database/supabase-schema-cases.sql` も実行してください。
+
 **Authentication → Providers → Anonymous sign-ins** を **ON**（端末内保存との併用のため）。
 
 ---
