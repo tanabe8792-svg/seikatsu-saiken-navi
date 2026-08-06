@@ -106,33 +106,16 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
         </CardContent>
       </Card>
 
-      {current && (
-        <Card className="border-2 border-primary/50 shadow-sm">
-          <CardContent className="space-y-4 p-5">
-            <p className="text-sm font-semibold text-primary">
-              いま一緒に確認すること
-            </p>
-            <ActionPreview action={current} isCurrent />
-            <Button asChild size="lg" className="h-14 w-full text-lg">
-              <Link href={getCaseActionDetailPath(current.id)}>
-                詳しく確認する
-                <ChevronRight className="h-5 w-5" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-          {pending.length > 0 && (
+      {pending.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-baseline justify-between gap-2 px-1">
             <h2 className="text-sm font-semibold text-muted-foreground">
-              これから確認すること
+              やること一覧
             </h2>
             <p className="text-xs text-muted-foreground">どれでも開けます</p>
           </div>
           <p className="px-1 text-xs leading-relaxed text-muted-foreground">
-            「いま」が優先です。先に別の項目を見ても大丈夫ですが、続きは一覧の「いま」に戻ってください。青いチェックは全体の進み具合とは別です。
+            スクロールして全体を見てから、「詳しく確認する」を押してください。順番は目安です。
           </p>
           <ul className="space-y-3">
             {pending.map((action, index) => (
@@ -146,6 +129,23 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
             ))}
           </ul>
         </section>
+      )}
+
+      {current && (
+        <Card className="border border-primary/30 bg-primary/5 shadow-sm">
+          <CardContent className="space-y-3 p-5">
+            <p className="text-sm font-semibold text-primary">
+              迷ったらここから（任意）
+            </p>
+            <ActionPreview action={current} isCurrent />
+            <Button asChild size="lg" className="h-12 w-full">
+              <Link href={getCaseActionDetailPath(current.id)}>
+                この項目を詳しく確認する
+                <ChevronRight className="h-5 w-5" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       )}
 
       {completed.length > 0 && (
@@ -263,6 +263,11 @@ function ActionRow({
             {!done && companion !== keyword && (
               <p className="text-xs leading-relaxed text-muted-foreground">
                 {companion}
+              </p>
+            )}
+            {!done && (
+              <p className="pt-1 text-sm font-medium text-primary">
+                詳しく確認する
               </p>
             )}
           </div>

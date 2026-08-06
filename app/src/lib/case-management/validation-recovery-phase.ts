@@ -79,8 +79,17 @@ export function validateRecoveryPhase(
       }
       break;
     case "Case6":
-      if (firstTitle !== "事業復旧を確認") {
-        gaps.push(`期待「事業復旧を確認」/ 実際「${firstTitle}」`);
+      if (firstTitle !== "被害写真を撮影する") {
+        gaps.push(`期待「被害写真を撮影する」/ 実際「${firstTitle}」`);
+      }
+      {
+        const titles = file.pendingActions.map((a) => a.title);
+        if (!titles.includes("事業復旧を確認")) {
+          gaps.push("事業復旧 Action がキューに含まれない");
+        }
+        if (!titles.includes("罹災証明書の申請を確認する")) {
+          gaps.push("罹災証明 Action がキューに含まれない");
+        }
       }
       break;
   }

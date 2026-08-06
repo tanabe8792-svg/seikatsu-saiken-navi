@@ -87,8 +87,8 @@ export function validateEvidenceFlow(caseKey: string): EvidenceFlowValidationRes
 
       const cert = getCurrentAction(file);
       steps.push(cert?.title ?? "?");
-      if (cert?.title !== "必要書類を確認する") {
-        gaps.push(`写真後: 期待「必要書類を確認する」/ 実際「${cert?.title}」`);
+      if (cert?.title !== "罹災証明書の申請を確認する") {
+        gaps.push(`写真後: 期待「罹災証明書の申請を確認する」/ 実際「${cert?.title}」`);
       }
       break;
     }
@@ -111,14 +111,16 @@ export function validateEvidenceFlow(caseKey: string): EvidenceFlowValidationRes
       break;
     }
     case "Case6": {
-      const biz = getCurrentAction(file)!;
-      steps.push(biz.title);
-      const r1 = completeCaseAction(file, biz.id, triggers);
-      file = r1.caseFile;
       const photo = getCurrentAction(file);
       steps.push(photo?.title ?? "?");
       if (photo?.title !== "被害写真を撮影する") {
-        gaps.push(`期待写真 / 実際 ${photo?.title}`);
+        gaps.push(`期待写真先頭 / 実際 ${photo?.title}`);
+      }
+      const biz = file.pendingActions.find((a) => a.id === "rw-j04-business-recovery");
+      if (!biz) {
+        gaps.push("事業復旧 Action がない");
+      } else {
+        steps.push(biz.title);
       }
       break;
     }

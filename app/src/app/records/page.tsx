@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Camera, Loader2 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { StoredPhotoThumb } from "@/components/actions/photo-evidence-capture";
+import { RecordsPhotoCapture } from "@/components/records/records-photo-capture";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getActionWalkthrough } from "@/lib/case-management/action-walkthrough";
@@ -116,11 +117,17 @@ export default function RecordsPage() {
       <SiteHeader title="被害写真" showBack />
       <main className="space-y-5 px-4 py-4 pb-28">
         <Card className="border-primary/25 bg-primary/5">
-          <CardContent className="space-y-2 p-5">
+          <CardContent className="space-y-3 p-5">
             <p className="text-base font-semibold">端末に残した写真</p>
             <p className="text-sm leading-relaxed text-muted-foreground">
               撮った写真はサーバーには送らず、この端末の中だけに残しています。窓口・保険の相談前にここから見返せます。
             </p>
+            {caseId && (
+              <RecordsPhotoCapture
+                caseId={caseId}
+                onSaved={() => void refresh()}
+              />
+            )}
           </CardContent>
         </Card>
 
@@ -156,21 +163,17 @@ export default function RecordsPage() {
           </Card>
         ) : photos.length === 0 ? (
           <Card>
-            <CardContent className="space-y-4 p-5">
+            <CardContent className="space-y-3 p-5">
               <p className="text-base font-semibold">まだ写真はありません</p>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                写真を撮っていない場合、ここに何も出ないのが正常です。「やること」の被害写真の手順から撮影できます。
+                上の「撮影する」から残せます。撮っていない場合、ここに何も出ないのが正常です。
               </p>
-              {photoAction ? (
-                <Button asChild size="lg" className="h-12 w-full">
+              {photoAction && (
+                <Button asChild variant="outline" size="lg" className="h-12 w-full">
                   <Link href={getCaseActionDetailPath(photoAction.id)}>
                     <Camera className="h-5 w-5" />
-                    写真を撮る手順へ
+                    やることの手順でも確認
                   </Link>
-                </Button>
-              ) : (
-                <Button asChild size="lg" className="h-12 w-full">
-                  <Link href="/actions">やること一覧を見る</Link>
                 </Button>
               )}
             </CardContent>

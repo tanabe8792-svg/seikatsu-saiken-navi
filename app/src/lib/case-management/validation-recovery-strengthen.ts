@@ -165,8 +165,8 @@ export function validateRecoveryStrengthenFlow(
       steps.push("写真");
 
       const cert = getCurrentAction(file)!;
-      if (cert.title !== "必要書類を確認する") {
-        gaps.push(`次: 期待「必要書類を確認する」/ 実際「${cert.title}」`);
+      if (cert.title !== "罹災証明書の申請を確認する") {
+        gaps.push(`次: 期待「罹災証明書の申請を確認する」/ 実際「${cert.title}」`);
       }
       file = completeCaseAction(file, cert.id, triggersFrom(file)).caseFile;
       steps.push("罹災証明準備");
@@ -219,7 +219,11 @@ export function validateRecoveryStrengthenFlow(
       break;
     }
     case "Case6": {
-      const biz = getCurrentAction(file)!;
+      const biz = file.pendingActions.find((a) => a.id === "rw-j04-business-recovery");
+      if (!biz) {
+        gaps.push("事業復旧 Action がない");
+        break;
+      }
       file = completeCaseAction(file, biz.id, triggersFrom(file)).caseFile;
       steps.push("事業復旧");
 

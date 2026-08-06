@@ -300,7 +300,8 @@ export default function J00HearingPage() {
     void (async () => {
       await initializeCase(finalProfile);
       setJ00Step(undefined);
-      router.push("/");
+      // 最初の項目を自動で開かず、一覧から選べるようにする
+      router.push("/actions");
     })();
   }
 

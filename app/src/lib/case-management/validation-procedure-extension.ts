@@ -161,9 +161,13 @@ export function validateProcedureExtensionFlow(
       break;
     }
     case "Case6": {
-      const biz = getCurrentAction(file)!;
-      if (biz.title !== "事業復旧を確認") {
-        gaps.push(`Recovery 先頭: 期待「事業復旧を確認」/ 実際「${biz.title}」`);
+      const biz = file.pendingActions.find((a) => a.id === "rw-j04-business-recovery");
+      if (!biz) {
+        gaps.push("事業復旧 Action がキューにない");
+        break;
+      }
+      if (getCurrentAction(file)?.title === "事業復旧を確認") {
+        gaps.push("事業復旧が先頭になっている（写真・罹災証明より後が望ましい）");
       }
 
       file = completeCaseAction(file, biz.id, triggersFrom(file)).caseFile;

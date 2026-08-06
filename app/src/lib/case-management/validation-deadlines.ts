@@ -82,8 +82,8 @@ export function validateDeadlineFlow(
       triggersFrom(file);
 
       const cert = getCurrentAction(file)!;
-      if (cert.title !== "必要書類を確認する") {
-        gaps.push(`期待「必要書類を確認する」/ 実際「${cert.title}」`);
+      if (cert.title !== "罹災証明書の申請を確認する") {
+        gaps.push(`期待「罹災証明書の申請を確認する」/ 実際「${cert.title}」`);
       }
 
       file = completeCaseAction(file, cert.id, triggersFrom(file)).caseFile;

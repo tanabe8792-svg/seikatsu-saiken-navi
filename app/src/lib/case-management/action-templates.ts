@@ -146,7 +146,7 @@ export const ACTION_TEMPLATES: ActionTemplate[] = [
       "SP-BUSINESS-JFC-LOAN",
       "SP-BUSINESS-CHAMBER",
     ],
-    sortOrder: 35,
+    sortOrder: 128,
     phaseScope: "recovery",
   },
   {
@@ -162,14 +162,14 @@ export const ACTION_TEMPLATES: ActionTemplate[] = [
     evidenceRequired: true,
     completionRule: "EVIDENCE_REQUIRED",
     sourceTriggerIds: ["TRIGGER-PHOTO-RECORD"],
-    sortOrder: 110,
+    sortOrder: 100,
     phaseScope: "recovery",
   },
   {
     id: "rw-j03-cert-prep",
     rwActionId: "RW-J03-04",
     journeyId: "J-03",
-    title: "必要書類を確認する",
+    title: "罹災証明書の申請を確認する",
     description:
       "罹災証明書の申請に必要な身分証・写真を準備し、窓口またはオンライン申請を確認してください。",
     reason: "支援制度・保険請求の入口となる重要書類です。",
@@ -183,7 +183,7 @@ export const ACTION_TEMPLATES: ActionTemplate[] = [
       "TRIGGER-ALERT-ALERT-YATSUSHIRO-ONLINE",
     ],
     relatedProgramIds: ["SP-DISASTER-CERTIFICATE"],
-    sortOrder: 120,
+    sortOrder: 105,
     when: (p, ids) =>
       hasHouseDamage(p) &&
       (templateCertMatch(ids) || ids.has("TRIGGER-PHOTO-RECORD")),

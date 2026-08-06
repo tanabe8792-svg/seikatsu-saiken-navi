@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { SiteNavMenu } from "@/components/layout/site-nav-menu";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
 
 interface SiteHeaderProps {
@@ -22,7 +22,7 @@ export function SiteHeader({
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
       <div className="mx-auto flex h-14 max-w-lg items-center justify-between px-4">
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           {showBack ? (
             <HeaderBackButton
               fallbackHref={backHref}
@@ -30,12 +30,15 @@ export function SiteHeader({
               onBack={onBack}
             />
           ) : (
-            <Link href="/" className="text-lg font-semibold tracking-tight">
+            <Link
+              href="/"
+              className="truncate text-lg font-semibold tracking-tight"
+            >
               {title}
             </Link>
           )}
         </div>
-        <ThemeToggle />
+        <SiteNavMenu />
       </div>
       {showBack && title !== "生活再建ナビ" && (
         <div className="mx-auto max-w-lg px-4 pb-3">

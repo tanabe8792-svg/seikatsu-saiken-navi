@@ -176,23 +176,14 @@ export function HomeDashboard() {
                   <Button
                     size="lg"
                     className="h-14 w-full text-lg"
-                    onClick={handlePrimaryClick}
+                    onClick={() => router.push("/actions")}
                   >
-                  {ui.showEvidenceButton && !ui.hasEvidence ? (
-                    <>
-                      <Camera className="h-5 w-5" />
-                      写真の記録から確認する
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      最初の確認をはじめる
-                    </>
-                  )}
+                    <CheckCircle2 className="h-5 w-5" />
+                    やること一覧を見る
                   </Button>
-                  <Button asChild variant="outline" size="lg" className="h-12 w-full">
-                    <Link href="/actions">やること一覧を見る</Link>
-                  </Button>
+                  <p className="text-center text-xs text-muted-foreground">
+                    一覧を見てから、確認したい項目を選べます
+                  </p>
                 </CardContent>
               </Card>
 
@@ -556,17 +547,30 @@ export function HomeDashboard() {
 
   return (
     <div className="space-y-4 pb-2">
-      <Card className="border-primary/30 bg-primary/5">
+      <Card className="overflow-hidden border-0 bg-gradient-to-b from-sky-950 via-slate-900 to-stone-900 text-stone-50 shadow-none">
         <CardContent className="space-y-4 p-5">
-          <p className="text-sm font-medium text-primary">生活再建ナビ</p>
-          <p className="text-xl font-bold leading-snug">
-            次に確認することを、順番に案内します
+          <p className="text-sm font-medium text-sky-200/90">生活再建ナビ</p>
+          <p className="text-sm tracking-wide text-sky-100/80">
+            令和8年（2026年）7月28日
           </p>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            はじめに、地域や被害の程度など短い質問に答えてください（登録不要・無料）。答えをもとに、あなた向けの「やること」を作ります。
-          </p>
-          <Button asChild size="lg" className="h-14 w-full text-lg">
-            <Link href="/start">質問をはじめる</Link>
+          <h2 className="text-2xl font-bold leading-snug">熊本地震</h2>
+          <div className="space-y-3 text-sm leading-relaxed text-stone-200/95">
+            <p>
+              その日、熊本の各地で強い揺れがありました。住まいが傷つき、水や電気が止まり、先の見通しが立たない日々が続きました。
+            </p>
+            <p>
+              再建の道のりは人それぞれです。罹災証明、保険、支援制度——「次に何を確認すればよいか」が分からなくなることがあります。
+            </p>
+            <p>
+              このナビは、あなたの状況に合わせて、確認することを順番に一緒に整理します。登録は不要・無料です。
+            </p>
+          </div>
+          <Button
+            asChild
+            size="lg"
+            className="h-14 w-full bg-stone-50 text-lg text-stone-900 hover:bg-white"
+          >
+            <Link href="/start">はじめる</Link>
           </Button>
         </CardContent>
       </Card>

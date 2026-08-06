@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSettings } from "@/providers/settings-provider";
 import { FONT_SIZE_LABELS, type FontSize } from "@/lib/settings";
 import { NotificationSettings } from "@/components/settings/notification-settings";
+import { ThemeToggleButtons } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const FONT_OPTIONS: FontSize[] = ["normal", "large", "xlarge"];
@@ -26,6 +27,18 @@ export default function SettingsPage() {
       <SiteHeader title="設定" showBack backHref="/mypage" />
       <main className="space-y-6 px-4 py-6 pb-28">
         <NotificationSettings />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>表示（明るい／暗い）</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-base text-muted-foreground">
+              画面の明るさを切り替えます。
+            </p>
+            <ThemeToggleButtons />
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

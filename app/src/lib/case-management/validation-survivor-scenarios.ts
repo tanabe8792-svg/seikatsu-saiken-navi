@@ -281,9 +281,9 @@ export function validateSurvivorScenarioFlow(
       g = gaps.length;
       file = completePhoto(file);
       ({ current, dashboard } = dashboardAt(file, profile));
-      if (current.title !== "必要書類を確認する") {
+      if (current.title !== "罹災証明書の申請を確認する") {
         gaps.push(
-          `Case1 写真後: 期待「必要書類を確認する」/ 実際「${current.title}」`
+          `Case1 写真後: 期待「罹災証明書の申請を確認する」/ 実際「${current.title}」`
         );
       }
       if (
@@ -410,16 +410,13 @@ export function validateSurvivorScenarioFlow(
       let g = gaps.length;
       let { current, dashboard } = dashboardAt(file, profile);
 
-      if (current.title !== "事業復旧を確認") {
+      if (current.title !== "被害写真を撮影する") {
         gaps.push(
-          `Case6 開始: 期待「事業復旧を確認」/ 実際「${current.title}」`
+          `Case6 開始: 期待「被害写真を撮影する」/ 実際「${current.title}」`
         );
       }
-      if (
-        !dashboard.nextAction.headline.includes("事業") &&
-        !dashboard.nextAction.friendlyReason.includes("事業")
-      ) {
-        gaps.push("Case6 開始: 事業再建 Action が伴走表示にない");
+      if (!actionVisibleInFlow(file, "rw-j04-business-recovery")) {
+        gaps.push("Case6 開始: 事業復旧 Action が一覧にない");
       }
 
       assertSurvivorScenarioUxQuality(
@@ -439,7 +436,7 @@ export function validateSurvivorScenarioFlow(
       ({ current, dashboard } = dashboardAt(file, profile));
 
       const bizVisible =
-        actionVisibleInFlow(file, "rw-j03-photo") ||
+        actionVisibleInFlow(file, "rw-j04-business-recovery") ||
         dashboard.relatedSupportNames.some(
           (n) => n.includes("事業") || n.includes("自営")
         ) ||

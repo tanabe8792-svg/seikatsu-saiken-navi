@@ -17,12 +17,12 @@ export interface ActionQueueValidationResult {
 }
 
 const EXPECTED_QUEUES: Record<string, string[]> = {
-  Case1: ["給水場所を確認", "被害写真を撮影する", "必要書類を確認する"],
+  Case1: ["給水場所を確認", "被害写真を撮影する", "罹災証明書の申請を確認する"],
   Case2: ["福祉避難所を検討", "給水場所を確認", "仮設・転居を検討"],
   Case3: ["給水場所を確認"],
   Case4: ["被害写真を撮影する", "ローン減免制度を確認"],
   Case5: ["被害写真を撮影する"],
-  Case6: ["事業復旧を確認", "被害写真を撮影する", "支援制度を確認"],
+  Case6: ["被害写真を撮影する", "罹災証明書の申請を確認する", "保険会社へ被害連絡する"],
 };
 
 const CASE_NAME_MAP: Record<string, string> = {
