@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/providers/toast-provider";
 
-export function FeedbackForm() {
+export type FeedbackFormKind = "improvement" | "support";
+
+interface FeedbackFormProps {
+  kind?: FeedbackFormKind;
+}
+
+export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
   const { showToast } = useToast();
   const [message, setMessage] = useState("");
   const [steps, setSteps] = useState("");
@@ -14,6 +20,8 @@ export function FeedbackForm() {
   const [contact, setContact] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+
+  const isSupport = kind === "support";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,12 +31,20 @@ export function FeedbackForm() {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, steps, device, contact }),
+        body: JSON.stringify({
+          kind,
+          message,
+          steps: isSupport ? "" : steps,
+          device: isSupport ? "" : device,
+          contact,
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         error?: string;
+        ok?: boolean;
+        delivered?: boolean;
       };
-      if (!res.ok) {
+      if (!res.ok || !data.ok) {
         showToast(data.error ?? "送信に失敗しました");
         return;
       }
@@ -37,9 +53,9 @@ export function FeedbackForm() {
       setSteps("");
       setDevice("");
       setContact("");
-      showToast("送信しました。ありがとうございます");
+      showToast("送信が完了しました");
     } catch {
-      showToast("送信に失敗しました");
+      showToast("送信に失敗しました。通信環境をご確認ください。");
     } finally {
       setSending(false);
     }
@@ -47,8 +63,32 @@ export function FeedbackForm() {
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-emerald-200/70 bg-emerald-50/50 px-4 py-4 text-sm leading-relaxed dark:border-emerald-900/40 dark:bg-emerald-950/20">
-        送信しました。内容を確認し、サービス改善に活かします。また気になることがあれば、いつでも送ってください。
+      <div
+        className="space-y-4 rounded-2xl border-2 border-emerald-400 bg-emerald-50 px-5 py-6 dark:border-emerald-700 dark:bg-emerald-950/40"
+        role="status"
+        aria-live="polite"
+      >
+        <div className="flex items-start gap-3">
+          <CheckCircle2 className="mt-0.5 h-8 w-8 shrink-0 text-emerald-700 dark:text-emerald-300" />
+          <div className="space-y-2">
+            <p className="text-lg font-bold text-emerald-950 dark:text-emerald-50">
+              送信が完了しました
+            </p>
+            <p className="text-sm leading-relaxed text-emerald-900 dark:text-emerald-100">
+              {isSupport
+                ? "メッセージは開発者のメールに届きました。内容を確認します。返信先を書いていただいた場合は、必要に応じてご連絡します。"
+                : "改善の声は開発者のメールに届きました。内容を確認し、サービス改善に活かします。"}
+            </p>
+          </div>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11 w-full bg-background"
+          onClick={() => setSent(false)}
+        >
+          もう一度送る
+        </Button>
       </div>
     );
   }
@@ -56,51 +96,64 @@ export function FeedbackForm() {
   return (
     <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
       <div className="space-y-2">
-        <label htmlFor="feedback-message" className="text-sm font-medium">
-          気になったこと（必須）
+        <label htmlFor={`feedback-message-${kind}`} className="text-sm font-medium">
+          {isSupport ? "メッセージ（必須）" : "気になったこと（必須）"}
         </label>
         <Textarea
-          id="feedback-message"
+          id={`feedback-message-${kind}`}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={4}
           required
-          placeholder="分かりにくかったところ、追加してほしい情報、困ったことなど"
+          placeholder={
+            isSupport
+              ? "応援・ご紹介・ご質問・ご連絡など"
+              : "分かりにくかったところ、追加してほしい情報、困ったことなど"
+          }
           className="min-h-[100px] text-base"
         />
       </div>
+
+      {!isSupport && (
+        <>
+          <div className="space-y-2">
+            <label htmlFor="feedback-steps" className="text-sm font-medium">
+              再現のしかた（任意）
+            </label>
+            <Textarea
+              id="feedback-steps"
+              value={steps}
+              onChange={(e) => setSteps(e.target.value)}
+              rows={3}
+              placeholder="どの画面で → 何をしたら → どうなったか"
+              className="text-base"
+            />
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="feedback-device" className="text-sm font-medium">
+              端末・ブラウザ（任意）
+            </label>
+            <Textarea
+              id="feedback-device"
+              value={device}
+              onChange={(e) => setDevice(e.target.value)}
+              rows={2}
+              placeholder="例: iPhone / Safari"
+              className="text-base"
+            />
+          </div>
+        </>
+      )}
+
       <div className="space-y-2">
-        <label htmlFor="feedback-steps" className="text-sm font-medium">
-          再現のしかた（任意）
-        </label>
-        <Textarea
-          id="feedback-steps"
-          value={steps}
-          onChange={(e) => setSteps(e.target.value)}
-          rows={3}
-          placeholder="どの画面で → 何をしたら → どうなったか"
-          className="text-base"
-        />
-      </div>
-      <div className="space-y-2">
-        <label htmlFor="feedback-device" className="text-sm font-medium">
-          端末・ブラウザ（任意）
-        </label>
-        <Textarea
-          id="feedback-device"
-          value={device}
-          onChange={(e) => setDevice(e.target.value)}
-          rows={2}
-          placeholder="例: iPhone / Safari"
-          className="text-base"
-        />
-      </div>
-      <div className="space-y-2">
-        <label htmlFor="feedback-contact" className="text-sm font-medium">
+        <label
+          htmlFor={`feedback-contact-${kind}`}
+          className="text-sm font-medium"
+        >
           返信が必要なときの連絡先（任意）
         </label>
         <Textarea
-          id="feedback-contact"
+          id={`feedback-contact-${kind}`}
           value={contact}
           onChange={(e) => setContact(e.target.value)}
           rows={1}
@@ -108,6 +161,7 @@ export function FeedbackForm() {
           className="text-base"
         />
       </div>
+
       <Button
         type="submit"
         size="lg"
@@ -119,10 +173,15 @@ export function FeedbackForm() {
             <Loader2 className="h-5 w-5 animate-spin" />
             送信中…
           </>
+        ) : isSupport ? (
+          "メッセージを送る"
         ) : (
           "改善の声を送る"
         )}
       </Button>
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        送信が成功すると、「送信が完了しました」と大きく表示されます。メールアドレスは画面には出しません。
+      </p>
     </form>
   );
 }

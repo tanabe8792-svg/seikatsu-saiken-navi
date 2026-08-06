@@ -2,7 +2,6 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AppLogo } from "@/components/brand/app-logo";
 import { FeedbackForm } from "@/components/about/feedback-form";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { J00_DISASTER_EVENT_LABEL } from "@/lib/j00-hearing";
 import {
@@ -73,25 +72,30 @@ export default function AboutPage() {
         <TrustSection heading={TRUST_FEEDBACK.heading} id="feedback">
           <p>{TRUST_FEEDBACK.lead}</p>
           <p className="text-sm text-muted-foreground">{TRUST_FEEDBACK.note}</p>
+          <FeedbackForm kind="improvement" />
           {feedbackFormUrl ? (
-            <Button asChild size="lg" className="mt-1 h-14 w-full text-lg">
+            <p className="text-xs text-muted-foreground">
+              別フォームでも送れます：
               <a
                 href={feedbackFormUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="ml-1 font-medium text-primary underline-offset-2 hover:underline"
               >
-                {TRUST_FEEDBACK.buttonLabel}
+                外部フォームを開く
               </a>
-            </Button>
-          ) : (
-            <FeedbackForm />
-          )}
+            </p>
+          ) : null}
         </TrustSection>
 
-        <TrustSection heading={TRUST_CONTINUITY_SUPPORT.heading}>
+        <TrustSection heading={TRUST_CONTINUITY_SUPPORT.heading} id="support">
           {TRUST_CONTINUITY_SUPPORT.body.map((p) => (
             <p key={p}>{p}</p>
           ))}
+          <p className="text-sm text-muted-foreground">
+            {TRUST_CONTINUITY_SUPPORT.formLead}
+          </p>
+          <FeedbackForm kind="support" />
         </TrustSection>
 
         <TrustSection heading="マイページ登録" id="account-setup">

@@ -43,7 +43,7 @@ export const TRUST_INFO_HANDLING = {
 export const TRUST_FEEDBACK = {
   heading: "ご意見・改善のお願い",
   lead: "分かりにくかったところ、追加してほしい情報、困ったことを聞かせてください。",
-  note: "再現のしかた（どの画面→何をしたか）があると助かります。送信先の連絡先は画面には表示しません。",
+  note: "再現のしかた（どの画面→何をしたか）があると助かります。送信すると開発者のメールに届き、「送信が完了しました」と表示されます。",
   formHint: "送信の準備中です。しばらくしてお試しください。",
   buttonLabel: "改善の声を送る",
   fields: [
@@ -57,8 +57,10 @@ export const TRUST_FEEDBACK = {
 export const TRUST_CONTINUITY_SUPPORT = {
   heading: "活動を続けるために",
   body: [
-    "ご意見・ご紹介・応援メッセージが、情報更新と改善の力になります。",
+    "このナビは、学生の田辺が一人で開発・更新を続けています。",
+    "ご意見・ご紹介・応援メッセージが、情報更新と改善の力になります。ご連絡いただける方は、下のフォームからメッセージを送ってください（開発者のメールに届きます）。",
   ],
+  formLead: "応援・ご紹介・ご質問など、ご自由にお書きください。",
 } as const;
 
 export const TRUST_FAQ_OPERATOR_ANSWER =
