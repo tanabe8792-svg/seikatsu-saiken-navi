@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { IdentityRegistrationPanel } from "@/components/auth/identity-registration-panel";
+import { CaseAccessCard } from "@/components/case/case-access-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -54,7 +55,7 @@ export default function MyPage() {
     <>
       <SiteHeader title="マイページ" />
       <main className="space-y-5 px-4 py-4 pb-28">
-        {!identity ? (
+        {!identity && (
           <Suspense
             fallback={
               <p className="py-8 text-center text-sm text-muted-foreground">
@@ -68,23 +69,27 @@ export default function MyPage() {
               afterLoginLabel="保存した内容を見る"
             />
           </Suspense>
-        ) : (
-          <>
-            <Card className="border border-border bg-card shadow-sm">
-              <CardContent className="space-y-4 p-5">
-                <div className="flex items-start gap-3">
-                  <UserRound className="mt-0.5 h-6 w-6 shrink-0 text-brand-green" />
-                  <div className="space-y-1">
-                    <h2 className="text-lg font-bold">あなたのマイページ</h2>
-                    <p className="text-sm text-muted-foreground">{identityLabel}</p>
-                  </div>
-                </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  ログイン中です。この端末に保存された状況や進捗を、下で確認できます。
-                </p>
-              </CardContent>
-            </Card>
+        )}
 
+        {identity && (
+          <Card className="border border-border bg-card shadow-sm">
+            <CardContent className="space-y-4 p-5">
+              <div className="flex items-start gap-3">
+                <UserRound className="mt-0.5 h-6 w-6 shrink-0 text-brand-green" />
+                <div className="space-y-1">
+                  <h2 className="text-lg font-bold">あなたのマイページ</h2>
+                  <p className="text-sm text-muted-foreground">{identityLabel}</p>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                ログイン中です。この端末に保存された状況や進捗を、下で確認できます。
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {caseFile && (
+          <>
             <Card className="border-border bg-card">
               <CardContent className="space-y-3 p-5">
                 <p className="text-sm font-medium text-muted-foreground">
@@ -102,7 +107,7 @@ export default function MyPage() {
                   </ul>
                 )}
 
-                {caseFile && progress && (
+                {progress && (
                   <div className="rounded-xl border bg-background px-4 py-3">
                     {situation && situation !== "状況確認中" && (
                       <p className="text-sm font-medium">{situation}</p>
@@ -124,25 +129,29 @@ export default function MyPage() {
                   </div>
                 )}
 
-                {!caseFile && (
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    まだ状況の入力が完了していません。質問をはじめると、ここに内容が残ります。
-                  </p>
-                )}
-
                 <div className="flex flex-col gap-2 pt-1">
                   <Button asChild size="lg" className="h-12 w-full">
                     <Link href="/actions">やること一覧を見る</Link>
                   </Button>
-                  {!caseFile && (
-                    <Button asChild variant="outline" className="h-12 w-full">
-                      <Link href="/start">質問をはじめる</Link>
-                    </Button>
-                  )}
                 </div>
               </CardContent>
             </Card>
+
+            <CaseAccessCard caseFile={caseFile} />
           </>
+        )}
+
+        {!caseFile && identity && (
+          <Card className="border-border bg-card">
+            <CardContent className="space-y-3 p-5">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                まだ状況の入力が完了していません。質問をはじめると、ここに内容が残ります。
+              </p>
+              <Button asChild variant="outline" className="h-12 w-full">
+                <Link href="/start">質問をはじめる</Link>
+              </Button>
+            </CardContent>
+          </Card>
         )}
 
         <section className="space-y-2">

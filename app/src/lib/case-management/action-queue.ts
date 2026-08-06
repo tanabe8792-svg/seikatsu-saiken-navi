@@ -45,6 +45,11 @@ import {
   prioritizePendingActionsByDocumentGap,
 } from "./document-gap";
 import { syncCaseTimeline } from "./case-timeline";
+import {
+  createPublicCaseId,
+  createRecoveryCode,
+  ensureCaseAccessCodes,
+} from "./case-access";
 import type {
   CaseAction,
   CaseDecision,
@@ -304,8 +309,17 @@ export function createCaseFile(
     decisions.push(buildInitialDecision(triggerIds, pendingActions[0]));
   }
 
+  const existingAccess = options?.existing
+    ? ensureCaseAccessCodes(options.existing)
+    : {
+        publicCaseId: createPublicCaseId(),
+        recoveryCode: createRecoveryCode(),
+      };
+
   return syncCaseTimeline(syncDocumentRecords({
     caseId: options?.caseId ?? options?.existing?.caseId ?? createCaseId(),
+    publicCaseId: existingAccess.publicCaseId,
+    recoveryCode: existingAccess.recoveryCode,
     createdAt: options?.existing?.createdAt ?? now,
     updatedAt: now,
     municipalityCode: caseProfile.municipalityCode,

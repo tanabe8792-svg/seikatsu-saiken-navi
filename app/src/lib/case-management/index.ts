@@ -133,7 +133,23 @@ export {
   refreshActionQueueForPhase,
   formatActionFriendlyReason,
   formatActionCompanionHeadline,
+  createCaseId,
 } from "./action-queue";
+export {
+  createPublicCaseId,
+  createRecoveryCode,
+  ensureCaseAccessCodes,
+  canCaseRole,
+  caseCardUrl,
+  isValidPublicCaseId,
+  normalizePublicCaseId,
+} from "./case-access";
+export type {
+  CaseMemberRole,
+  CasePermissionAction,
+  PublicCaseId,
+  CaseMemberDraft,
+} from "./case-access";
 export type {
   CaseFile,
   FamilyAttributes,

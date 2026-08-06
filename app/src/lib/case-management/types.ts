@@ -89,6 +89,16 @@ export interface CaseDecision {
 /** 被災者ケースファイル（将来 DB 移行可能なフラット構造） */
 export interface CaseFile {
   caseId: string;
+  /**
+   * 紙・口頭・QR用の公開番号（例: KMT-74XQ-3L）
+   * 内部 caseId とは別。docs/26
+   */
+  publicCaseId?: string;
+  /**
+   * 端末内のみ保持する回復コード（平文）。
+   * サーバー移行時はハッシュのみ保存する想定。
+   */
+  recoveryCode?: string;
   createdAt: string;
   updatedAt: string;
   municipalityCode?: string;

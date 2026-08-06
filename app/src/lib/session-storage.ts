@@ -7,6 +7,7 @@ import { normalizeDeadlines } from "./case-management/deadlines";
 import { normalizeDocumentRecords } from "./case-management/document-records";
 import { migrateCaseFileToRecoveryPhase } from "./case-management/index";
 import { syncCaseTimeline } from "./case-management/case-timeline";
+import { ensureCaseAccessCodes } from "./case-management/case-access";
 import { STORAGE_KEY } from "./types";
 
 function normalizeCaseAction(raw: CaseAction): CaseAction {
@@ -38,7 +39,7 @@ function normalizeCaseFile(raw: unknown): CaseFile | undefined {
     documentRecords: normalizeDocumentRecords(c.documentRecords),
     familyAttributes: c.familyAttributes ?? {},
   };
-  return syncCaseTimeline(base);
+  return syncCaseTimeline(ensureCaseAccessCodes(base));
 }
 
 export function createEmptySession(): UserSession {
