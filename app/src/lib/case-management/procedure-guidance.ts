@@ -17,7 +17,6 @@ import {
   getBusinessContactAssistPlan,
   type ContactAssistPlan,
 } from "./contact-assist";
-import { formatSourceUpdatedAt } from "./format-source-updated-at";
 import { profileForBusinessGuidance } from "./municipality-context";
 
 export interface ProcedureGuidanceLink {
@@ -40,6 +39,7 @@ export interface ProcedureGuidanceView {
   summary: string | null;
   facts: ProcedureGuidanceFact[];
   links: ProcedureGuidanceLink[];
+  /** KB の更新日時（生。UI で整形） */
   sourceUpdatedAt: string | null;
   /** 優先順位つき相談カンペ（電話・メール） */
   contactAssist?: ContactAssistPlan;
@@ -206,7 +206,7 @@ function businessGuidance(profile: UserProfile): ProcedureGuidanceView {
       "住家の手続きとは別に、店舗・事業所向けの相談があります。対象かの判断は各機関の案内が正です。まずは優先順位1の窓口へ。",
     facts: [],
     links: dedupeLinks(links),
-    sourceUpdatedAt: formatSourceUpdatedAt("2026-08-03 12:00"),
+    sourceUpdatedAt: "2026-08-03 12:00",
     contactAssist: getBusinessContactAssistPlan(bizProfile),
   };
 }
@@ -225,7 +225,7 @@ function staticGuidance(
     summary,
     facts,
     links: dedupeLinks(links),
-    sourceUpdatedAt: formatSourceUpdatedAt(updatedAt),
+    sourceUpdatedAt: updatedAt,
   };
 }
 

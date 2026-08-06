@@ -3,15 +3,14 @@
  * 方針: このナビは行政と連携していない。公式ページ／窓口へつなぐ案内のみ。
  */
 
+import type { UserProfile } from "@/lib/types";
+import type { SourcedValue } from "@/lib/knowledge/types";
 import {
   DISASTER_EVENT_R8_KUMAMOTO,
   getMunicipalityByCode,
   resolveMunicipalityCode,
 } from "@/lib/knowledge/municipalities";
 import { getDisasterOverlay } from "@/lib/knowledge/disaster-overlays";
-import type { SourcedValue } from "@/lib/knowledge/types";
-import type { UserProfile } from "@/lib/types";
-import { formatSourceUpdatedAt } from "./format-source-updated-at";
 
 function sourcedText(
   field: SourcedValue<string | number | boolean | null | string[]>
@@ -217,9 +216,7 @@ export function getCertificateHubForProfile(
       ticket === "あり" ? "整理券制あり" : ticket === "なし" ? "整理券制なし" : null,
     notes,
     links,
-    sourceUpdatedAt: formatSourceUpdatedAt(
-      cert?.summary.updatedAt ?? overlay?.updatedAt ?? null
-    ),
+    sourceUpdatedAt: cert?.summary.updatedAt ?? overlay?.updatedAt ?? null,
     independenceNote: INDEPENDENCE_NOTE,
   };
 }

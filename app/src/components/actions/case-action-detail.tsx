@@ -50,12 +50,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { ProcedureContactAssist } from "@/components/actions/procedure-contact-assist";
 import { BusinessMunicipalityPicker } from "@/components/actions/business-municipality-picker";
 import { HomeMunicipalityPicker } from "@/components/actions/home-municipality-picker";
-import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
+import type { EvidenceInput } from "@/lib/case-management/evidence";
 import {
   resolveBusinessMunicipalityName,
   resolveHomeMunicipalityName,
 } from "@/lib/case-management/municipality-context";
-import type { EvidenceInput } from "@/lib/case-management/evidence";
+import { SourceFreshnessNote } from "@/components/common/source-freshness-note";
+import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
 
 interface CaseActionDetailProps {
   actionId: string;
@@ -564,17 +565,10 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                 </div>
               ))}
 
-            {procedureGuidance.sourceUpdatedAt && (
-              <div className="space-y-1 rounded-lg border border-dashed bg-muted/30 px-3 py-2">
-                <p className="text-xs font-medium text-foreground">
-                  最新は公式ページで確認
-                </p>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  このナビの案内更新: {procedureGuidance.sourceUpdatedAt}
-                  。制度や受付は変わることがあるため、上の公式リンクを開いて最新を確かめてください（サーバーへの自動取得はしていません）。
-                </p>
-              </div>
-            )}
+            <SourceFreshnessNote
+              updatedAt={procedureGuidance.sourceUpdatedAt}
+              label="この案内の情報時点"
+            />
           </CardContent>
         </Card>
       )}
@@ -719,9 +713,9 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
             公式情報（参考）
           </summary>
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-3 space-y-3">
             {explanation.sources.map((source) => (
-              <li key={source.sourceUrl}>
+              <li key={source.sourceUrl} className="space-y-1">
                 <a
                   href={source.sourceUrl}
                   target="_blank"
@@ -731,11 +725,16 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                   {source.label}
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
+                <SourceFreshnessNote
+                  updatedAt={source.updatedAt}
+                  label="公開情報の時点"
+                  compact
+                />
               </li>
             ))}
           </ul>
           <p className="mt-2 text-xs text-muted-foreground">
-            上記は参考リンクです。進み方は、できるだけページ上部の「申請案内」から直接開いてください。
+            上記は参考リンクです。進み方は、できるだけページ上部の「申請案内」から直接開いてください。古く感じる場合は公式ページで最新をご確認ください。
           </p>
         </details>
       )}

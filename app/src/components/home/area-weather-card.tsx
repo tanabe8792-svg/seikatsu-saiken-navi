@@ -9,6 +9,7 @@ import {
   Thermometer,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { SourceFreshnessNote } from "@/components/common/source-freshness-note";
 import type { AreaWeatherSnapshot } from "@/lib/weather/area-weather";
 import { cn } from "@/lib/utils";
 
@@ -150,8 +151,12 @@ export function AreaWeatherCard({ municipalityName }: AreaWeatherCardProps) {
               気象庁で最新を確認する
               <ExternalLink className="h-3.5 w-3.5" />
             </a>
+            <SourceFreshnessNote
+              fetchedAt={data.fetchedAt}
+              label="この天気・警報の取得時点"
+            />
             <p className="text-[11px] text-muted-foreground">
-              出典: {data.sourceLabel}（目安。判断の前に公式をご確認ください）
+              出典: {data.sourceLabel}
             </p>
           </>
         )}

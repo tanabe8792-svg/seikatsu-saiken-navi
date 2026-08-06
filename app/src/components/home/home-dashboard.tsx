@@ -28,6 +28,7 @@ import {
   getProcedureOverview,
 } from "@/lib/case-management/recovery-dashboard";
 import { getContinuityDashboard } from "@/lib/case-management/continuity-dashboard";
+import { formatSourceUpdatedAt } from "@/lib/case-management/format-source-updated-at";
 import {
   buildPostJ00WelcomeMessage,
   buildPostJ00ProfileBullets,
@@ -373,9 +374,9 @@ export function HomeDashboard() {
                         <p className="text-xs font-medium text-muted-foreground">
                           出典
                         </p>
-                        <ul className="mt-1 space-y-1">
+                        <ul className="mt-1 space-y-2">
                           {explanation.sources.map((s) => (
-                            <li key={s.sourceUrl}>
+                            <li key={s.sourceUrl} className="space-y-0.5">
                               <a
                                 href={s.sourceUrl}
                                 target="_blank"
@@ -384,6 +385,13 @@ export function HomeDashboard() {
                               >
                                 {s.label}
                               </a>
+                              {s.updatedAt && (
+                                <p className="text-xs text-muted-foreground">
+                                  公開情報の時点:{" "}
+                                  {formatSourceUpdatedAt(s.updatedAt) ??
+                                    s.updatedAt}
+                                </p>
+                              )}
                             </li>
                           ))}
                         </ul>
