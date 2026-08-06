@@ -17,7 +17,7 @@ export const TRUST_ABOUT_SERVICE = {
 export const TRUST_WHY_BUILT = {
   heading: "なぜ作ったか",
   body: [
-    "熊本での活動の中で、「このあと何を確認すればいいの？」という声を何度も聞きました。学生の自分にできることは小さいですが、一人で抱え込まなくてよいように作り始めました。",
+    "熊本での活動の中で、「このあと何を確認すればいいの？」という声を何度も聞きました。自分にできることは小さいですが、一人で抱え込まなくてよいように作り始めました。",
   ],
 } as const;
 
@@ -57,17 +57,30 @@ export const TRUST_FEEDBACK = {
 export const TRUST_CONTINUITY_SUPPORT = {
   heading: "活動を続けるために",
   body: [
-    "このナビは、学生の田辺が一人で開発・更新を続けています。",
-    "ご意見・ご紹介・応援メッセージが、情報更新と改善の力になります。ご連絡いただける方は、下のフォームからメッセージを送ってください（開発者のメールに届きます）。",
+    "このナビは、田辺 優が一人で開発・更新を続けています。",
+    "続けていくために、活動費のご支援（任意）がとても助かります。メールでの応援メッセージはありがたいのですが、数が増えると十分にお返事できないことがあります。",
+    "応援してくださる方は、まず下の「活動費で応援する」からお願いします。どうしても伝えたいことがある方だけ、その下のフォームをご利用ください。",
   ],
-  formLead: "応援・ご紹介・ご質問など、ご自由にお書きください。",
+  donationButtonLabel: "活動費で応援する（任意）",
+  donationNote:
+    "外部の決済ページが開きます。金額はお好きな額で大丈夫です。強制ではありません。",
+  donationPending:
+    "支援用のリンクを準備しています。しばらくお待ちください。",
+  formLead:
+    "どうしても伝えたいことだけ書いてください（任意）。改善のご意見は上の「改善の声」へ。",
 } as const;
 
 export const TRUST_FAQ_OPERATOR_ANSWER =
-  "熊本で学ぶ学生の田辺（たなべ ゆう）が、ボランティアなどの活動を通じて感じた課題をもとに作っています。詳しくは「その他」→「このサービスについて」をご覧ください。";
+  "熊本で学ぶ田辺 優（たなべ ゆう）が、ボランティアなどの活動を通じて感じた課題をもとに作っています。詳しくは「その他」→「このサービスについて」をご覧ください。";
 
 /** Google Forms 等 — NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL（任意の外部フォーム） */
 export function getTrustFeedbackFormUrl(): string | undefined {
   const url = process.env.NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL?.trim();
+  return url || undefined;
+}
+
+/** ofuse / Buy Me a Coffee / PayPay.me 等の支援リンク */
+export function getSupportDonationUrl(): string | undefined {
+  const url = process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL?.trim();
   return url || undefined;
 }

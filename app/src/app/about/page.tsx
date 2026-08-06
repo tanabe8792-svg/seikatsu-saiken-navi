@@ -12,11 +12,13 @@ import {
   TRUST_INFO_HANDLING,
   TRUST_PAGE_TITLE,
   TRUST_WHY_BUILT,
+  getSupportDonationUrl,
   getTrustFeedbackFormUrl,
 } from "@/lib/trust/trust-copy";
 
 export default function AboutPage() {
   const feedbackFormUrl = getTrustFeedbackFormUrl();
+  const donationUrl = getSupportDonationUrl();
 
   return (
     <>
@@ -92,6 +94,25 @@ export default function AboutPage() {
           {TRUST_CONTINUITY_SUPPORT.body.map((p) => (
             <p key={p}>{p}</p>
           ))}
+          {donationUrl ? (
+            <div className="space-y-2 rounded-xl border border-border bg-background/80 px-4 py-4">
+              <a
+                href={donationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-brand-green px-4 text-center text-base font-semibold text-white hover:opacity-95"
+              >
+                {TRUST_CONTINUITY_SUPPORT.donationButtonLabel}
+              </a>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                {TRUST_CONTINUITY_SUPPORT.donationNote}
+              </p>
+            </div>
+          ) : (
+            <p className="rounded-xl border border-dashed border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+              {TRUST_CONTINUITY_SUPPORT.donationPending}
+            </p>
+          )}
           <p className="text-sm text-muted-foreground">
             {TRUST_CONTINUITY_SUPPORT.formLead}
           </p>

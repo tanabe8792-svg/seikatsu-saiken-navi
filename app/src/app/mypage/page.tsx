@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { IdentityRegistrationPanel } from "@/components/auth/identity-registration-panel";
+import { RegistrationCompleteBanner } from "@/components/auth/registration-complete-banner";
 import { CaseAccessCard } from "@/components/case/case-access-card";
 import { CaseSharePanel } from "@/components/case/case-share-panel";
 import { Button } from "@/components/ui/button";
@@ -77,6 +78,10 @@ export default function MyPage() {
     <>
       <SiteHeader title="マイページ" />
       <main className="space-y-5 px-4 py-4 pb-28">
+        <Suspense fallback={null}>
+          <RegistrationCompleteBanner />
+        </Suspense>
+
         {shareState && !shareState.isOwner && (
           <p className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm leading-relaxed">
             共有ケースに参加中です（
@@ -111,8 +116,11 @@ export default function MyPage() {
                   <p className="text-sm text-muted-foreground">{identityLabel}</p>
                 </div>
               </div>
+              <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+                登録・ログイン済みです。下で保存した内容を確認できます。
+              </p>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                ログイン中です。この端末に保存された状況や進捗を、下で確認できます。
+                この端末に保存された状況や進捗を、下で確認できます。
               </p>
               <Button
                 type="button"

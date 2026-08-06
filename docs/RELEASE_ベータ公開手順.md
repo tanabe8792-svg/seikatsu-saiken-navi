@@ -108,6 +108,9 @@ E〜H は「後からでよい」です。ドメインなしでも `*.vercel.app
   - Vercel に `TRUST_FEEDBACK_EMAIL`（ゆうさんの受信メール）を設定
   - 到達を確実にするには `RESEND_API_KEY` と `RESEND_FROM_EMAIL`（Resend で認証した From）も設定し Redeploy
   - 未設定だとフォームは「送信の準備がまだです」と表示されます
+- 活動費のご支援リンク（任意）
+  - ofuse / Buy Me a Coffee / PayPay.me などで公開ページを作り、Vercel に `NEXT_PUBLIC_SUPPORT_DONATION_URL` を設定して Redeploy
+  - 「このサービスについて」の「活動を続けるために」にボタンが出ます
 - 問題が出たら Cursor に「この URL でこう壊れた」と伝える
 
 ---

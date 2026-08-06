@@ -26,7 +26,7 @@ export default function AuthCallbackInner() {
         return;
       }
 
-      const next = searchParams.get("next") ?? "/settings";
+      const next = searchParams.get("next") ?? "/mypage";
       const code = searchParams.get("code");
 
       try {
@@ -47,7 +47,8 @@ export default function AuthCallbackInner() {
           return;
         }
 
-        router.replace(next.startsWith("/") ? next : "/settings");
+        const safeNext = next.startsWith("/") ? next : "/mypage";
+        router.replace(safeNext);
       } catch {
         setError("ログイン処理中にエラーが発生しました。");
       }
@@ -58,7 +59,7 @@ export default function AuthCallbackInner() {
 
   return (
     <>
-      <SiteHeader title="ログイン" showBack backHref="/settings" />
+      <SiteHeader title="ログイン" showBack backHref="/mypage" />
       <main className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-4 py-8">
         {!error ? (
           <>
@@ -73,7 +74,7 @@ export default function AuthCallbackInner() {
               {error}
             </p>
             <Button asChild variant="outline">
-              <a href="/settings#mypage-register">マイページ登録に戻る</a>
+              <a href="/mypage">マイページに戻る</a>
             </Button>
           </>
         )}

@@ -255,14 +255,24 @@ export function IdentityRegistrationPanel({
                   }}
                 />
                 {emailSent ? (
-                  <p className="text-sm leading-relaxed text-emerald-800">
-                    メールを送信しました。届いたリンクをタップすると
-                    {mode === "login" ? "ログイン" : "登録"}
-                    が完了します。迷惑メールフォルダもご確認ください。
-                  </p>
+                  <div
+                    className="space-y-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30"
+                    role="status"
+                  >
+                    <p className="text-sm font-semibold text-amber-950 dark:text-amber-50">
+                      メールを送りました。届いたリンクをタップしてください
+                    </p>
+                    <p className="text-sm leading-relaxed text-amber-900 dark:text-amber-100">
+                      {mode === "login" ? "ログイン" : "登録"}
+                      は、メール内のリンクを開くと完了します。完了すると「マイページ登録が完了しました」と大きく表示されます。
+                    </p>
+                    <p className="text-sm font-medium leading-relaxed text-amber-950 dark:text-amber-50">
+                      メールが見つからないときは、迷惑メールフォルダ（迷惑メール／Junk）も確認してください。
+                    </p>
+                  </div>
                 ) : (
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    メールアドレスを入れて、下のボタンを押してください。リンク付きのメールが届きます。
+                    メールアドレスを入れて、下のボタンを押してください。リンク付きのメールが届きます。迷惑メールフォルダに入ることがあります。
                   </p>
                 )}
                 <Button
