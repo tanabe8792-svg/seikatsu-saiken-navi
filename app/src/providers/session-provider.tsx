@@ -88,7 +88,11 @@ interface SessionContextValue {
   setCaseWorkerSummary: (summary: CaseWorkerSummary | undefined) => void;
   setCaseFile: (caseFile: CaseFile | undefined) => void;
   initializeCase: (profile: UserProfile) => Promise<void>;
-  completeCaseAction: (actionId: string, evidence?: EvidenceInput) => void;
+  completeCaseAction: (
+    actionId: string,
+    evidence?: EvidenceInput,
+    options?: { alreadyCompletedOutside?: boolean }
+  ) => void;
   submitActionEvidence: (
     actionId: string,
     evidence?: EvidenceInput
@@ -315,7 +319,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   );
 
   const completeCaseAction = useCallback(
-    (actionId: string, evidence?: EvidenceInput) => {
+    (
+      actionId: string,
+      evidence?: EvidenceInput,
+      options?: { alreadyCompletedOutside?: boolean }
+    ) => {
       void persist((current) => {
         if (!current.caseFile) return current;
         const triggerIds = getTriggerIdsFromCaseFile(current.caseFile);
@@ -323,7 +331,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           current.caseFile,
           actionId,
           triggerIds,
-          evidence
+          evidence,
+          options
         );
         return sessionWithContinuitySnapshot({
           ...current,

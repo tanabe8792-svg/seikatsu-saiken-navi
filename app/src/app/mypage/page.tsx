@@ -114,6 +114,25 @@ export default function MyPage() {
               <p className="text-sm leading-relaxed text-muted-foreground">
                 ログイン中です。この端末に保存された状況や進捗を、下で確認できます。
               </p>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 w-full"
+                disabled={signingOut}
+                onClick={() => void handleSignOut()}
+              >
+                {signingOut ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <LogOut className="h-4 w-4" />
+                    ログアウト
+                  </>
+                )}
+              </Button>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                ログアウトしても、この端末に残った進捗はそのままです。別のアカウントでログインするときに使います。
+              </p>
             </CardContent>
           </Card>
         )}

@@ -17,8 +17,8 @@ interface CaseAccessCardProps {
 }
 
 /**
- * 高齢者・窓口向け — 公開ケース番号と回復コードを紙に残すカード
- * QR のサーバー開封は P1。今は番号＋URL で運用開始できる。
+ * 高齢者・紙運用向け — 公開ケース番号と回復コード
+ * ※ 行政と連携した再発行は未対応。誤解を招かない文言にする。
  */
 export function CaseAccessCard({
   caseFile,
@@ -92,16 +92,20 @@ export function CaseAccessCard({
               className="rounded-md border bg-white p-2"
             />
             <p className="max-w-xs text-center text-xs leading-relaxed text-muted-foreground">
-              窓口や家族が読み取ると、このケースの案内ページが開きます。
-              機微情報の表示には、今後の認証が必要です。
+              QRはケース番号への入口です。中身を見るにはログインと共有権限が必要です。
             </p>
           </div>
         )}
 
         <ul className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
-          <li>・この紙を持っておけば、ログインしなくても窓口でケースを伝えられます。</li>
-          <li>・番号やコードを他人に見せすぎないでください。</li>
-          <li>・なくしたときは、市役所等で本人確認のうえ再発行できます（準備中）。</li>
+          <li>・ログインしていなくても、この端末にデータが残っている間は同じ番号です。</li>
+          <li>
+            ・「データをリセット」やブラウザのデータを消すと、番号も新しくなります（最初からになります）。
+          </li>
+          <li>・紙に印刷して保管してください。番号やコードを他人に見せすぎないでください。</li>
+          <li>
+            ・市役所ではこのコードの再発行はできません（このナビは行政と連携していません）。なくした場合は、家族への招待共有や、もう一度案内を進める必要があります。
+          </li>
         </ul>
 
         {!printMode && (

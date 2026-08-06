@@ -49,6 +49,7 @@ import { getRandomCompletionMessage } from "@/lib/deadline";
 import { Textarea } from "@/components/ui/textarea";
 import { ProcedureContactAssist } from "@/components/actions/procedure-contact-assist";
 import { BusinessMunicipalityPicker } from "@/components/actions/business-municipality-picker";
+import { HomeMunicipalityPicker } from "@/components/actions/home-municipality-picker";
 import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
 import {
   resolveBusinessMunicipalityName,
@@ -328,6 +329,20 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
     // 次の項目へ自動では進まない。完了の区切りを見せて休めるようにする。
   }
 
+  function handleAlreadyDone() {
+    if (
+      !confirm(
+        "窓口や公式サイトなどでの手続きを、すでに終えている場合に押してください。このナビ上の「確認」を完了にします。よろしいですか？"
+      )
+    ) {
+      return;
+    }
+    completeCaseAction(action!.id, undefined, {
+      alreadyCompletedOutside: true,
+    });
+    showToast("すでに終えた手続きとして記録しました");
+  }
+
   return (
     <div className="space-y-4 pb-40">
       <Card className="border-border bg-card">
@@ -447,6 +462,13 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         />
       )}
 
+      {actionId === "rw-j03-cert-prep" && (
+        <HomeMunicipalityPicker
+          profile={profile}
+          onChange={(municipality) => updateProfile({ municipality })}
+        />
+      )}
+
       {isPhotoEvidenceAction && caseFile && (
         <PhotoEvidenceCapture
           caseId={caseFile.caseId}
@@ -462,7 +484,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             <h3 className="text-base font-semibold">
               {procedureGuidance.title}
             </h3>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs leading-relaxed text-muted-foreground whitespace-pre-line">
               {procedureGuidance.intro}
             </p>
             {procedureGuidance.summary && (
@@ -722,11 +744,11 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         <p className="px-1 text-sm leading-relaxed text-muted-foreground">
           {!evidenceReady
             ? isPhotoEvidenceAction
-              ? "上の「カメラで撮る」から写真を残してください。"
+              ? "写真を残すことと、「この確認は完了」は別です。写真を保存したあと、下の「この確認は完了」を押すと、この項目が終わります。"
               : "先に「記録を残す」を押してください。"
             : !stepsDone
-              ? "手順のチェックが残っています。"
-              : "準備物のチェックが残っています。"}
+              ? "手順のチェックが残っています。すべて確認できたら、下の「この確認は完了」を押してください。"
+              : "準備物のチェックが残っています。そろったら、下の「この確認は完了」を押してください。"}
         </p>
       )}
 
@@ -738,6 +760,11 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         }`}
       >
         <div className="mx-auto flex max-w-lg flex-col gap-2">
+          {!isDone && (
+            <p className="px-1 text-center text-xs leading-relaxed text-muted-foreground">
+              カメラで撮っただけでは完了になりません。手順の最後に「この確認は完了」を押してください。
+            </p>
+          )}
           {!isDone &&
             ui.showEvidenceButton &&
             !ui.hasEvidence &&
@@ -758,7 +785,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               }
             >
               <Camera className="h-5 w-5" />
-              カメラで撮る
+              カメラで撮る（まだ完了ではありません）
             </Button>
           )}
           {!isDone && (
@@ -770,6 +797,17 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             >
               <CheckCircle2 className="h-5 w-5" />
               この確認は完了
+            </Button>
+          )}
+          {!isDone && (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="h-12 w-full"
+              onClick={handleAlreadyDone}
+            >
+              すでに手続きを終えている
             </Button>
           )}
           {isDone && (

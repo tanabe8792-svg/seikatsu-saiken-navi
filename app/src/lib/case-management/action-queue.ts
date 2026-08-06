@@ -449,7 +449,8 @@ export function completeCaseAction(
   caseFile: CaseFile,
   actionId: string,
   triggerIds: string[],
-  evidence?: EvidenceInput
+  evidence?: EvidenceInput,
+  options?: { alreadyCompletedOutside?: boolean }
 ): CompleteActionResult {
   const now = new Date().toISOString();
   const actionIndex = caseFile.pendingActions.findIndex((a) => a.id === actionId);
@@ -464,7 +465,11 @@ export function completeCaseAction(
     workingFile = addEvidenceToCaseFile(workingFile, actionId, evidence);
   }
 
-  if (requiresEvidence(action) && !hasSubmittedEvidence(workingFile, actionId)) {
+  if (
+    !options?.alreadyCompletedOutside &&
+    requiresEvidence(action) &&
+    !hasSubmittedEvidence(workingFile, actionId)
+  ) {
     const message = getMissingEvidenceMessage(action);
     return {
       caseFile: syncCaseTimeline({
@@ -480,6 +485,21 @@ export function completeCaseAction(
       blocked: true,
       workerMessage: message,
     };
+  }
+
+  // If already completed outside and still missing evidence, attach a self-report note
+  if (
+    options?.alreadyCompletedOutside &&
+    requiresEvidence(action) &&
+    !hasSubmittedEvidence(workingFile, actionId)
+  ) {
+    workingFile = addEvidenceToCaseFile(workingFile, actionId, {
+      type: "text",
+      metadata: {
+        note: "本人申告: すでに手続きを終えている",
+        alreadyCompletedOutside: true,
+      },
+    });
   }
 
   const evidenceStatus = getEvidenceStatusForAction(workingFile, action);

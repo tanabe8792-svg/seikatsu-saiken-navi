@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Copy, Link2, Loader2, Share2, Users } from "lucide-react";
+import { Copy, Link2, Loader2, Mail, MessageCircle, Share2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -129,6 +129,50 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
     }
   }
 
+  function buildInviteMessage(code: string, url: string): string {
+    return [
+      "生活再建ナビのケース共有のご案内です。",
+      "",
+      "次のリンクを開くか、招待コードを入力してください。",
+      `リンク: ${url}`,
+      `招待コード: ${code}`,
+      "",
+      "あなた自身のメールまたはLINEでログインして参加できます。",
+      "相手のログイン情報を教え合う必要はありません。",
+    ].join("\n");
+  }
+
+  function openMailShare(code: string, url: string) {
+    const body = buildInviteMessage(code, url);
+    const href = `mailto:?subject=${encodeURIComponent(
+      "【生活再建ナビ】ケース共有の招待"
+    )}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+  }
+
+  function openLineShare(code: string, url: string) {
+    const text = buildInviteMessage(code, url);
+    const href = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
+    window.open(href, "_blank", "noopener,noreferrer");
+  }
+
+  async function openSystemShare(code: string, url: string) {
+    const text = buildInviteMessage(code, url);
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title: "生活再建ナビのケース招待",
+          text,
+          url,
+        });
+        return;
+      } catch {
+        // cancelled or unsupported — fall through
+      }
+    }
+    await copyText("url", url);
+  }
+
   const existing = loadLocalCaseShare();
 
   return (
@@ -233,6 +277,35 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
                 {copied === "url" ? "コピーしました" : "リンクをコピー"}
               </Button>
             </div>
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              <Button
+                type="button"
+                className="h-11 w-full"
+                onClick={() => openMailShare(inviteCode, inviteUrl)}
+              >
+                <Mail className="h-4 w-4" />
+                メールで送る
+              </Button>
+              <Button
+                type="button"
+                className="h-11 w-full"
+                onClick={() => openLineShare(inviteCode, inviteUrl)}
+              >
+                <MessageCircle className="h-4 w-4" />
+                LINEで送る
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 w-full"
+                onClick={() => void openSystemShare(inviteCode, inviteUrl)}
+              >
+                <Share2 className="h-4 w-4" />
+                ほかの方法
+              </Button>
+            </div>
+
             <p className="text-xs leading-relaxed text-muted-foreground">
               権限: {CASE_ACCESS_LEVEL_LABELS[accessLevel]}
               {expiresAt

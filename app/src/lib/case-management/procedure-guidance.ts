@@ -23,7 +23,7 @@ import { profileForBusinessGuidance } from "./municipality-context";
 export interface ProcedureGuidanceLink {
   label: string;
   href: string;
-  kind: "online" | "official" | "guide" | "consult";
+  kind: "online" | "official" | "guide" | "consult" | "window";
   primary?: boolean;
 }
 
@@ -96,6 +96,10 @@ function fromCertificateHub(
   if (!hub) return null;
 
   const facts: ProcedureGuidanceFact[] = [];
+  facts.push({
+    label: "進み方",
+    value: `${hub.channelHeadline} ${hub.channelBody}`,
+  });
   if (hub.officeHours) {
     facts.push({ label: "受付時間", value: hub.officeHours });
   }
@@ -114,10 +118,20 @@ function fromCertificateHub(
       "調査〜交付にかかる日数は、混雑や被害の大きさで市町村ごとに変わります。目安は保証できません。催促はせず、受付番号を控えて公式の連絡を待ちつつ、写真・保険連絡など自分で進められる確認を続けましょう。",
   });
 
+  const introByChannel =
+    hub.applyChannel === "mynaportal"
+      ? "選んだ市町村はマイナポータル等のオンライン申請に対応しています。下のボタンから公式の申請案内へ進んでください。"
+      : hub.applyChannel === "online_other"
+        ? "選んだ市町村はオンライン申請に対応しています。下のボタンから公式案内へ進んでください。"
+        : hub.applyChannel === "window_only"
+          ? "選んだ市町村は、いま確認できる範囲では窓口申請が中心です。公式ページで手続きを確認し、窓口へ進んでください。"
+          : hub.channelBody;
+
   return {
-    title: `${hub.municipalityName}の申請案内`,
-    intro:
-      "はじめに選んだ地域をもとに、窓口・オンライン申請など公式の進み方をここにまとめています。準備の見通しを立ててから、公式ページへ進めます。",
+    title: hub.municipalitySelected
+      ? `${hub.municipalityName}の罹災証明・申請案内`
+      : "罹災証明・申請案内",
+    intro: `${introByChannel}\n\n${hub.independenceNote}`,
     summary: hub.summary,
     facts,
     links: hub.links,
