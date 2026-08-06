@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const MENU_LINKS = [
   { href: "/", label: "ホーム" },
   { href: "/actions", label: "やること一覧" },
-  { href: "/records", label: "被害写真" },
+  { href: "/records", label: "記録した写真" },
   { href: "/chat", label: "AI相談" },
   { href: "/mypage", label: "その他（マイページ）" },
   { href: "/settings", label: "設定" },

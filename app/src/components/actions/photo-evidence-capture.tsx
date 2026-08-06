@@ -119,7 +119,7 @@ export function PhotoEvidenceCapture({
           source: "device_camera_v1",
           photoIds: metas.map((m) => m.id),
           count: metas.length,
-          description: "端末で撮影・保存した被害写真",
+          description: "端末で撮影・保存した写真",
           storedOnDevice: true,
         },
       };

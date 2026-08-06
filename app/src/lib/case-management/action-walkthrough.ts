@@ -52,7 +52,7 @@ export interface ActionWalkthrough {
 const GUIDES: Record<string, ActionWalkthrough> = {
   "rw-j03-photo": {
     actionId: "rw-j03-photo",
-    plainTitle: "被害の様子を写真に残す",
+    plainTitle: "住まいの様子を写真に残す",
     explanation:
       "片付けや修理の前に、家の外観と壊れた場所の写真を残します。あとから市町村の罹災証明や保険の手続きで「どのくらい被害があったか」を示す材料になります。屋根の損傷は、雨や台風の前に記録しておくと、応急修理・緊急修理の相談でも使えます。スマホのカメラで十分です。",
     whyNow:

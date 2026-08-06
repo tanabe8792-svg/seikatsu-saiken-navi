@@ -33,7 +33,8 @@ export const TRUST_DEVELOPER = {
 export const TRUST_INFO_HANDLING = {
   heading: "情報の扱い方",
   body: [
-    "案内は公式情報をもとにします。制度や期限は変わることがあるので、大切な判断の前には公式情報も確認してください。",
+    "案内は公式情報をもとにします。制度や期限は変わることがあるので、大切な判断の前には公式ページで最新を確認してください。",
+    "このナビは公式サイトへ何度も自動取得し続けず、案内に「情報の更新」日付を載せ、必要なとき公式リンクを開く形にしています（サーバー負担を抑えるため）。",
     "入力内容は当面この端末内に保存します。マイページ登録（メール・LINE）は最新情報を受け取りたい方向けの任意です。続きの再開に登録は不要です。",
   ],
 } as const;
@@ -41,10 +42,9 @@ export const TRUST_INFO_HANDLING = {
 export const TRUST_FEEDBACK = {
   heading: "ご意見・改善のお願い",
   lead: "分かりにくかったところ、追加してほしい情報、困ったことを聞かせてください。",
-  note: "再現のしかた（どの画面→何をしたか）があると助かります。",
-  formHint:
-    "メールアドレスの公開準備中です。決まり次第、ここから送れるようにします。",
-  buttonLabel: "メールで声を送る",
+  note: "再現のしかた（どの画面→何をしたか）があると助かります。送信先の連絡先は画面には表示しません。",
+  formHint: "送信の準備中です。しばらくしてお試しください。",
+  buttonLabel: "改善の声を送る",
   fields: [
     "分かりにくかったところ",
     "追加してほしい情報",
@@ -63,30 +63,8 @@ export const TRUST_CONTINUITY_SUPPORT = {
 export const TRUST_FAQ_OPERATOR_ANSWER =
   "熊本で学ぶ学生の田辺（たなべ ゆう）が、ボランティアなどの活動を通じて感じた課題をもとに作っています。詳しくは「その他」→「このサービスについて」をご覧ください。";
 
-/** Google Forms 等 — NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL */
+/** Google Forms 等 — NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL（任意の外部フォーム） */
 export function getTrustFeedbackFormUrl(): string | undefined {
   const url = process.env.NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL?.trim();
   return url || undefined;
-}
-
-/** メール送信用 — NEXT_PUBLIC_TRUST_FEEDBACK_EMAIL */
-export function getTrustFeedbackMailto(): string | undefined {
-  const email = process.env.NEXT_PUBLIC_TRUST_FEEDBACK_EMAIL?.trim();
-  if (!email) return undefined;
-  const subject = encodeURIComponent("生活再建ナビへのご意見");
-  const body = encodeURIComponent(
-    [
-      "【再現のしかた】",
-      "1. どの画面で",
-      "2. 何をしたら",
-      "3. どうなったか",
-      "",
-      "【気になったこと】",
-      "",
-      "",
-      "【端末・ブラウザ（わかる範囲で）】",
-      "",
-    ].join("\n")
-  );
-  return `mailto:${email}?subject=${subject}&body=${body}`;
 }

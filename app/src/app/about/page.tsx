@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
+import { FeedbackForm } from "@/components/about/feedback-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { J00_DISASTER_EVENT_LABEL } from "@/lib/j00-hearing";
@@ -12,13 +13,10 @@ import {
   TRUST_PAGE_TITLE,
   TRUST_WHY_BUILT,
   getTrustFeedbackFormUrl,
-  getTrustFeedbackMailto,
 } from "@/lib/trust/trust-copy";
 
 export default function AboutPage() {
   const feedbackFormUrl = getTrustFeedbackFormUrl();
-  const feedbackMailto = getTrustFeedbackMailto();
-  const feedbackHref = feedbackFormUrl ?? feedbackMailto;
 
   return (
     <>
@@ -69,29 +67,18 @@ export default function AboutPage() {
         <TrustSection heading={TRUST_FEEDBACK.heading} id="feedback">
           <p>{TRUST_FEEDBACK.lead}</p>
           <p className="text-sm text-muted-foreground">{TRUST_FEEDBACK.note}</p>
-          <ul className="space-y-2 rounded-xl border bg-muted/30 px-4 py-4 text-sm">
-            {TRUST_FEEDBACK.fields.map((field) => (
-              <li key={field} className="flex gap-2 leading-relaxed">
-                <span className="text-primary">·</span>
-                <span>{field}</span>
-              </li>
-            ))}
-          </ul>
-          {feedbackHref ? (
+          {feedbackFormUrl ? (
             <Button asChild size="lg" className="mt-1 h-14 w-full text-lg">
               <a
-                href={feedbackHref}
-                {...(feedbackFormUrl
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
+                href={feedbackFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 {TRUST_FEEDBACK.buttonLabel}
               </a>
             </Button>
           ) : (
-            <p className="rounded-xl border border-dashed px-4 py-3 text-sm text-muted-foreground">
-              {TRUST_FEEDBACK.formHint}
-            </p>
+            <FeedbackForm />
           )}
         </TrustSection>
 

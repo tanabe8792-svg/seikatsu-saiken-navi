@@ -160,8 +160,10 @@ export function collectOnboardingIntroStrings(): string[] {
     "いまの段階に合わせて（任意）",
     ...ONBOARDING_TIMING_OPTIONS.flatMap((o) => [o.label, o.note]),
     ONBOARDING_UNIVERSAL_MESSAGE,
+    "無料で、次に確認することを一緒に整理します",
     "次に確認することを、順番に案内します",
     "質問をはじめる",
     "登録不要 · 無料 · 約2分",
+    "当てはまるものがあればタップ。最初はどれも選ばなくて大丈夫です。",
   ];
 }

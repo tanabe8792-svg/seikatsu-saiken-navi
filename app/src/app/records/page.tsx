@@ -82,7 +82,7 @@ export default function RecordsPage() {
     if (!caseId) return;
     if (
       !window.confirm(
-        "この端末に残した被害写真をすべて削除します。よろしいですか？"
+        "この端末に残した写真をすべて削除します。よろしいですか？"
       )
     ) {
       return;
@@ -99,7 +99,7 @@ export default function RecordsPage() {
   if (loading) {
     return (
       <>
-        <SiteHeader title="被害写真" />
+        <SiteHeader title="記録した写真" />
         <div className="flex min-h-[60vh] items-center justify-center" role="status">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -114,13 +114,13 @@ export default function RecordsPage() {
 
   return (
     <>
-      <SiteHeader title="被害写真" showBack />
+      <SiteHeader title="記録した写真" showBack />
       <main className="space-y-5 px-4 py-4 pb-28">
         <Card className="border-primary/25 bg-primary/5">
           <CardContent className="space-y-3 p-5">
             <p className="text-base font-semibold">端末に残した写真</p>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              撮った写真はサーバーには送らず、この端末の中だけに残しています。窓口・保険の相談前にここから見返せます。
+              住まいの様子など、あとで窓口や保険の相談に使える写真を、この端末の中だけに残せます。サーバーには送りません。
             </p>
             {caseId && (
               <RecordsPhotoCapture

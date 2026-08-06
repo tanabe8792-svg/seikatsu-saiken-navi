@@ -562,9 +562,15 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               ))}
 
             {procedureGuidance.sourceUpdatedAt && (
-              <p className="text-xs text-muted-foreground">
-                情報の更新: {procedureGuidance.sourceUpdatedAt}
-              </p>
+              <div className="space-y-1 rounded-lg border border-dashed bg-muted/30 px-3 py-2">
+                <p className="text-xs font-medium text-foreground">
+                  最新は公式ページで確認
+                </p>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  このナビの案内更新: {procedureGuidance.sourceUpdatedAt}
+                  。制度や受付は変わることがあるため、上の公式リンクを開いて最新を確かめてください（サーバーへの自動取得はしていません）。
+                </p>
+              </div>
             )}
           </CardContent>
         </Card>

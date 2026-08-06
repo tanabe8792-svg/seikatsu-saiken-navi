@@ -559,10 +559,7 @@ export function HomeDashboard() {
               その日、熊本の各地で強い揺れがありました。住まいが傷つき、水や電気が止まり、先の見通しが立たない日々が続きました。
             </p>
             <p>
-              再建の道のりは人それぞれです。罹災証明、保険、支援制度——「次に何を確認すればよいか」が分からなくなることがあります。
-            </p>
-            <p>
-              このナビは、あなたの状況に合わせて、確認することを順番に一緒に整理します。登録は不要・無料です。
+              再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理します。
             </p>
           </div>
           <Button
@@ -570,10 +567,34 @@ export function HomeDashboard() {
             size="lg"
             className="h-14 w-full bg-stone-50 text-lg text-stone-900 hover:bg-white"
           >
-            <Link href="/start">はじめる</Link>
+            <Link href="/start">質問をはじめる</Link>
           </Button>
+          <p className="text-center text-xs text-stone-300/90">
+            登録不要 · 無料 · 約2分
+          </p>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardContent className="space-y-3 p-5">
+          <h2 className="text-lg font-bold">このサービスでできること</h2>
+          <ul className="space-y-2">
+            <li className="text-sm leading-relaxed">
+              · いまの生活再建の状況を一緒に整理する
+            </li>
+            <li className="text-sm leading-relaxed">
+              · 被害記録・支援制度・手続きを順番に案内する
+            </li>
+            <li className="text-sm leading-relaxed">
+              · 公式情報をもとに案内する（推測はしません）
+            </li>
+          </ul>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            「わからない」項目があっても進められます。制度を代わりに決めるのではなく、次に確認することを見つけるお手伝いです。
+          </p>
+        </CardContent>
+      </Card>
+
       <details className="rounded-xl border border-destructive/20 bg-background px-4 py-3">
         <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
           緊急のとき（119・110など）

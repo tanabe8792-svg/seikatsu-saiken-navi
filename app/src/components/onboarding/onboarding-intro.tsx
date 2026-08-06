@@ -30,7 +30,7 @@ export function OnboardingIntro({
       <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-5">
         <p className="text-sm font-medium text-primary">{ONBOARDING_INTRO_LABEL}</p>
         <p className="mt-2 text-xl font-bold leading-snug">
-          次に確認することを、順番に案内します
+          無料で、次に確認することを一緒に整理します
         </p>
         <p className="mt-2 text-base leading-relaxed">{ONBOARDING_INTRO_LEAD}</p>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -45,27 +45,27 @@ export function OnboardingIntro({
         登録不要 · 無料 · 約2分
       </p>
 
-      <details className="rounded-xl border bg-card px-4 py-3">
-        <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
-          このサービスでできること
-        </summary>
-        <ul className="mt-3 space-y-2 pb-1">
-          {ONBOARDING_SERVICE_FEATURES.map((item) => (
-            <li key={item} className="text-sm leading-relaxed">
-              · {item}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-          {ONBOARDING_REASSURANCE.body} {ONBOARDING_DATA_NOTE}
-        </p>
-      </details>
+      <Card>
+        <CardContent className="space-y-3 p-5">
+          <h2 className="text-lg font-bold">このサービスでできること</h2>
+          <ul className="space-y-2">
+            {ONBOARDING_SERVICE_FEATURES.map((item) => (
+              <li key={item} className="text-sm leading-relaxed">
+                · {item}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            {ONBOARDING_REASSURANCE.body} {ONBOARDING_DATA_NOTE}
+          </p>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardContent className="space-y-3 p-5">
           <h2 className="text-lg font-bold">いまの段階に合わせて（任意）</h2>
           <p className="text-xs text-muted-foreground">
-            当てはまるものがあればタップ
+            当てはまるものがあればタップ。最初はどれも選ばなくて大丈夫です。
           </p>
           <div className="flex flex-wrap gap-2">
             {ONBOARDING_TIMING_OPTIONS.map((opt) => {

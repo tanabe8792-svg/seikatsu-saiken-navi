@@ -228,7 +228,7 @@ export async function downloadPhotoToDevice(
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = filename ?? `被害写真-${photoId}.jpg`;
+  a.download = filename ?? `記録写真-${photoId}.jpg`;
   document.body.appendChild(a);
   a.click();
   a.remove();

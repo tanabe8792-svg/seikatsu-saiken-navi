@@ -26,7 +26,6 @@ import {
   MUNICIPALITY_OPTIONS,
 } from "@/lib/j00-hearing";
 import { MUNICIPALITIES } from "@/lib/knowledge/municipalities";
-import { DEFAULT_ONBOARDING_TIMING_HINT } from "@/lib/onboarding/onboarding-copy";
 import type { OnboardingTimingHint, UserProfile } from "@/lib/types";
 
 type Step = 1 | 2 | 3 | 4 | 5;
@@ -69,7 +68,7 @@ export default function J00HearingPage() {
   const [lifelineTouched, setLifelineTouched] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [timingHint, setTimingHint] = useState<OnboardingTimingHint | undefined>(
-    () => session.onboardingTimingHint ?? DEFAULT_ONBOARDING_TIMING_HINT
+    () => session.onboardingTimingHint
   );
 
   const writeHistory = useCallback(
@@ -224,10 +223,9 @@ export default function J00HearingPage() {
   }
 
   function handleIntroStart() {
-    const hint = timingHint ?? DEFAULT_ONBOARDING_TIMING_HINT;
-    if (!timingHint) {
-      setTimingHint(hint);
-      setOnboardingTimingHint(hint);
+    // 段階は任意。未選択のまま始めてよい（初期選択はしない）
+    if (timingHint) {
+      setOnboardingTimingHint(timingHint);
     }
     setPhase("hearing");
     setStep(1);

@@ -91,7 +91,7 @@ export default function MyPage() {
           <MenuLink
             href="/records"
             icon={Camera}
-            label="被害写真を見返す"
+            label="記録した写真を見返す"
             note="端末に残した写真"
           />
         </section>
