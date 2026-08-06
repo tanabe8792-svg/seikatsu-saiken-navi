@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
-  ExternalLink,
   Loader2,
+  LogIn,
   LogOut,
   Mail,
   MessageCircle,
@@ -18,14 +18,25 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
 
-type RegisterMethod = "none" | "email" | "line";
+type AuthMode = "login" | "register";
+type ContactMethod = "email" | "line";
 
-const CONTINUITY_NOTES = [
-  "登録しなくても、やることの確認はすべて使えます。進捗はこの端末に自動保存されます。",
-  "マイページ登録すると、別の端末やブラウザからも同じ内容を引き継げます（設定完了後）。",
-] as const;
+interface IdentityRegistrationPanelProps {
+  /** 見出し（省略時はモードに応じて切替） */
+  title?: string;
+  /** 初期モード */
+  defaultMode?: AuthMode;
+  /** ログイン成功後の案内リンク */
+  afterLoginHref?: string;
+  afterLoginLabel?: string;
+}
 
-export function IdentityRegistrationPanel() {
+export function IdentityRegistrationPanel({
+  title,
+  defaultMode = "login",
+  afterLoginHref = "/mypage",
+  afterLoginLabel = "マイページを見る",
+}: IdentityRegistrationPanelProps) {
   const {
     loading,
     configured,
@@ -38,7 +49,8 @@ export function IdentityRegistrationPanel() {
   } = useAuth();
 
   const searchParams = useSearchParams();
-  const [method, setMethod] = useState<RegisterMethod>("none");
+  const [mode, setMode] = useState<AuthMode>(defaultMode);
+  const [method, setMethod] = useState<ContactMethod>("email");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,14 +67,15 @@ export function IdentityRegistrationPanel() {
     }
   }, [searchParams, refresh]);
 
-  useEffect(() => {
-    if (identity?.provider === "email") setMethod("email");
-    else if (identity?.provider === "line") setMethod("line");
-  }, [identity]);
-
   async function handleSendEmail() {
     if (!emailLooksValid) {
       setError("メールアドレスの形式を確認してください。");
+      return;
+    }
+    if (!configured) {
+      setError(
+        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+      );
       return;
     }
     setBusy(true);
@@ -71,26 +84,31 @@ export function IdentityRegistrationPanel() {
     const result = await sendEmailVerificationLink(email);
     setBusy(false);
     if (!result.ok) {
-      setError(result.message);
+      setError(toUserFacingAuthError(result.message));
       return;
     }
     setEmailSent(true);
   }
 
   async function handleLineLogin() {
+    if (!configured) {
+      setError(
+        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+      );
+      return;
+    }
     setBusy(true);
     setError(null);
     const result = await signInWithLine();
     setBusy(false);
     if (!result.ok) {
-      setError(result.message);
+      setError(toUserFacingAuthError(result.message));
     }
   }
 
   async function handleSignOut() {
     setBusy(true);
     await signOut();
-    setMethod("none");
     setEmailSent(false);
     setBusy(false);
   }
@@ -105,37 +123,22 @@ export function IdentityRegistrationPanel() {
     );
   }
 
+  const heading =
+    title ?? (mode === "login" ? "ログイン" : "マイページ登録");
+
   return (
     <Card id="mypage-register" className="border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <UserRound className="h-5 w-5 text-brand-green" />
-          マイページ登録
+          {heading}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          あなたの<strong className="font-medium text-foreground">メールアドレス</strong>
-          または<strong className="font-medium text-foreground">LINEアカウント</strong>
-          でマイページ登録できます。登録すると、各ページで登録済みと表示され、別の端末からも続きを引き継げます。
-        </p>
-
-        {!configured && (
-          <div className="space-y-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-950">
-            <p className="font-medium">いまは送信の準備が未完了です</p>
-            <p className="leading-relaxed">
-              メール／LINE登録を動かすには、Vercel に Supabase の設定（
-              <code className="rounded bg-amber-100 px-1">NEXT_PUBLIC_SUPABASE_URL</code>
-              と
-              <code className="rounded bg-amber-100 px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>
-              ）が必要です。下の手順書をご確認ください。
-            </p>
-          </div>
-        )}
-
         {verifiedBanner && identity && (
           <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
-            マイページ登録が完了しました。{identityLabel}
+            {mode === "login" ? "ログインできました。" : "マイページ登録が完了しました。"}
+            {identityLabel ? ` ${identityLabel}` : ""}
           </p>
         )}
 
@@ -144,10 +147,13 @@ export function IdentityRegistrationPanel() {
             <div className="flex items-start gap-3">
               <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-green" />
               <div className="space-y-1">
-                <p className="font-medium">登録済み</p>
+                <p className="font-medium">ログイン中</p>
                 <p className="text-sm text-muted-foreground">{identityLabel}</p>
               </div>
             </div>
+            <Button asChild size="lg" className="h-12 w-full">
+              <Link href={afterLoginHref}>{afterLoginLabel}</Link>
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -156,51 +162,79 @@ export function IdentityRegistrationPanel() {
               onClick={() => void handleSignOut()}
             >
               <LogOut className="h-4 w-4" />
-              ログアウト（端末内の続きは残ります）
+              ログアウト
             </Button>
           </div>
         ) : (
           <>
-            <ul className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
-              {CONTINUITY_NOTES.map((item) => (
-                <li key={item}>・{item}</li>
-              ))}
-            </ul>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              メールまたはLINEで、かんたんにログイン・登録できます。登録すると、保存した内容をマイページで見返せます。
+            </p>
 
-            <div className="space-y-2">
-              <p className="text-sm font-medium">登録方法を選ぶ</p>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                type="button"
+                variant={mode === "login" ? "default" : "outline"}
+                className="h-12"
+                onClick={() => {
+                  setMode("login");
+                  setEmailSent(false);
+                  setError(null);
+                }}
+              >
+                <LogIn className="h-4 w-4" />
+                ログイン
+              </Button>
+              <Button
+                type="button"
+                variant={mode === "register" ? "default" : "outline"}
+                className="h-12"
+                onClick={() => {
+                  setMode("register");
+                  setEmailSent(false);
+                  setError(null);
+                }}
+              >
+                はじめて登録する
+              </Button>
+            </div>
 
-              <MethodButton
-                active={method === "none"}
-                onClick={() => setMethod("none")}
-                title="登録しない"
-                description="この端末だけで使う（今までどおり）"
-              />
-
-              <MethodButton
-                active={method === "email"}
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
                 onClick={() => setMethod("email")}
-                icon={Mail}
-                title="メールで登録"
-                description="あなたのメールアドレスに登録用リンクを送ります"
-              />
-
-              <MethodButton
-                active={method === "line"}
+                className={cn(
+                  "rounded-xl border px-3 py-3 text-sm font-medium",
+                  method === "email"
+                    ? "border-brand-green bg-muted/50 ring-1 ring-brand-green/20"
+                    : "border-border"
+                )}
+              >
+                <Mail className="mx-auto mb-1 h-5 w-5" />
+                メール
+              </button>
+              <button
+                type="button"
                 onClick={() => setMethod("line")}
-                icon={MessageCircle}
-                title="LINEで登録"
-                description="あなたのLINEアカウントでログインして登録"
-              />
+                className={cn(
+                  "rounded-xl border px-3 py-3 text-sm font-medium",
+                  method === "line"
+                    ? "border-brand-green bg-muted/50 ring-1 ring-brand-green/20"
+                    : "border-border"
+                )}
+              >
+                <MessageCircle className="mx-auto mb-1 h-5 w-5" />
+                LINE
+              </button>
             </div>
 
             {method === "email" && (
               <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
-                <label htmlFor="verify-email" className="text-sm font-medium">
+                <label htmlFor="auth-email" className="text-sm font-medium">
                   メールアドレス
                 </label>
                 <Input
-                  id="verify-email"
+                  id="auth-email"
                   type="email"
                   inputMode="email"
                   autoComplete="email"
@@ -214,11 +248,13 @@ export function IdentityRegistrationPanel() {
                 />
                 {emailSent ? (
                   <p className="text-sm leading-relaxed text-emerald-800">
-                    登録用メールを送信しました。届いたメールのリンクをタップすると、マイページ登録が完了します（数分かかる場合があります。迷惑メールもご確認ください）。
+                    メールを送信しました。届いたリンクをタップすると
+                    {mode === "login" ? "ログイン" : "登録"}
+                    が完了します。迷惑メールフォルダもご確認ください。
                   </p>
                 ) : (
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    メールアドレスを入れたら、下の緑のボタンを押してください。登録用のリンク付きメールが届きます。
+                    メールアドレスを入れて、下のボタンを押してください。リンク付きのメールが届きます。
                   </p>
                 )}
                 <Button
@@ -229,6 +265,8 @@ export function IdentityRegistrationPanel() {
                 >
                   {busy ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : mode === "login" ? (
+                    "ログイン用メールを送信"
                   ) : (
                     "登録用メールを送信"
                   )}
@@ -239,7 +277,9 @@ export function IdentityRegistrationPanel() {
             {method === "line" && (
               <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  あなたのLINEアカウントでログインすると、マイページ登録が完了します。
+                  LINEアカウントで
+                  {mode === "login" ? "ログイン" : "登録"}
+                  できます。ボタンを押すとLINEの画面が開きます。
                 </p>
                 <Button
                   type="button"
@@ -252,7 +292,7 @@ export function IdentityRegistrationPanel() {
                   ) : (
                     <>
                       <MessageCircle className="h-5 w-5" />
-                      LINEで登録する
+                      LINEで{mode === "login" ? "ログイン" : "登録する"}
                     </>
                   )}
                 </Button>
@@ -266,86 +306,14 @@ export function IdentityRegistrationPanel() {
             {error}
           </p>
         )}
-
-        <div className="rounded-xl border border-border/80 bg-background px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-          <p className="font-medium text-foreground">管理者向け（登録を動かすために必要なこと）</p>
-          <ol className="mt-2 list-decimal space-y-1 pl-4">
-            <li>Supabase プロジェクトを作成する</li>
-            <li>
-              Vercel に <code className="rounded bg-muted px-1">NEXT_PUBLIC_SUPABASE_URL</code> と{" "}
-              <code className="rounded bg-muted px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> を入れる
-            </li>
-            <li>Supabase で Email ログインを ON にする</li>
-            <li>（LINEも使う場合）LINE Login チャネルを作り Supabase に接続する</li>
-            <li>Vercel を Redeploy する</li>
-          </ol>
-          <p className="mt-2">
-            詳しくは
-            <Link
-              href="/about#account-setup"
-              className="mx-1 font-medium text-primary underline-offset-2 hover:underline"
-            >
-              このサービスについて
-            </Link>
-            または
-            <code className="mx-1 rounded bg-muted px-1">docs/ACCOUNT_AUTH_SETUP.md</code>
-            をご覧ください。
-          </p>
-          <a
-            href="https://supabase.com/dashboard"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-1 text-primary underline-offset-2 hover:underline"
-          >
-            Supabase ダッシュボード
-            <ExternalLink className="h-3 w-3" />
-          </a>
-        </div>
       </CardContent>
     </Card>
   );
 }
 
-function MethodButton({
-  active,
-  onClick,
-  title,
-  description,
-  icon: Icon,
-}: {
-  active: boolean;
-  onClick: () => void;
-  title: string;
-  description: string;
-  icon?: typeof Mail;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "w-full rounded-xl border px-4 py-4 text-left transition-colors",
-        active
-          ? "border-brand-green bg-muted/50 ring-1 ring-brand-green/20"
-          : "border-border bg-background hover:bg-muted/40"
-      )}
-    >
-      <div className="flex items-start gap-3">
-        {Icon && (
-          <Icon
-            className={cn(
-              "mt-0.5 h-5 w-5 shrink-0",
-              active ? "text-brand-green" : "text-muted-foreground"
-            )}
-          />
-        )}
-        <div>
-          <p className="font-medium">{title}</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            {description}
-          </p>
-        </div>
-      </div>
-    </button>
-  );
+function toUserFacingAuthError(message: string): string {
+  if (/supabase|vercel|env|smtp|管理者|docs\//i.test(message)) {
+    return "いまはログインできませんでした。時間をおいて、もう一度お試しください。";
+  }
+  return message;
 }

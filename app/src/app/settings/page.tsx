@@ -25,7 +25,7 @@ export default function SettingsPage() {
             </p>
           }
         >
-          <IdentityRegistrationPanel />
+          <IdentityRegistrationPanel defaultMode="login" />
         </Suspense>
 
         <Card>

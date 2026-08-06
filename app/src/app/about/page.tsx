@@ -96,20 +96,13 @@ export default function AboutPage() {
 
         <TrustSection heading="マイページ登録" id="account-setup">
           <p>
-            あなたのメールアドレス、またはあなたのLINEアカウントでマイページ登録できます。登録すると各ページに登録済みと表示され、別の端末からも続きを引き継げます。
+            メールまたはLINEで、かんたんに登録・ログインできます。登録すると各ページに登録済みと表示され、保存した内容をマイページで見返せます。
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-            <li>メール：登録用リンク付きメールを受け取り、リンクをタップ</li>
-            <li>LINE：あなたのLINEアカウントでログインして登録</li>
+            <li>メール：リンク付きメールを受け取り、リンクをタップ</li>
+            <li>LINE：あなたのLINEアカウントでログイン</li>
             <li>登録しなくても、やることの確認はすべて利用できます</li>
           </ul>
-          <p className="text-sm text-muted-foreground">
-            管理者向けの設定手順は、リポジトリ内
-            <code className="mx-1 rounded bg-muted px-1.5 py-0.5 text-xs">
-              docs/ACCOUNT_AUTH_SETUP.md
-            </code>
-            をご覧ください。
-          </p>
         </TrustSection>
 
         <div className="pt-2 text-center">

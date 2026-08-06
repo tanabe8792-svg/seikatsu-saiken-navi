@@ -22,7 +22,7 @@ export function IdentityStatusChip({
   if (compact) {
     return (
       <Link
-        href="/settings#mypage-register"
+        href="/mypage"
         className={cn(
           "inline-flex max-w-[10rem] items-center gap-1 truncate rounded-full border border-brand-green/30 bg-muted/60 px-2.5 py-1 text-xs font-medium text-foreground",
           className
@@ -37,7 +37,7 @@ export function IdentityStatusChip({
 
   return (
     <Link
-      href="/settings#mypage-register"
+      href="/mypage"
       className={cn(
         "flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-sm transition-colors hover:bg-muted/50",
         className
@@ -58,15 +58,15 @@ export function IdentityRegisterPrompt({ className }: { className?: string }) {
 
   return (
     <Link
-      href="/settings#mypage-register"
+      href="/mypage"
       className={cn(
         "block rounded-xl border border-dashed border-border bg-card px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted/40",
         className
       )}
     >
-      <span className="font-medium text-foreground">マイページ登録（任意）</span>
+      <span className="font-medium text-foreground">ログイン・登録（任意）</span>
       <span className="mt-1 block leading-relaxed">
-        あなたのメールまたはLINEアカウントで登録すると、別の端末からも続きを引き継げます。
+        メールまたはLINEでログインすると、保存した内容をマイページで見返せます。
       </span>
     </Link>
   );

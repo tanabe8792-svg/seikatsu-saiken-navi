@@ -4,7 +4,7 @@ import type { User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "./browser";
 import { isSupabaseConfigured } from "./config";
 
-export function getAuthCallbackUrl(nextPath = "/settings"): string {
+export function getAuthCallbackUrl(nextPath = "/mypage"): string {
   if (typeof window === "undefined") {
     return `/auth/callback?next=${encodeURIComponent(nextPath)}`;
   }
@@ -26,7 +26,7 @@ export async function sendEmailVerificationLink(
     return {
       ok: false,
       message:
-        "メール登録の準備ができていません。管理者向け: Vercel に NEXT_PUBLIC_SUPABASE_URL と NEXT_PUBLIC_SUPABASE_ANON_KEY を設定し、Supabase で Email ログインを有効にしてください（docs/ACCOUNT_AUTH_SETUP.md）。",
+        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。",
     };
   }
 
@@ -43,7 +43,7 @@ export async function sendEmailVerificationLink(
   const { error } = await supabase.auth.signInWithOtp({
     email: trimmed,
     options: {
-      emailRedirectTo: getAuthCallbackUrl("/settings?verified=email"),
+      emailRedirectTo: getAuthCallbackUrl("/mypage?verified=email"),
       shouldCreateUser: true,
     },
   });
@@ -62,7 +62,7 @@ export async function signInWithLineOAuth(): Promise<
     return {
       ok: false,
       message:
-        "LINE登録の準備ができていません。管理者向け: Supabase と LINE Login を接続してください（docs/ACCOUNT_AUTH_SETUP.md）。",
+        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。",
     };
   }
 
@@ -80,7 +80,7 @@ export async function signInWithLineOAuth(): Promise<
     // @ts-expect-error custom OAuth provider id (e.g. custom:line)
     provider: lineProvider,
     options: {
-      redirectTo: getAuthCallbackUrl("/settings?verified=line"),
+      redirectTo: getAuthCallbackUrl("/mypage?verified=line"),
       scopes: "profile openid",
       queryParams: {
         bot_prompt: "normal",
@@ -91,8 +91,7 @@ export async function signInWithLineOAuth(): Promise<
   if (error) {
     return {
       ok: false,
-      message:
-        "LINEログインを開始できませんでした。LINE Login チャネルが Supabase に設定されているか確認してください。",
+      message: "LINEログインを開始できませんでした。時間をおいて、もう一度お試しください。",
     };
   }
 

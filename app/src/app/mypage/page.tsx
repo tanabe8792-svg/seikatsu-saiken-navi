@@ -1,26 +1,30 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Bell,
   Camera,
   ChevronRight,
   HelpCircle,
   Info,
   ListRestart,
   Loader2,
+  LogIn,
   MessageCircle,
   RotateCcw,
   Settings,
+  UserRound,
 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
+import { IdentityRegistrationPanel } from "@/components/auth/identity-registration-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   formatCaseSituation,
   getCaseProgress,
 } from "@/lib/case-management/action-queue";
+import { buildPostJ00ProfileBullets } from "@/lib/onboarding/onboarding-copy";
 import { J00_DISASTER_EVENT_LABEL } from "@/lib/j00-hearing";
 import { useAuth } from "@/providers/auth-provider";
 import { useUserSession } from "@/hooks/use-user-session";
@@ -28,13 +32,13 @@ import { useUserSession } from "@/hooks/use-user-session";
 export default function MyPage() {
   const router = useRouter();
   const { session, loading, resetSession } = useUserSession();
-  const { identity, identityLabel } = useAuth();
-  const { caseFile } = session;
+  const { identity, identityLabel, loading: authLoading } = useAuth();
+  const { caseFile, profile } = session;
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <>
-        <SiteHeader title="その他" />
+        <SiteHeader title="マイページ" />
         <div className="flex min-h-[60vh] items-center justify-center" role="status">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -44,66 +48,102 @@ export default function MyPage() {
 
   const progress = caseFile ? getCaseProgress(caseFile) : null;
   const situation = caseFile ? formatCaseSituation(caseFile) : null;
+  const profileBullets = buildPostJ00ProfileBullets(profile);
 
   return (
     <>
-      <SiteHeader title="その他" />
+      <SiteHeader title="マイページ" />
       <main className="space-y-5 px-4 py-4 pb-28">
-        <Card className="border border-border bg-card shadow-sm">
-          <CardContent className="space-y-4 p-5">
-            <div className="flex items-start gap-3">
-              <Bell className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
-              <div className="space-y-2">
-                <h2 className="text-lg font-bold">マイページ登録</h2>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  あなたのメールアドレス、またはあなたのLINEアカウントで登録できます。登録すると各ページで登録済みと表示され、別の端末からも続きを引き継げます。
-                </p>
-                {identity && (
-                  <p className="text-sm font-medium text-brand-green">{identityLabel}</p>
-                )}
-              </div>
-            </div>
-            <Button asChild size="lg" className="h-12 w-full">
-              <Link href="/settings#mypage-register">
-                マイページ登録・確認する
-                <ChevronRight className="h-5 w-5" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border bg-card">
-          <CardContent className="space-y-3 p-5">
-            <p className="text-sm font-medium text-muted-foreground">生活再建ナビ</p>
-            <p className="text-base leading-relaxed">{J00_DISASTER_EVENT_LABEL}</p>
-            {caseFile && progress && (
-              <div className="rounded-xl border bg-background/80 bg-background/80 px-4 py-3">
-                {situation && situation !== "状況確認中" && (
-                  <p className="text-sm font-medium">{situation}</p>
-                )}
-                <p className="mt-1 text-sm text-muted-foreground">
-                  確認済み {progress.completed} / {progress.total} 件
-                </p>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full bg-primary transition-all"
-                    style={{
-                      width:
-                        progress.total > 0
-                          ? `${(progress.completed / progress.total) * 100}%`
-                          : "0%",
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-            {!caseFile && (
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                まだ状況の入力が完了していません。
+        {!identity ? (
+          <Suspense
+            fallback={
+              <p className="py-8 text-center text-sm text-muted-foreground">
+                読み込み中…
               </p>
-            )}
-          </CardContent>
-        </Card>
+            }
+          >
+            <IdentityRegistrationPanel
+              defaultMode="login"
+              afterLoginHref="/mypage"
+              afterLoginLabel="保存した内容を見る"
+            />
+          </Suspense>
+        ) : (
+          <>
+            <Card className="border border-border bg-card shadow-sm">
+              <CardContent className="space-y-4 p-5">
+                <div className="flex items-start gap-3">
+                  <UserRound className="mt-0.5 h-6 w-6 shrink-0 text-brand-green" />
+                  <div className="space-y-1">
+                    <h2 className="text-lg font-bold">あなたのマイページ</h2>
+                    <p className="text-sm text-muted-foreground">{identityLabel}</p>
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  ログイン中です。この端末に保存された状況や進捗を、下で確認できます。
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-card">
+              <CardContent className="space-y-3 p-5">
+                <p className="text-sm font-medium text-muted-foreground">
+                  保存されている内容
+                </p>
+                <p className="text-base leading-relaxed">{J00_DISASTER_EVENT_LABEL}</p>
+
+                {profileBullets.length > 0 && (
+                  <ul className="space-y-2 rounded-xl border bg-background px-4 py-3">
+                    {profileBullets.map((item) => (
+                      <li key={item} className="text-sm leading-relaxed">
+                        · {item}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {caseFile && progress && (
+                  <div className="rounded-xl border bg-background px-4 py-3">
+                    {situation && situation !== "状況確認中" && (
+                      <p className="text-sm font-medium">{situation}</p>
+                    )}
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      確認済み {progress.completed} / {progress.total} 件
+                    </p>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all"
+                        style={{
+                          width:
+                            progress.total > 0
+                              ? `${(progress.completed / progress.total) * 100}%`
+                              : "0%",
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {!caseFile && (
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    まだ状況の入力が完了していません。質問をはじめると、ここに内容が残ります。
+                  </p>
+                )}
+
+                <div className="flex flex-col gap-2 pt-1">
+                  <Button asChild size="lg" className="h-12 w-full">
+                    <Link href="/actions">やること一覧を見る</Link>
+                  </Button>
+                  {!caseFile && (
+                    <Button asChild variant="outline" className="h-12 w-full">
+                      <Link href="/start">質問をはじめる</Link>
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
 
         <section className="space-y-2">
           <p className="px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -143,27 +183,18 @@ export default function MyPage() {
             href="/settings"
             icon={Settings}
             label="設定"
-            note="文字サイズ・お知らせの受け取り方"
+            note="文字サイズなど"
           />
           <MenuLink
             href="/settings#mypage-register"
-            icon={Bell}
-            label="マイページ登録"
+            icon={LogIn}
+            label={identity ? "ログイン状態" : "ログイン・登録"}
             note={
               identity
-                ? identityLabel ?? "登録済み"
-                : "メールまたはLINEで登録（任意）"
+                ? identityLabel ?? "ログイン中"
+                : "メールまたはLINE（かんたん）"
             }
           />
-          <div className="flex items-center gap-3 rounded-2xl border bg-muted/30 px-4 py-3">
-            <Bell className="h-5 w-5 shrink-0 text-primary" />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">登録状態</p>
-              <p className="text-sm text-muted-foreground">
-                {identity ? identityLabel : "未登録（この端末のみ）"}
-              </p>
-            </div>
-          </div>
           <MenuLink
             href="/start?redo=1"
             icon={ListRestart}
@@ -184,7 +215,9 @@ export default function MyPage() {
               variant="ghost"
               className="h-auto w-full justify-start gap-3 px-2 py-2 text-destructive hover:bg-destructive/5 hover:text-destructive"
               onClick={() => {
-                if (confirm("保存した内容をすべて消して、最初からやり直しますか？")) {
+                if (
+                  confirm("保存した内容をすべて消して、最初からやり直しますか？")
+                ) {
                   resetSession();
                   router.replace("/start");
                 }
