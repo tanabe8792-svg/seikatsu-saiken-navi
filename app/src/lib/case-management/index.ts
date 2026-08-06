@@ -36,14 +36,22 @@ export function extractFamilyAttributes(
 /** J-00 完了時に Case File を新規作成 */
 export function initializeCaseFromProfile(
   profile: UserProfile,
-  existingCase?: CaseFile
+  existingCase?: CaseFile,
+  options?: { resetProgress?: boolean }
 ): CaseFile {
   const caseProfile = buildCaseProfileFromUserProfile(profile);
   const familyAttributes = extractFamilyAttributes(profile);
   const recoveryPhase = createInitialRecoveryPhase(profile, caseProfile);
 
+  // 「状況を選び直す」では、前回の完了済みを持ち越さず新しい案内を出す
+  const existing =
+    options?.resetProgress === true
+      ? undefined
+      : existingCase;
+
   return createCaseFile(caseProfile, familyAttributes, {
-    existing: existingCase,
+    existing,
+    caseId: existing?.caseId,
     userProfile: profile,
     recoveryPhase,
   });

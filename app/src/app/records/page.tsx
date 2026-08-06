@@ -23,19 +23,26 @@ export default function RecordsPage() {
   const { session, loading } = useUserSession();
   const { showToast } = useToast();
   const caseId = session.caseFile?.caseId;
+  const photoAction =
+    session.caseFile?.pendingActions.find((a) => a.id === "rw-j03-photo") ??
+    session.caseFile?.completedActions.find((a) => a.id === "rw-j03-photo");
   const [photos, setPhotos] = useState<StoredPhotoMeta[]>([]);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   const refresh = useCallback(async () => {
     if (!caseId) {
       setPhotos([]);
+      setLoadError(false);
       return;
     }
     setLoadingPhotos(true);
+    setLoadError(false);
     try {
       setPhotos(await listPhotosForCase(caseId));
     } catch {
       setPhotos([]);
+      setLoadError(true);
       showToast("写真を読み込めませんでした");
     } finally {
       setLoadingPhotos(false);
@@ -118,25 +125,54 @@ export default function RecordsPage() {
         </Card>
 
         {!caseId ? (
-          <p className="text-sm text-muted-foreground">
-            まず状況入力を終えると、写真を残せます。
-          </p>
+          <Card>
+            <CardContent className="space-y-4 p-5">
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                まだ状況の入力が終わっていないため、写真の見返しは使えません。
+              </p>
+              <Button asChild size="lg" className="h-12 w-full">
+                <Link href="/start">質問をはじめる</Link>
+              </Button>
+            </CardContent>
+          </Card>
         ) : loadingPhotos ? (
           <div className="flex justify-center py-10" role="status">
             <Loader2 className="h-7 w-7 animate-spin text-primary" />
           </div>
-        ) : photos.length === 0 ? (
+        ) : loadError ? (
           <Card>
             <CardContent className="space-y-4 p-5">
               <p className="text-sm leading-relaxed text-muted-foreground">
-                まだ写真はありません。「被害の様子を写真に残す」からカメラで撮れます。
+                写真の読み込みに失敗しました。プライベートブラウズや端末の制限が原因のことがあります。
               </p>
-              <Button asChild size="lg" className="h-12 w-full">
-                <Link href={getCaseActionDetailPath("rw-j03-photo")}>
-                  <Camera className="h-5 w-5" />
-                  写真を撮る手順へ
-                </Link>
+              <Button
+                size="lg"
+                className="h-12 w-full"
+                onClick={() => void refresh()}
+              >
+                もう一度読み込む
               </Button>
+            </CardContent>
+          </Card>
+        ) : photos.length === 0 ? (
+          <Card>
+            <CardContent className="space-y-4 p-5">
+              <p className="text-base font-semibold">まだ写真はありません</p>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                写真を撮っていない場合、ここに何も出ないのが正常です。「やること」の被害写真の手順から撮影できます。
+              </p>
+              {photoAction ? (
+                <Button asChild size="lg" className="h-12 w-full">
+                  <Link href={getCaseActionDetailPath(photoAction.id)}>
+                    <Camera className="h-5 w-5" />
+                    写真を撮る手順へ
+                  </Link>
+                </Button>
+              ) : (
+                <Button asChild size="lg" className="h-12 w-full">
+                  <Link href="/actions">やること一覧を見る</Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         ) : (

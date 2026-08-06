@@ -12,10 +12,14 @@ import {
   TRUST_PAGE_TITLE,
   TRUST_WHY_BUILT,
   getTrustFeedbackFormUrl,
+  getTrustFeedbackMailto,
 } from "@/lib/trust/trust-copy";
 
 export default function AboutPage() {
   const feedbackFormUrl = getTrustFeedbackFormUrl();
+  const feedbackMailto = getTrustFeedbackMailto();
+  const feedbackHref = feedbackFormUrl ?? feedbackMailto;
+
   return (
     <>
       <SiteHeader title={TRUST_PAGE_TITLE} showBack backHref="/mypage" />
@@ -29,12 +33,11 @@ export default function AboutPage() {
             <p className="text-base leading-relaxed">
               {TRUST_ABOUT_SERVICE.body[0]}
             </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {TRUST_ABOUT_SERVICE.body[1]}
+            </p>
           </CardContent>
         </Card>
-
-        <TrustSection heading={TRUST_ABOUT_SERVICE.heading}>
-          <p>{TRUST_ABOUT_SERVICE.body[1]}</p>
-        </TrustSection>
 
         <TrustSection heading={TRUST_WHY_BUILT.heading}>
           {TRUST_WHY_BUILT.body.map((p) => (
@@ -65,7 +68,7 @@ export default function AboutPage() {
 
         <TrustSection heading={TRUST_FEEDBACK.heading} id="feedback">
           <p>{TRUST_FEEDBACK.lead}</p>
-          <p>{TRUST_FEEDBACK.note}</p>
+          <p className="text-sm text-muted-foreground">{TRUST_FEEDBACK.note}</p>
           <ul className="space-y-2 rounded-xl border bg-muted/30 px-4 py-4 text-sm">
             {TRUST_FEEDBACK.fields.map((field) => (
               <li key={field} className="flex gap-2 leading-relaxed">
@@ -74,12 +77,13 @@ export default function AboutPage() {
               </li>
             ))}
           </ul>
-          {feedbackFormUrl ? (
+          {feedbackHref ? (
             <Button asChild size="lg" className="mt-1 h-14 w-full text-lg">
               <a
-                href={feedbackFormUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={feedbackHref}
+                {...(feedbackFormUrl
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
               >
                 {TRUST_FEEDBACK.buttonLabel}
               </a>

@@ -142,7 +142,7 @@ export default function MyPage() {
             </div>
           </div>
           <MenuLink
-            href="/start"
+            href="/start?redo=1"
             icon={ListRestart}
             label="状況を選び直す"
             note="最初の質問からやり直す"

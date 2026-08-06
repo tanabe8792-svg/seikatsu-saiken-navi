@@ -233,13 +233,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const initializeCase = useCallback(
     (profile: UserProfile) => {
       return persist((current) => {
-        const caseFile = initializeCaseFromProfile(profile, current.caseFile);
+        const caseFile = initializeCaseFromProfile(profile, current.caseFile, {
+          resetProgress: true,
+        });
         return {
           ...current,
           profile: { ...current.profile, ...profile },
           caseFile,
           caseWorkerSummary: caseFileToLegacySummary(caseFile),
           showPostJ00Welcome: true,
+          continuitySnapshot: undefined,
         };
       });
     },

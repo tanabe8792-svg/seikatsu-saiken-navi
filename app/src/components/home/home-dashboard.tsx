@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { EmergencyContacts } from "@/components/emergency/emergency-contacts";
 import { useUserSession } from "@/hooks/use-user-session";
 import {
+  formatCaseSituation,
   getCaseProgress,
   getCurrentAction,
 } from "@/lib/case-management/action-queue";
@@ -123,8 +124,6 @@ export function HomeDashboard() {
 
       return (
         <div className="space-y-4">
-          {!postJ00Welcome && <EmergencyContacts compact />}
-
           {postJ00Welcome ? (
             <>
               <Card className="border-emerald-300/60 bg-emerald-50/50 dark:border-emerald-900/40 dark:bg-emerald-950/20">
@@ -182,14 +181,17 @@ export function HomeDashboard() {
                   {ui.showEvidenceButton && !ui.hasEvidence ? (
                     <>
                       <Camera className="h-5 w-5" />
-                      記録から確認する
+                      写真の記録から確認する
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="h-5 w-5" />
-                      一緒に確認を始める
+                      最初の確認をはじめる
                     </>
                   )}
+                  </Button>
+                  <Button asChild variant="outline" size="lg" className="h-12 w-full">
+                    <Link href="/actions">やること一覧を見る</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -442,12 +444,28 @@ export function HomeDashboard() {
                 </details>
               )}
 
-              <Button asChild variant="outline" className="h-12 w-full">
-                <Link href="/chat">
-                  <MessageCircle className="h-4 w-4" />
-                  相談する
-                </Link>
-              </Button>
+              <details className="rounded-xl border border-destructive/20 bg-background px-4 py-3">
+                <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+                  緊急のとき（119・110など）
+                </summary>
+                <div className="mt-3">
+                  <EmergencyContacts compact />
+                </div>
+              </details>
+
+              <details className="rounded-xl border bg-card px-4 py-3">
+                <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+                  ほかに相談したいとき（任意）
+                </summary>
+                <div className="mt-3">
+                  <Button asChild variant="outline" className="h-12 w-full">
+                    <Link href="/chat">
+                      <MessageCircle className="h-4 w-4" />
+                      AI相談（任意）
+                    </Link>
+                  </Button>
+                </div>
+              </details>
             </div>
           )}
         </div>
@@ -456,18 +474,53 @@ export function HomeDashboard() {
 
     return (
       <div className="space-y-4">
-        <EmergencyContacts compact />
-        <Card>
-          <CardContent className="space-y-3 p-6">
-            <p className="text-lg font-bold">お疲れさまでした</p>
-            <p className="text-muted-foreground">
-              現在のケースで優先アクションはすべて完了しました。着実に前に進めています。
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="space-y-4 p-6">
+            <p className="text-sm font-medium text-primary">あなたの状況</p>
+            <p className="text-lg font-bold leading-snug">
+              {formatCaseSituation(caseFile) !== "状況確認中"
+                ? formatCaseSituation(caseFile)
+                : "状況を整理しました"}
             </p>
-            <Button asChild size="lg" className="h-14 w-full">
-              <Link href="/chat">ケースワーカーに相談</Link>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {progress.total > 0 && progress.completed >= progress.total
+                ? "いま優先して確認する項目は一通り終えています。やること一覧で見返せます。"
+                : "次に確認することは、やること一覧にまとめています。上から順に進めましょう。"}
+            </p>
+            <Button asChild size="lg" className="h-14 w-full text-lg">
+              <Link href="/actions">
+                やること一覧を見る
+                <ChevronRight className="h-5 w-5" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-12 w-full">
+              <Link href="/start?redo=1">状況を選び直す</Link>
             </Button>
           </CardContent>
         </Card>
+
+        <details className="rounded-xl border border-destructive/20 bg-background px-4 py-3">
+          <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+            緊急のとき（119・110など）
+          </summary>
+          <div className="mt-3">
+            <EmergencyContacts compact />
+          </div>
+        </details>
+
+        <details className="rounded-xl border bg-card px-4 py-3">
+          <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+            ほかに相談したいとき（任意）
+          </summary>
+          <div className="mt-3">
+            <Button asChild variant="outline" className="h-12 w-full">
+              <Link href="/chat">
+                <MessageCircle className="h-4 w-4" />
+                AI相談（任意）
+              </Link>
+            </Button>
+          </div>
+        </details>
       </div>
     );
   }
@@ -475,7 +528,6 @@ export function HomeDashboard() {
   if (nextAction) {
     return (
       <div className="space-y-4">
-        <EmergencyContacts compact />
         <Card className="border-primary/40 bg-primary/5">
           <CardContent className="space-y-4 p-6">
             <p className="text-sm font-medium text-primary">
@@ -490,6 +542,14 @@ export function HomeDashboard() {
             </Button>
           </CardContent>
         </Card>
+        <details className="rounded-xl border border-destructive/20 bg-background px-4 py-3">
+          <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+            緊急のとき（119・110など）
+          </summary>
+          <div className="mt-3">
+            <EmergencyContacts compact />
+          </div>
+        </details>
       </div>
     );
   }
@@ -500,17 +560,24 @@ export function HomeDashboard() {
         <CardContent className="space-y-4 p-5">
           <p className="text-sm font-medium text-primary">生活再建ナビ</p>
           <p className="text-xl font-bold leading-snug">
-            いまの状況を教えてください
+            次に確認することを、順番に案内します
           </p>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            お住まいの地域や被害の程度を選ぶと、次に確認することを順番に案内します。登録は不要・無料です。
+            はじめに、地域や被害の程度など短い質問に答えてください（登録不要・無料）。答えをもとに、あなた向けの「やること」を作ります。
           </p>
           <Button asChild size="lg" className="h-14 w-full text-lg">
-            <Link href="/start">はじめる</Link>
+            <Link href="/start">質問をはじめる</Link>
           </Button>
         </CardContent>
       </Card>
-      <EmergencyContacts compact />
+      <details className="rounded-xl border border-destructive/20 bg-background px-4 py-3">
+        <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+          緊急のとき（119・110など）
+        </summary>
+        <div className="mt-3">
+          <EmergencyContacts compact />
+        </div>
+      </details>
     </div>
   );
 }

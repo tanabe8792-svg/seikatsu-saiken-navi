@@ -32,6 +32,25 @@ import type { OnboardingTimingHint, UserProfile } from "@/lib/types";
 type Step = 1 | 2 | 3 | 4 | 5;
 type PagePhase = "intro" | "hearing";
 
+function readStartQuery(): { redo: boolean; step: Step | null } {
+  if (typeof window === "undefined") {
+    return { redo: false, step: null };
+  }
+  const sp = new URLSearchParams(window.location.search);
+  const raw = Number(sp.get("step"));
+  const step =
+    raw >= 1 && raw <= J00_TOTAL_STEPS ? (raw as Step) : null;
+  return { redo: sp.get("redo") === "1", step };
+}
+
+function buildStartUrl(phase: PagePhase, step: Step, redo: boolean): string {
+  const params = new URLSearchParams();
+  if (redo) params.set("redo", "1");
+  if (phase === "hearing") params.set("step", String(step));
+  const qs = params.toString();
+  return qs ? `/start?${qs}` : "/start";
+}
+
 export default function J00HearingPage() {
   const router = useRouter();
   const {
@@ -45,6 +64,7 @@ export default function J00HearingPage() {
 
   const [phase, setPhase] = useState<PagePhase>("intro");
   const [step, setStep] = useState<Step>(1);
+  const [redo, setRedo] = useState(false);
   const [profile, setProfile] = useState<UserProfile>({});
   const [lifelineTouched, setLifelineTouched] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -52,25 +72,41 @@ export default function J00HearingPage() {
     () => session.onboardingTimingHint ?? DEFAULT_ONBOARDING_TIMING_HINT
   );
 
+  const writeHistory = useCallback(
+    (nextPhase: PagePhase, nextStep: Step, mode: "push" | "replace") => {
+      const url = buildStartUrl(nextPhase, nextStep, redo);
+      const state = { phase: nextPhase, step: nextStep, redo };
+      if (mode === "push") {
+        window.history.pushState(state, "", url);
+      } else {
+        window.history.replaceState(state, "", url);
+      }
+    },
+    [redo]
+  );
+
   useEffect(() => {
     if (loading || initialized) return;
 
-    if (session.profile.j00Completed && session.caseFile) {
+    const query = readStartQuery();
+    setRedo(query.redo);
+
+    if (
+      session.profile.j00Completed &&
+      session.caseFile &&
+      !query.redo
+    ) {
       router.replace("/");
       return;
     }
 
-    const savedStep = session.j00Step;
     const savedProfile = session.profile;
-    if (savedStep && savedStep >= 1 && savedStep <= J00_TOTAL_STEPS) {
-      setPhase("hearing");
-      setStep(savedStep as Step);
-    } else {
-      setPhase("intro");
-      setStep(1);
-    }
     if (Object.keys(savedProfile).length > 0) {
-      setProfile(savedProfile);
+      setProfile(
+        query.redo
+          ? { ...savedProfile, j00Completed: false }
+          : savedProfile
+      );
       if (
         savedProfile.hasPowerOutage !== undefined ||
         savedProfile.hasWaterOutage !== undefined ||
@@ -82,9 +118,35 @@ export default function J00HearingPage() {
       setProfile({});
       setLifelineTouched(false);
     }
+
     if (session.onboardingTimingHint) {
       setTimingHint(session.onboardingTimingHint);
     }
+
+    let nextPhase: PagePhase = "intro";
+    let nextStep: Step = 1;
+
+    if (query.step) {
+      nextPhase = "hearing";
+      nextStep = query.step;
+    } else if (!query.redo) {
+      const savedStep = session.j00Step;
+      if (savedStep && savedStep >= 1 && savedStep <= J00_TOTAL_STEPS) {
+        nextPhase = "hearing";
+        nextStep = savedStep as Step;
+      }
+    }
+
+    setPhase(nextPhase);
+    setStep(nextStep);
+    if (nextPhase === "hearing") {
+      setJ00Step(nextStep);
+    }
+    window.history.replaceState(
+      { phase: nextPhase, step: nextStep, redo: query.redo },
+      "",
+      buildStartUrl(nextPhase, nextStep, query.redo)
+    );
     setInitialized(true);
   }, [
     loading,
@@ -95,17 +157,19 @@ export default function J00HearingPage() {
     session.onboardingTimingHint,
     session.profile.j00Completed,
     router,
+    setJ00Step,
   ]);
 
   // リセット後など、セッションが空に戻ったら導入画面へ戻す
   useEffect(() => {
     if (loading || !initialized) return;
-    if (session.profile.j00Completed && session.caseFile) return;
+    if (session.profile.j00Completed && session.caseFile && !redo) return;
     if (Object.keys(session.profile).length === 0 && !session.j00Step) {
       setPhase("intro");
       setStep(1);
       setProfile({});
       setLifelineTouched(false);
+      writeHistory("intro", 1, "replace");
     }
   }, [
     loading,
@@ -114,7 +178,37 @@ export default function J00HearingPage() {
     session.j00Step,
     session.caseFile,
     session.profile.j00Completed,
+    redo,
+    writeHistory,
   ]);
+
+  // 端末の戻る／進むでステップを1つずつ戻す
+  useEffect(() => {
+    function onPopState(event: PopStateEvent) {
+      const state = event.state as
+        | { phase?: PagePhase; step?: Step; redo?: boolean }
+        | null;
+      if (state?.phase === "hearing" && state.step) {
+        setPhase("hearing");
+        setStep(state.step);
+        setJ00Step(state.step);
+        return;
+      }
+      if (state?.phase === "intro" || !state) {
+        const query = readStartQuery();
+        if (query.step) {
+          setPhase("hearing");
+          setStep(query.step);
+          setJ00Step(query.step);
+          return;
+        }
+        setPhase("intro");
+        setJ00Step(undefined);
+      }
+    }
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [setJ00Step]);
 
   const persistDraft = useCallback(
     (nextProfile: UserProfile, nextStep: Step) => {
@@ -138,6 +232,7 @@ export default function J00HearingPage() {
     setPhase("hearing");
     setStep(1);
     setJ00Step(1);
+    writeHistory("hearing", 1, "push");
   }
 
   function handleLifelineToggle(key: string) {
@@ -184,6 +279,17 @@ export default function J00HearingPage() {
     setProfile(nextProfile);
     persistDraft(nextProfile, nextStep);
     setStep(nextStep);
+    writeHistory("hearing", nextStep, "push");
+  }
+
+  function goPrevStep(prevStep: Step) {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+    setStep(prevStep);
+    setJ00Step(prevStep);
+    writeHistory("hearing", prevStep, "replace");
   }
 
   function handleComplete() {
@@ -209,13 +315,16 @@ export default function J00HearingPage() {
   function handleHeaderBack() {
     if (phase !== "hearing") return;
     if (step > 1) {
-      const prev = (step - 1) as Step;
-      setStep(prev);
-      setJ00Step(prev);
+      goPrevStep((step - 1) as Step);
+      return;
+    }
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      window.history.back();
       return;
     }
     setPhase("intro");
     setJ00Step(undefined);
+    writeHistory("intro", 1, "replace");
   }
 
   const hearingHeader = (
@@ -310,7 +419,7 @@ export default function J00HearingPage() {
                 goNext(3, { ...profile, municipality: v })
               }
             />
-            <Button variant="ghost" size="lg" onClick={() => setStep(1)}>
+            <Button variant="ghost" size="lg" onClick={() => goPrevStep(1)}>
               ← 戻る
             </Button>
           </>
@@ -365,7 +474,7 @@ export default function J00HearingPage() {
             >
               次へ
             </Button>
-            <Button variant="ghost" size="lg" onClick={() => setStep(2)}>
+            <Button variant="ghost" size="lg" onClick={() => goPrevStep(2)}>
               ← 戻る
             </Button>
           </>
@@ -506,7 +615,7 @@ export default function J00HearingPage() {
             >
               次へ
             </Button>
-            <Button variant="ghost" size="lg" onClick={() => setStep(3)}>
+            <Button variant="ghost" size="lg" onClick={() => goPrevStep(3)}>
               ← 戻る
             </Button>
           </>
@@ -556,7 +665,7 @@ export default function J00HearingPage() {
             >
               完了
             </Button>
-            <Button variant="ghost" size="lg" onClick={() => setStep(4)}>
+            <Button variant="ghost" size="lg" onClick={() => goPrevStep(4)}>
               ← 戻る
             </Button>
           </>

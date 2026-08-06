@@ -287,7 +287,11 @@ export function createCaseFile(
   const { actions, triggerIds, activeJourney, riskScore } =
     generateActionQueue(caseProfile, familyAttributes, { phaseMode });
 
-  const pendingActions = actions.map((a) => ({ ...a, status: "todo" as const }));
+  const completedExisting = options?.existing?.completedActions ?? [];
+  const completedIds = new Set(completedExisting.map((a) => a.id));
+  const pendingActions = actions
+    .filter((a) => !completedIds.has(a.id))
+    .map((a) => ({ ...a, status: "todo" as const }));
   const decisions: CaseDecision[] = [];
   const procedures = generateProceduresForActions(actions);
   const deadlines = mergeDeadlinesIntoCaseFile(
@@ -311,7 +315,7 @@ export function createCaseFile(
     familyAttributes,
     activeJourney,
     pendingActions,
-    completedActions: options?.existing?.completedActions ?? [],
+    completedActions: completedExisting,
     riskScore,
     lastContactAt: now,
     status: pendingActions.length > 0 ? "active" : "completed",

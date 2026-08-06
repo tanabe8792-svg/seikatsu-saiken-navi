@@ -57,12 +57,12 @@ export const ONBOARDING_TIMING_OPTIONS: {
 export const DEFAULT_ONBOARDING_TIMING_HINT: OnboardingTimingHint = "weeks";
 
 export const ONBOARDING_UNIVERSAL_MESSAGE =
-  "罹災証明・保険・支援制度——いまの生活再建に必要なことを、順番に整理します。";
+  "被害の記録・罹災証明・保険・支援など、いま必要な確認を一緒に整理します。";
 
-export const ONBOARDING_INTRO_LABEL = "令和8年熊本地震 — 生活再建の伴走";
+export const ONBOARDING_INTRO_LABEL = "令和8年熊本地震 — 生活再建ナビ";
 
 export const ONBOARDING_INTRO_LEAD =
-  "熊本地震で被災された方の生活再建に向けて、被害記録・支援制度・手続きを順番に伴走します。";
+  "短い質問に答えると、あなた向けの「やること」を順番に案内します。登録は不要です。";
 
 export interface PostJ00WelcomeMessage {
   title: string;
@@ -102,7 +102,7 @@ export function buildPostJ00WelcomeMessage(
   return {
     title: "あなたの状況を整理しました",
     situationSummary,
-    firstStepLead: "生活再建のために、まず確認すること：",
+    firstStepLead: "次は、やること一覧の1件目から進めます：",
     firstStepHeadline: headline,
     timingNote,
   };
@@ -160,7 +160,8 @@ export function collectOnboardingIntroStrings(): string[] {
     "いまの段階に合わせて（任意）",
     ...ONBOARDING_TIMING_OPTIONS.flatMap((o) => [o.label, o.note]),
     ONBOARDING_UNIVERSAL_MESSAGE,
-    "状況の整理をはじめる",
+    "次に確認することを、順番に案内します",
+    "質問をはじめる",
     "登録不要 · 無料 · 約2分",
   ];
 }

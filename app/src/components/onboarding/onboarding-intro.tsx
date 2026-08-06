@@ -27,48 +27,45 @@ export function OnboardingIntro({
 }: OnboardingIntroProps) {
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4">
+      <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-5">
         <p className="text-sm font-medium text-primary">{ONBOARDING_INTRO_LABEL}</p>
+        <p className="mt-2 text-xl font-bold leading-snug">
+          次に確認することを、順番に案内します
+        </p>
         <p className="mt-2 text-base leading-relaxed">{ONBOARDING_INTRO_LEAD}</p>
         <p className="mt-1 text-sm text-muted-foreground">
           {ONBOARDING_UNIVERSAL_MESSAGE}
         </p>
       </div>
 
-      <Card>
-        <CardContent className="space-y-3 p-5">
-          <h2 className="text-lg font-bold">このサービスでできること</h2>
-          <ul className="space-y-2">
-            {ONBOARDING_SERVICE_FEATURES.map((item) => (
-              <li key={item} className="text-sm leading-relaxed">
-                · {item}
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+      <Button size="lg" className="h-14 w-full text-lg" onClick={onStart}>
+        質問をはじめる
+      </Button>
+      <p className="text-center text-sm text-muted-foreground">
+        登録不要 · 無料 · 約2分
+      </p>
 
-      <Card className="border-emerald-200/60 bg-emerald-50/40 dark:border-emerald-900/40 dark:bg-emerald-950/20">
-        <CardContent className="space-y-2 p-5">
-          <h2 className="text-lg font-bold text-emerald-900 dark:text-emerald-100">
-            {ONBOARDING_REASSURANCE.title}
-          </h2>
-          <p className="text-sm leading-relaxed text-emerald-900/90 dark:text-emerald-100/90">
-            {ONBOARDING_REASSURANCE.body}
-          </p>
-          <p className="text-xs leading-relaxed text-emerald-800/80 dark:text-emerald-200/80">
-            {ONBOARDING_DATA_NOTE}
-          </p>
-        </CardContent>
-      </Card>
+      <details className="rounded-xl border bg-card px-4 py-3">
+        <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+          このサービスでできること
+        </summary>
+        <ul className="mt-3 space-y-2 pb-1">
+          {ONBOARDING_SERVICE_FEATURES.map((item) => (
+            <li key={item} className="text-sm leading-relaxed">
+              · {item}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          {ONBOARDING_REASSURANCE.body} {ONBOARDING_DATA_NOTE}
+        </p>
+      </details>
 
       <Card>
         <CardContent className="space-y-3 p-5">
-          <h2 className="text-lg font-bold">
-            いまの段階に合わせて（任意）
-          </h2>
+          <h2 className="text-lg font-bold">いまの段階に合わせて（任意）</h2>
           <p className="text-xs text-muted-foreground">
-            当てはまるものがあればタップ。生活再建の整理に活かします
+            当てはまるものがあればタップ
           </p>
           <div className="flex flex-wrap gap-2">
             {ONBOARDING_TIMING_OPTIONS.map((opt) => {
@@ -77,9 +74,7 @@ export function OnboardingIntro({
                 <button
                   key={opt.id}
                   type="button"
-                  onClick={() =>
-                    onSelectTiming(active ? undefined : opt.id)
-                  }
+                  onClick={() => onSelectTiming(active ? undefined : opt.id)}
                   className={cn(
                     "rounded-full border px-3 py-2 text-left text-sm transition-colors",
                     active
@@ -97,13 +92,6 @@ export function OnboardingIntro({
           </div>
         </CardContent>
       </Card>
-
-      <Button size="lg" className="h-14 w-full text-lg" onClick={onStart}>
-        状況の整理をはじめる
-      </Button>
-      <p className="text-center text-sm text-muted-foreground">
-        登録不要 · 無料 · 約2分
-      </p>
     </div>
   );
 }
