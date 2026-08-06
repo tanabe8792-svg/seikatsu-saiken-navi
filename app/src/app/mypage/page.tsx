@@ -11,6 +11,7 @@ import {
   ListRestart,
   Loader2,
   LogIn,
+  LogOut,
   MessageCircle,
   RotateCcw,
   Settings,
@@ -28,6 +29,7 @@ import {
 } from "@/lib/case-management/action-queue";
 import { CASE_ACCESS_LEVEL_LABELS } from "@/lib/case-management/case-sharing";
 import {
+  clearLocalCaseShare,
   loadLocalCaseShare,
   type LocalCaseShareState,
 } from "@/lib/case-management/case-share-storage";
@@ -39,13 +41,22 @@ import { useUserSession } from "@/hooks/use-user-session";
 export default function MyPage() {
   const router = useRouter();
   const { session, loading, resetSession } = useUserSession();
-  const { identity, identityLabel, loading: authLoading } = useAuth();
+  const { identity, identityLabel, loading: authLoading, signOut } = useAuth();
   const { caseFile, profile } = session;
   const [shareState, setShareState] = useState<LocalCaseShareState | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     setShareState(loadLocalCaseShare());
   }, [caseFile?.caseId, identity?.userId]);
+
+  async function handleSignOut() {
+    setSigningOut(true);
+    clearLocalCaseShare();
+    setShareState(null);
+    await signOut();
+    setSigningOut(false);
+  }
 
   if (loading || authLoading) {
     return (
