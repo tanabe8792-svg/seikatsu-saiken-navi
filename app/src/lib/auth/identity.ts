@@ -38,11 +38,13 @@ export function identityFromSupabaseUser(user: {
   app_metadata?: Record<string, unknown>;
   user_metadata?: Record<string, unknown>;
 }): VerifiedIdentity | null {
-  const providerRaw = user.app_metadata?.provider;
+  const providerRaw = String(user.app_metadata?.provider ?? "");
   const providers = user.app_metadata?.providers as string[] | undefined;
   const isLine =
     providerRaw === "line" ||
-    providers?.includes("line") ||
+    providerRaw === "custom:line" ||
+    providerRaw.startsWith("custom:") && /line/i.test(providerRaw) ||
+    providers?.some((p) => p === "line" || p === "custom:line" || /line/i.test(p)) ||
     user.user_metadata?.iss === "https://access.line.me";
 
   if (isLine) {

@@ -71,12 +71,20 @@ export async function signInWithLineOAuth(): Promise<
     return { ok: false, message: "認証クライアントを初期化できませんでした。" };
   }
 
-  // Supabase Dashboard で LINE provider を有効化すると利用可能
+  // Supabase には組み込み LINE が無いため、カスタムプロバイダー custom:line を使う
+  const lineProvider =
+    (process.env.NEXT_PUBLIC_SUPABASE_LINE_PROVIDER as string | undefined) ??
+    "custom:line";
+
   const { error } = await supabase.auth.signInWithOAuth({
-    // @ts-expect-error LINE provider is configured in Supabase Dashboard
-    provider: "line",
+    // @ts-expect-error custom OAuth provider id (e.g. custom:line)
+    provider: lineProvider,
     options: {
       redirectTo: getAuthCallbackUrl("/settings?verified=line"),
+      scopes: "profile openid",
+      queryParams: {
+        bot_prompt: "normal",
+      },
     },
   });
 
