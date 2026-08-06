@@ -51,7 +51,7 @@ export default function MyPage() {
     <>
       <SiteHeader title="その他" />
       <main className="space-y-5 px-4 py-4 pb-28">
-        <Card className="border-2 border-primary/40 bg-primary/5 shadow-sm">
+        <Card className="border border-border bg-card shadow-sm">
           <CardContent className="space-y-4 p-5">
             <div className="flex items-start gap-3">
               <Bell className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
@@ -74,19 +74,19 @@ export default function MyPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-primary/25 bg-primary/5">
+        <Card className="border-border bg-card">
           <CardContent className="space-y-3 p-5">
-            <p className="text-sm font-medium text-primary">生活再建ナビ</p>
+            <p className="text-sm font-medium text-muted-foreground">生活再建ナビ</p>
             <p className="text-base leading-relaxed">{J00_DISASTER_EVENT_LABEL}</p>
             {caseFile && progress && (
-              <div className="rounded-xl border border-primary/15 bg-background/80 px-4 py-3">
+              <div className="rounded-xl border bg-background/80 bg-background/80 px-4 py-3">
                 {situation && situation !== "状況確認中" && (
                   <p className="text-sm font-medium">{situation}</p>
                 )}
                 <p className="mt-1 text-sm text-muted-foreground">
                   確認済み {progress.completed} / {progress.total} 件
                 </p>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-primary/10">
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
                   <div
                     className="h-full rounded-full bg-primary transition-all"
                     style={{
@@ -221,8 +221,8 @@ function MenuLink({
       href={href}
       className="flex items-center gap-4 rounded-2xl border bg-card px-4 py-4 shadow-sm transition-colors hover:bg-accent/50 active:bg-accent"
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-        <Icon className="h-5 w-5 text-primary" />
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-muted">
+        <Icon className="h-5 w-5 text-brand-green" />
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-base font-semibold">{label}</p>

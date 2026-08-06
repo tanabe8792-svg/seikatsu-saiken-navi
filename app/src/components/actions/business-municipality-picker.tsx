@@ -54,7 +54,7 @@ export function BusinessMunicipalityPicker({
               className={cn(
                 "rounded-xl border px-3 py-2.5 text-left text-sm",
                 active
-                  ? "border-primary bg-primary/10 font-medium"
+                  ? "border-brand-green bg-muted font-medium"
                   : "bg-card hover:bg-accent/40"
               )}
             >

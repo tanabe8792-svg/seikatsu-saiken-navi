@@ -71,7 +71,7 @@ export function NotificationSettings() {
         !!settings.notifications.lineId));
 
   return (
-    <Card id="mypage-register" className="border-primary/30">
+    <Card id="mypage-register" className="border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <Bell className="h-5 w-5 text-primary" />
@@ -98,7 +98,7 @@ export function NotificationSettings() {
           </ul>
         </div>
 
-        <div className="rounded-xl border bg-primary/5 px-4 py-3">
+        <div className="rounded-xl border border-border bg-card px-4 py-3">
           <p className="text-sm font-medium">登録するとできること</p>
           <p className="mt-1 text-xs text-muted-foreground">
             サイト上の最新情報は、開いたときに反映されます。すぐ知りたいときのための通知です。
@@ -123,7 +123,7 @@ export function NotificationSettings() {
                 className={cn(
                   "w-full rounded-xl border px-4 py-4 text-left transition-colors",
                   active
-                    ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                    ? "border-brand-green bg-muted/50 ring-1 ring-brand-green/20"
                     : "border-border bg-background hover:bg-muted/40"
                 )}
               >

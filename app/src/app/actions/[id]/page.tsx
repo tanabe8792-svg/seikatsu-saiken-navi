@@ -20,8 +20,8 @@ export default async function ActionDetailPage({
     <>
       <SiteHeader title={procedure.title} showBack backHref="/actions" />
       <main className="space-y-5 px-4 py-4 pb-36">
-        <section className="rounded-2xl border bg-primary/5 p-5">
-          <p className="mb-2 text-sm font-medium text-primary">やること</p>
+        <section className="rounded-2xl border border-border bg-card p-5">
+          <p className="mb-2 text-sm font-medium text-muted-foreground">やること</p>
           <h2 className="text-xl font-bold leading-snug">{procedure.title}</h2>
           <p className="mt-2 text-base leading-relaxed">{procedure.summary}</p>
         </section>

@@ -66,6 +66,7 @@ const SYSTEM_PROMPT = `あなたは日本の災害被災者向けWebアプリ「
 
 priority は immediate / week / month / later のいずれか。
 医療や安全に関わる内容は最優先で案内してください。
+分からないことは推測せず、「公式の案内でご確認ください」と伝えてください。
 支援の受給を保証するような表現は禁止です。`;
 
 function hasSignificantHousingDamage(damage?: string): boolean {

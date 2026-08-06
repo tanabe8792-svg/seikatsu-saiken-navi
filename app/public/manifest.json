@@ -4,8 +4,8 @@
   "description": "災害後の行動OS — 次に何をすればよいかを案内します",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7f3eb",
-  "theme_color": "#2f5c34",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "lang": "ja",
   "icons": [

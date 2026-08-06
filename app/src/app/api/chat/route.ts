@@ -100,7 +100,7 @@ export async function POST(request: Request) {
 
     const completion = await openai.chat.completions.create({
       model: OPENAI_MODEL,
-      temperature: 0.4,
+      temperature: 0.2,
       messages: [
         { role: "system", content: systemMessage },
         ...messages.map((m) => ({

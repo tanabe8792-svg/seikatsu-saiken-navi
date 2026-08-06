@@ -21,23 +21,26 @@ function createMessage(role: "user" | "assistant", content: string): ChatMessage
 }
 
 function buildWelcomeMessage(profile: UserProfile): ChatMessage {
+  const certaintyNote =
+    "※ 分からないことは推測せず、公式の案内を確認していただくようお伝えします。";
+
   if (profile.j00Completed && profile.municipality && profile.housingDamage) {
     return createMessage(
       "assistant",
-      `${profile.municipality}・${profile.housingDamage}の状況、引き継いでいます。\n\nいま困っていることや、確認したいことがあれば教えてください。`
+      `${profile.municipality}・${profile.housingDamage}の状況、引き継いでいます。\n\nいま困っていることや、確認したいことがあれば教えてください。\n${certaintyNote}`
     );
   }
 
   if (profile.j00Completed) {
     return createMessage(
       "assistant",
-      "はじめにでいただいた状況、引き継いでいます。\n\nいま困っていることや、確認したいことがあれば教えてください。"
+      `はじめにでいただいた状況、引き継いでいます。\n\nいま困っていることや、確認したいことがあれば教えてください。\n${certaintyNote}`
     );
   }
 
   return createMessage(
     "assistant",
-    "令和8年熊本地震について、状況を教えてください。\n\n通信が不安なときは、メニューの「状況を選び直す」から選ぶ方法もおすすめです。"
+    `令和8年熊本地震について、状況を教えてください。\n\n通信が不安なときは、メニューの「状況を選び直す」から選ぶ方法もおすすめです。\n${certaintyNote}`
   );
 }
 
@@ -135,6 +138,12 @@ export default function ChatPage() {
     <>
       <SiteHeader title="AI相談" showBack backHref="/mypage" />
       <main className="flex min-h-[calc(100vh-8rem)] flex-col px-4 pb-4">
+        <Card className="mb-2 border-border bg-card px-4 py-3">
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            AI相談は、いただいた内容をもとに案内します。確信が持てないことは推測せず、公式の案内を確認していただくようお伝えします。
+          </p>
+        </Card>
+
         <div
           className="flex-1 space-y-4 py-4"
           role="log"
@@ -150,8 +159,8 @@ export default function ChatPage() {
               <Card
                 className={`max-w-[85%] px-4 py-3 ${
                   message.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card"
+                    ? "border-border bg-muted text-foreground"
+                    : "border-border bg-card"
                 }`}
               >
                 <p className="whitespace-pre-wrap text-base leading-relaxed">
@@ -170,7 +179,7 @@ export default function ChatPage() {
           )}
 
           {isComplete && session.actions.length > 0 && (
-            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
+            <div className="rounded-2xl border border-border bg-card p-4">
               <p className="mb-3 text-base font-medium">
                 やることリストを作成しました
               </p>

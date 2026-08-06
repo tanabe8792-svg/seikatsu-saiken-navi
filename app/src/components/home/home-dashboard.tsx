@@ -163,9 +163,9 @@ export function HomeDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="border-primary/30 bg-primary/5">
+              <Card className="border-border bg-card">
                 <CardContent className="space-y-4 p-6">
-                  <p className="text-sm font-medium text-primary">
+                  <p className="text-sm font-medium text-muted-foreground">
                     {postJ00Welcome.firstStepLead}
                   </p>
                   <p className="text-xl font-bold leading-snug">
@@ -232,9 +232,9 @@ export function HomeDashboard() {
                 </Card>
               )}
 
-              <Card className="overflow-hidden border-2 border-primary/45 shadow-md">
+              <Card className="overflow-hidden border border-border bg-card shadow-sm">
                 <CardContent className="space-y-4 p-5">
-                  <p className="text-sm font-medium text-primary">
+                  <p className="text-sm font-medium text-muted-foreground">
                     次に一緒に確認すること
                   </p>
                   <p className="text-xl font-bold leading-snug">
@@ -398,7 +398,7 @@ export function HomeDashboard() {
                         key={item.name}
                         className={
                           item.isPrimary
-                            ? "rounded-lg border border-primary/20 bg-primary/5 px-3 py-2"
+                            ? "rounded-lg border border-border bg-muted/40 px-3 py-2"
                             : "px-1 py-1"
                         }
                       >
@@ -466,9 +466,9 @@ export function HomeDashboard() {
 
     return (
       <div className="space-y-4">
-        <Card className="border-primary/30 bg-primary/5">
+        <Card className="border-border bg-card">
           <CardContent className="space-y-4 p-6">
-            <p className="text-sm font-medium text-primary">あなたの状況</p>
+            <p className="text-sm font-medium text-muted-foreground">あなたの状況</p>
             <p className="text-lg font-bold leading-snug">
               {formatCaseSituation(caseFile) !== "状況確認中"
                 ? formatCaseSituation(caseFile)
@@ -520,9 +520,9 @@ export function HomeDashboard() {
   if (nextAction) {
     return (
       <div className="space-y-4">
-        <Card className="border-primary/40 bg-primary/5">
+        <Card className="border-border bg-card">
           <CardContent className="space-y-4 p-6">
-            <p className="text-sm font-medium text-primary">
+            <p className="text-sm font-medium text-muted-foreground">
               次に一緒に確認すること
             </p>
             <p className="text-2xl font-bold leading-snug">{nextAction.title}</p>
@@ -555,9 +555,9 @@ export function HomeDashboard() {
         </p>
       </div>
 
-      <Card className="border-primary/30 bg-primary/5">
+      <Card className="border-border bg-card">
         <CardContent className="space-y-3 p-5">
-          <p className="text-sm font-medium text-primary">生活再建ナビ</p>
+          <p className="text-sm font-medium text-muted-foreground">生活再建ナビ</p>
           <h2 className="text-xl font-bold leading-snug">
             このサービスでできること
           </h2>
@@ -572,7 +572,7 @@ export function HomeDashboard() {
               · 登録不要・無料です。わからない項目はそのままで進められます
             </li>
           </ul>
-          <ul className="space-y-1 border-t border-primary/15 pt-3">
+          <ul className="space-y-1 border-t border-border pt-3">
             <li className="text-xs leading-relaxed text-muted-foreground">
               · 大切な判断の前には、公式ページで最新もご確認ください。
             </li>

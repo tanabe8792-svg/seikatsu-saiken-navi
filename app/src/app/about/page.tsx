@@ -23,7 +23,7 @@ export default function AboutPage() {
     <>
       <SiteHeader title={TRUST_PAGE_TITLE} showBack backHref="/mypage" />
       <main className="space-y-5 px-4 py-4 pb-28">
-        <Card className="border-primary/30 bg-primary/5">
+        <Card className="border-border bg-card">
           <CardContent className="space-y-4 p-5">
             <div className="flex flex-col items-center gap-3 text-center">
               <AppLogo size="lg" />
@@ -97,7 +97,7 @@ export default function AboutPage() {
         <div className="pt-2 text-center">
           <Link
             href="/mypage"
-            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            className="text-sm font-medium text-muted-foreground underline-offset-4 hover:underline"
           >
             メニューに戻る
           </Link>

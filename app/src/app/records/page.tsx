@@ -116,7 +116,7 @@ export default function RecordsPage() {
     <>
       <SiteHeader title="記録した写真" showBack />
       <main className="space-y-5 px-4 py-4 pb-28">
-        <Card className="border-primary/25 bg-primary/5">
+        <Card className="border-border bg-card">
           <CardContent className="space-y-3 p-5">
             <p className="text-base font-semibold">端末に残した写真</p>
             <p className="text-sm leading-relaxed text-muted-foreground">

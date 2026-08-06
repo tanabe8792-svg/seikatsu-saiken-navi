@@ -561,7 +561,7 @@ export default function J00HearingPage() {
                             className={`rounded-xl border px-3 py-2.5 text-left text-sm ${
                               profile.businessMunicipality ===
                               profile.municipality
-                                ? "border-primary bg-primary/10 font-medium"
+                                ? "border-brand-green bg-muted font-medium"
                                 : "bg-card"
                             }`}
                             onClick={() => {
@@ -583,7 +583,7 @@ export default function J00HearingPage() {
                               type="button"
                               className={`rounded-xl border px-3 py-2.5 text-left text-sm ${
                                 profile.businessMunicipality === m.name
-                                  ? "border-primary bg-primary/10 font-medium"
+                                  ? "border-brand-green bg-muted font-medium"
                                   : "bg-card"
                               }`}
                               onClick={() => {

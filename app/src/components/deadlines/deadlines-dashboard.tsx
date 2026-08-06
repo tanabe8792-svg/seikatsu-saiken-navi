@@ -37,8 +37,8 @@ export function DeadlinesDashboard({ caseFile }: DeadlinesDashboardProps) {
 
   return (
     <div className="space-y-5 pb-28">
-      <div className="space-y-2 rounded-2xl border border-primary/20 bg-primary/5 px-5 py-5">
-        <p className="text-sm font-medium text-primary">被災日からの目安</p>
+      <div className="space-y-2 rounded-2xl border border-border bg-muted/40 px-5 py-5">
+        <p className="text-sm font-medium text-muted-foreground">被災日からの目安</p>
         <p className="text-base leading-relaxed">
           2026年7月28日（熊本地震）起算で、被災から
           <span className="font-semibold"> {elapsed}日</span>

@@ -60,7 +60,7 @@ export function ChoiceList({
               "flex min-h-[56px] w-full items-center rounded-2xl border-2 px-5 py-4 text-left text-lg font-medium transition-colors active:scale-[0.98]",
               selected === option
                 ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
+                : "border-border bg-card hover:border-brand-green/40 hover:bg-muted/50"
             )}
           >
             {option}
@@ -102,7 +102,7 @@ export function MultiToggleList({
               "min-h-[56px] rounded-2xl border-2 px-4 py-3 text-base font-medium transition-colors active:scale-[0.98]",
               selectedKeys.has(key)
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-card hover:border-primary/50"
+                : "border-border bg-card hover:border-brand-green/40"
             )}
           >
             {label}

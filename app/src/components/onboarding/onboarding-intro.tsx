@@ -32,9 +32,9 @@ export function OnboardingIntro({
         </p>
       </div>
 
-      <Card className="border-primary/25 bg-primary/5">
+      <Card className="border-border bg-card">
         <CardContent className="space-y-3 p-5">
-          <p className="text-sm font-medium text-primary">{ONBOARDING_INTRO_LABEL}</p>
+          <p className="text-sm font-medium text-muted-foreground">{ONBOARDING_INTRO_LABEL}</p>
           <h2 className="text-lg font-bold">このサービスでできること</h2>
           <ul className="space-y-2">
             {ONBOARDING_SERVICE_FEATURES.map((item) => (
@@ -43,7 +43,7 @@ export function OnboardingIntro({
               </li>
             ))}
           </ul>
-          <ul className="space-y-1 border-t border-primary/15 pt-3">
+          <ul className="space-y-1 border-t border-border pt-3">
             {ONBOARDING_INFO_HANDLING_SHORT.map((item) => (
               <li key={item} className="text-xs leading-relaxed text-muted-foreground">
                 · {item}
@@ -77,7 +77,7 @@ export function OnboardingIntro({
                   className={cn(
                     "rounded-full border px-3 py-2 text-left text-sm transition-colors",
                     active
-                      ? "border-primary bg-primary/10 font-medium"
+                      ? "border-brand-green bg-muted font-medium"
                       : "border-border bg-background hover:bg-muted/50"
                   )}
                 >

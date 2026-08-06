@@ -138,7 +138,7 @@ export function PhotoEvidenceCapture({
   }
 
   return (
-    <Card id="photo-evidence-capture" className="border-primary/40 bg-primary/5">
+    <Card id="photo-evidence-capture" className="border-border bg-card">
       <CardContent className="space-y-4 p-5">
         <div>
           <h3 className="text-base font-semibold">被害の写真を残す</h3>
@@ -252,7 +252,7 @@ export function PhotoEvidenceCapture({
             <p className="text-sm font-medium">この手順で残した写真</p>
             <Link
               href="/records"
-              className="text-sm font-medium text-primary underline-offset-2 hover:underline"
+              className="text-sm font-medium text-muted-foreground underline-offset-2 hover:underline"
             >
               すべて見返す
             </Link>

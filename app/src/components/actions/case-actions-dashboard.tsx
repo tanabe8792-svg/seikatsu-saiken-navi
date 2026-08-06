@@ -50,10 +50,10 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
 
   return (
     <div className="space-y-5 pb-28">
-      <Card className="border-primary/30 bg-primary/5">
+      <Card className="border-border bg-card">
         <CardContent className="space-y-4 p-5">
           <div>
-            <p className="text-sm font-medium text-primary">
+            <p className="text-sm font-medium text-muted-foreground">
               {phaseDisplay.title}
             </p>
             {situation && situation !== "状況確認中" && (
@@ -86,7 +86,7 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
             </p>
           </div>
 
-          <div className="h-2.5 overflow-hidden rounded-full bg-primary/15">
+          <div className="h-2.5 overflow-hidden rounded-full bg-muted">
             <div
               className="h-full rounded-full bg-primary transition-all"
               style={{ width: `${percent}%` }}
@@ -132,9 +132,9 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
       )}
 
       {current && (
-        <Card className="border border-primary/30 bg-primary/5 shadow-sm">
+        <Card className="border border-border bg-card shadow-sm">
           <CardContent className="space-y-3 p-5">
-            <p className="text-sm font-semibold text-primary">
+            <p className="text-sm font-semibold text-foreground">
               迷ったらここから（任意）
             </p>
             <ActionPreview action={current} isCurrent />
@@ -181,7 +181,7 @@ function ActionPreview({
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
         {isCurrent && (
-          <span className="rounded-full bg-primary px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
+          <span className="rounded-full bg-brand-orange px-2.5 py-0.5 text-xs font-medium text-white">
             いま
           </span>
         )}
@@ -222,7 +222,7 @@ function ActionRow({
           done
             ? "border-border/60 bg-muted/20 transition-colors hover:bg-muted/40"
             : isCurrent
-              ? "border-primary/40 bg-primary/5 transition-colors hover:bg-primary/10"
+              ? "border-border bg-card transition-colors hover:bg-muted/60"
               : "transition-colors hover:bg-accent/40"
         }
       >
@@ -245,7 +245,7 @@ function ActionRow({
                 </span>
               )}
               {isCurrent && !done && (
-                <span className="text-xs font-semibold text-primary">いま</span>
+                <span className="text-xs font-semibold text-brand-orange">いま</span>
               )}
               {done && (
                 <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
@@ -266,7 +266,7 @@ function ActionRow({
               </p>
             )}
             {!done && (
-              <p className="pt-1 text-sm font-medium text-primary">
+              <p className="pt-1 text-sm font-medium text-muted-foreground">
                 詳しく確認する
               </p>
             )}

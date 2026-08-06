@@ -211,7 +211,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             <li
               key={step.id}
               className={`rounded-xl border px-4 py-3 ${
-                done ? "border-primary/40 bg-primary/5" : "bg-card"
+                done ? "border-border bg-card" : "bg-card"
               }`}
             >
               <button
@@ -330,9 +330,9 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
 
   return (
     <div className="space-y-4 pb-40">
-      <Card className="border-primary/35 bg-primary/5">
+      <Card className="border-border bg-card">
         <CardContent className="space-y-3 p-5">
-          <p className="text-sm font-medium text-primary">
+          <p className="text-sm font-medium text-muted-foreground">
             {isDone
               ? "確認できた手順"
               : browsingAhead
@@ -393,7 +393,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               </span>
             )}
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-primary/15">
+          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
             <div
               className="h-full rounded-full bg-primary transition-all"
               style={{
@@ -457,7 +457,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       )}
 
       {procedureGuidance && (
-        <Card className="border-primary/40 bg-primary/5">
+        <Card className="border-border bg-card">
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">
               {procedureGuidance.title}
@@ -642,7 +642,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             「あなたの進み具合」と「公式手続きの記録」は別物です。混同しないように分けて表示しています。
           </p>
 
-          <div className="rounded-xl border bg-primary/5 px-4 py-3 space-y-1">
+          <div className="rounded-xl border border-border bg-card px-4 py-3 space-y-1">
             <p className="text-xs font-medium text-primary">あなたの進み具合</p>
             <p className="text-sm font-semibold">
               {isDone
