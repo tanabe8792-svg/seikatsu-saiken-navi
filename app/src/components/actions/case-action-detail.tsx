@@ -574,7 +574,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">準備物</h3>
             <p className="text-xs text-muted-foreground">
-              用意できたらチェック。ここが揃うと、この手順を終えられます。
+              用意できたらチェック。ここが揃うと「この確認は完了」にできます。
             </p>
             <ul className="space-y-3">
               {prepItems.map((item) => (
