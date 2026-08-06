@@ -1,0 +1,210 @@
+# 00 ChatGPT / 外部AI 引き継ぎ用
+
+---
+
+## 📋 使い方（3秒 · 上に戻る必要なし）
+
+| 手順 | 操作 |
+|------|------|
+| **1** | **⌘+End**（Mac）または **Ctrl+End**（Win）で **このファイルの一番下** へ |
+| **2** | 見出し **「GPTに投げる全文」** の直下、コードブロック右上 **「Copy」** を **1回だけ** |
+| **3** | ChatGPT / Claude / 別 Cursor セッションに **貼り付け** |
+
+> ⚠️ **Copy するのはファイル最下部のコードブロック1つだけ。**  
+> この説明・表・メモは **含めない**。コードブロックの中身が引き継ぎ全文（もれなし）。
+
+**ブラウザでワンクリックコピーしたい場合:** [00_引き継ぎコピー.html](./00_引き継ぎコピー.html) を開き、下の **「全文をコピー」** ボタンを押す（中身は下記コードブロックと同一）。
+
+---
+
+<details>
+<summary>人間向けメモ（GPTに貼らない）</summary>
+
+- 引き継ぎ全文は **常にこのファイル最下部の1コードブロック** に集約している
+- 機能追加・設計書追加のたびに **そのブロックだけ** 更新する
+- アーキテクチャ図・検証コマンド・主要ファイル・ロードマップを **毎回全部** 入れる（部分更新禁止）
+
+</details>
+
+---
+
+<br>
+
+# ⬇️ GPTに投げる全文（Copy はここだけ · もれなし）
+
+> **コードブロック右上「Copy」を1回。** 枠内（``` から ``` まで）がすべて。
+
+```
+=== 生活再建ナビ — AI引き継ぎ（2026-08-05）===
+
+【プロジェクト】
+名称: 生活再建ナビ
+方針: 発災直後情報アプリではなく、被災後数か月〜数年の生活・事業再建を伴走する AI ケースワーカー基盤
+主戦場: J-03〜J-06（被害記録・支援・保険・住居再建・生活定着）
+非主戦場（最小限）: 給水・避難所・物資（外部/自治体導線）
+ワークスペース: /Users/tanabeyuu/生活再建ナビ
+PM: ゆう
+
+【アーキテクチャ（維持・変更禁止）】
+J-00 → CaseProfile → KB → Trigger → RecoveryPhase → ActionQueue
+  → Evidence → DocumentRecord → Procedure(+Dependency) → Deadline → CaseDecision
+  → CaseTimeline（派生・既存構造は変更しない） → UI
+
+- J-00: 初回ヒアリング（5ステップ）
+- KB: 公式情報・出典付き制度データ（support-programs.ts）
+- Trigger: 判断ロジック（削除禁止・追加のみ）
+- RecoveryPhase: acute | recovery（recovery-phase.ts, phaseScope）
+- Action: 被災者がやる行動（action-templates.ts）
+- Evidence: 証跡イベント（evidence.ts）
+- DocumentRecord: 再建伴走の記憶基盤（document-records.ts, KB requiredDocuments 由来）
+- Procedure: 外部手続き状態（procedures.ts, procedure-dependencies.ts）
+- Deadline: 期限（deadlines.ts, program-deadlines.ts）
+- CaseDecision: 判断履歴（説明可能性、document_gap_priority 含む）
+- CaseTimeline: 再建履歴（case-timeline.ts — 上記から派生生成、CaseFile.timeline に保持）
+
+【制約（必ず守る）】
+- J-00〜J-06 定義を変更しない
+- KB / Trigger を削除しない（追加のみ可）
+- 推測で制度・期限・自治体情報を追加しない（確認不可は確認不可）
+- 出典 sourceUrl + updatedAt を維持
+- UI 変更は最小限（基本 home-dashboard.tsx のみ）
+- git commit はユーザー指示時のみ
+
+【実装済み機能】
+1. Case Management … app/src/lib/case-management/
+2. Evidence V2 … evidence.ts
+3. Procedure V3 + Phase1拡張 … procedures.ts, procedure-dependencies.ts
+4. 判断説明 UI … decision-explanation.ts
+5. Recovery Phase … recovery-phase.ts, recovery-dashboard.ts
+6. Deadline MVP … deadlines.ts, program-deadlines.ts
+7. Evidence 実務化 … document-records.ts, document-requirements.ts, document-gap.ts
+8. Case Timeline … case-timeline.ts（既存データから派生、再建履歴）
+
+【Recovery Phase 強化（完了）】
+- ホーム: 「現在: 生活再建フェーズ」+ サブタイトル表示
+- acute 時: 「再建伴走を開始する」ボタン → TRIGGER-USER-RECOVERY-START → CaseDecision 記録
+- Recovery Mode: 給水・避難所 Action 非表示、KB alerts 由来の外部導線（kumamoto-shien 等）を表示
+- ホーム: 「現在の手続き」一覧（最大3件、getProcedureOverview）
+
+【Recovery Phase（基本）】
+- CaseFile.recoveryPhase: acute | recovery
+- Action phaseScope: acute | recovery | both
+- Recovery Mode: 給水・避難所 Action 非表示、写真・罹災証明・支援等を優先
+- 既存 localStorage → recovery 扱い
+- 既存6ケース検証 → phaseMode: acute で後方互換
+
+【Procedure 拡張 Phase1（完了）】
+ProcedureType 追加:
+  insurance_claim, life_rebuild_grant, emergency_repair, tax_social_insurance
+  （既存: disaster_certificate, loan_relief, housing_support, business_support 等は維持）
+
+KB 制度追加:
+  SP-INSURANCE-CLAIM（sonpo.or.jp/news/disaster/）
+  SP-TAX-SOCIAL-INSURANCE（nta.go.jp/life/support/shien/）
+
+Recovery Action 追加（phaseScope=recovery）:
+  rw-j04-insurance-report … 保険会社へ被害連絡する
+  rw-j04-life-rebuild … 生活再建支援制度を確認する
+  rw-j05-emergency-repair … 応急修理制度を確認する（熊本市のみ）
+  rw-j04-tax-social … 税・社会保険の手続を確認する
+
+Trigger 追加:
+  TRIGGER-INSURANCE-REPORT
+  TRIGGER-TAX-SOCIAL-SUPPORT
+
+制度依存（KB requiredDocuments 由来）:
+  SP-DISASTER-CERTIFICATE
+    ↓
+  SP-LIFE-REBUILD
+  SP-EMERGENCY-REPAIR
+  SP-DISASTER-LOAN-RELIEF
+  実装: procedure-dependencies.ts → syncProceduresOnActionComplete でチェック
+
+Deadline 連携:
+  Procedure が preparing になったとき、出典あり ProgramDeadlineTemplate のみ CaseDeadline 生成
+  具体日不明 → status: unknown
+
+【Evidence 実務化 Phase1（完了）】
+目的: 被災者の再建伴走の記憶基盤（士業SaaSではない）
+- DocumentRequirement: KB support-programs.requiredDocuments のみ（確認不可→unknown）
+- DocumentRecord: Evidence 同期、status=missing|preparing|submitted|verified|unknown
+- document-gap: 「次に準備するもの」被災者向け文言、既存 Action 誘導のみ（新Action禁止）
+- CaseDecision.outcome: document_gap_priority
+- UI: 再建状況 / 準備済み / 次に準備するもの（home-dashboard）
+- 検証: npm run validate:documents（Case1/4/6 Recovery）
+Action誘導: 写真→rw-j03-photo / 罹災証明→rw-j03-cert-prep / 保険→rw-j04-insurance-report
+  / 生活再建→rw-j04-life-rebuild / ローン→rw-j04-loan-relief
+
+【Case Timeline（完了）】
+目的: 被災者が数週間〜数年後でも「何をしたか・今どこか・次は何か」を確認できる履歴
+- CaseTimelineEvent: action_completed / evidence_added / procedure_started / procedure_updated
+  / deadline_created / decision_recorded / phase_transition
+- 生成: ActionQueue・Evidence・Procedure・Deadline・CaseDecision・RecoveryPhase から派生（既存構造変更なし）
+- syncCaseTimeline(caseFile) で冪等再構築 → CaseFile.timeline に保持
+- 役割分担: CaseDecision の selected/completed は載せない（action_completed と重複回避）
+- UI: 「これまでの再建状況」直近3〜5件 + 現在 + 次（home-dashboard、専門家向け表現禁止）
+- 設計: docs/18_CaseTimeline設計書.md
+- 検証: npm run validate:timeline（Case1/4/6 Recovery）
+
+【主要ファイル】
+app/src/lib/case-management/
+  types.ts, action-queue.ts, action-templates.ts
+  evidence.ts, document-records.ts, document-requirements.ts, document-gap.ts
+  procedures.ts, procedure-dependencies.ts
+  recovery-phase.ts, recovery-dashboard.ts, decision-explanation.ts
+  case-timeline.ts, validation-timeline.ts, run-validation-timeline.ts
+  validation-*.ts, run-validation-*.ts
+app/src/lib/knowledge/
+  support-programs.ts, triggers.ts, program-deadlines.ts
+app/src/components/home/home-dashboard.tsx
+app/src/lib/session-storage.ts
+docs/00_ChatGPT引き継ぎ.md（引き継ぎ全文は最下部コードブロック）
+docs/05, 09, 11, 12, 13, 14, 15, 16, 17, 18
+
+【設計書（正式版 2026-08-05）】
+docs/11 … Case Management（全体アーキ・ActionQueue 優先）
+docs/12 … Evidence V2
+docs/13 … Procedure V3 + 拡張 + Dependency
+docs/14 … Decision Explanation（判断説明 UI）
+docs/15 … Deadline Management MVP
+docs/16 … Recovery Phase（acute/recovery）
+docs/17 … Document Management（Evidence 実務化）
+docs/18 … Case Timeline（再建履歴・派生読み取りモデル）
+
+【検証コマンド（app/ で実行 · 全部）】
+npm run validate:scenarios
+npm run validate:case-actions
+npm run validate:evidence
+npm run validate:procedures
+npm run validate:procedure-extension      ← Procedure拡張（Case1/4/6 Recovery）
+npm run validate:decision-explanation
+npm run validate:recovery-phase
+npm run validate:recovery-strengthen        ← Recovery Phase 強化（Helpers + Case1/4/6）
+npm run validate:documents                  ← Evidence 実務化（Case1/4/6 Recovery）
+npm run validate:deadlines
+npm run validate:timeline                   ← Case Timeline（Case1/4/6 Recovery）
+
+【検証期待値（Procedure拡張）】
+Case1（半壊・Recovery）: 写真 → 罹災証明 preparing → 証明準備完了 → 生活再建支援金 preparing + 期限 unknown
+Case4（ローン・Recovery）: 写真後ローン減免 not_started → 罹災証明準備完了 → loan_relief preparing
+Case6（自営業）: 事業復旧完了 → business_support preparing
+
+【Phase1 ロードマップ】
+✅ Deadline Management MVP
+✅ Procedure 拡張
+✅ Recovery Phase 強化
+✅ Evidence 実務化（DocumentRecord / document-gap）
+✅ Case Timeline（再建履歴 / home-dashboard）
+⬜ 固定日期限の KB 追加（告示日が確認できたもののみ — docs/15 Phase 2a）
+⬜ ファイルアップロード（Evidence Phase 2）
+
+【残課題】
+- docs/15 Phase 2: fixed_date テンプレート・Reminder
+- J-00 ヒアリング内「再建開始」統合（任意 — 現状ホームから移行）
+- SP-TAX-SOCIAL-INSURANCE 期限テンプレート未登録
+- npm validate のローカル実行確認
+
+【次の作業指示テンプレート】
+現在の生活再建ナビ（上記内容）を前提に、【ここにやりたいこと】を実装/設計してください。
+制約: 既存アーキテクチャ維持 / KB・Journey・Trigger 変更禁止（追加のみ） / 推測で制度追加禁止 / UI最小変更 / git commit禁止（指示時のみ）
+```

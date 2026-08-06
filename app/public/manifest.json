@@ -1,0 +1,19 @@
+{
+  "name": "生活再建ナビ",
+  "short_name": "再建ナビ",
+  "description": "災害後の行動OS — 次に何をすればよいかを案内します",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#0071e3",
+  "orientation": "portrait-primary",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "/icon",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
