@@ -22,7 +22,8 @@
     "validate:survivor-scenarios": "npx tsx src/lib/case-management/run-validation-survivor-scenarios.ts",
     "validate:onboarding": "npx tsx src/lib/onboarding/run-validation-onboarding.ts",
     "validate:continuity-ux": "npx tsx src/lib/case-management/run-validation-continuity-ux.ts",
-    "validate:survivor-copy": "npx tsx src/lib/case-management/run-validation-survivor-copy.ts"
+    "validate:survivor-copy": "npx tsx src/lib/case-management/run-validation-survivor-copy.ts",
+    "validate:official-links": "npx tsx src/lib/trust/run-validation-official-links.ts"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.4",

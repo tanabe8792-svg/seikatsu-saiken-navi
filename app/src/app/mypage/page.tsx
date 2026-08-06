@@ -51,6 +51,29 @@ export default function MyPage() {
     <>
       <SiteHeader title="その他" />
       <main className="space-y-5 px-4 py-4 pb-28">
+        <Card className="border-2 border-primary/40 bg-primary/5 shadow-sm">
+          <CardContent className="space-y-4 p-5">
+            <div className="flex items-start gap-3">
+              <Bell className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+              <div className="space-y-2">
+                <h2 className="text-lg font-bold">マイページ登録（任意）</h2>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  最新の支援案内などを、メールやLINEですぐ受け取りたい方向けです。登録しなくても、やることの確認はすべてご利用いただけます。
+                </p>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  進捗や入力内容は、この端末の中に自動保存されます（同じ端末なら続きから再開できます）。マイページ登録は、通知用の連絡先を残す任意の機能です。
+                </p>
+              </div>
+            </div>
+            <Button asChild size="lg" className="h-12 w-full">
+              <Link href="/settings#mypage-register">
+                マイページ登録・確認する
+                <ChevronRight className="h-5 w-5" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
         <Card className="border-primary/25 bg-primary/5">
           <CardContent className="space-y-3 p-5">
             <p className="text-sm font-medium text-primary">生活再建ナビ</p>

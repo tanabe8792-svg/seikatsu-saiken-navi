@@ -93,12 +93,12 @@ export const DISASTER_OVERLAYS: DisasterOverlay[] = [
     municipalityCode: MUNICIPALITY_CODES.UKI_CITY,
     intensity: verified(
       "7",
-      "https://news.yahoo.co.jp/articles/71b5683b42720edfdf8ad0d2734c6aa0f0a82d2d",
+      "https://www.city.uki.kumamoto.jp/",
       "2026-07-31 12:00"
     ),
     damageSummary: verified(
       "震度7を観測。罹災証明の受付は1日当たりの規定数を設ける。",
-      "https://news.yahoo.co.jp/articles/71b5683b42720edfdf8ad0d2734c6aa0f0a82d2d",
+      "https://www.city.uki.kumamoto.jp/",
       "2026-07-31 12:00"
     ),
     lifelineIssues: {
@@ -123,30 +123,30 @@ export const DISASTER_OVERLAYS: DisasterOverlay[] = [
     certificateInfo: {
       summary: verified(
         "宇城市役所本庁・三角支所・豊野支所等で罹災証明の申請受付。1日当たりの受付上限あり。",
-        "https://news.yahoo.co.jp/articles/71b5683b42720edfdf8ad0d2734c6aa0f0a82d2d",
+        "https://www.city.uki.kumamoto.jp/",
         "2026-07-31 12:00"
       ),
       onlineAvailable: unverified<boolean>(),
       onlineUrl: unverified(),
       officeHours: verified(
         "9:00開始（整理券配布）",
-        "https://anzen.m47.jp/p43/m772/2621562.html",
+        "https://www.city.uki.kumamoto.jp/",
         "2026-08-01 12:00"
       ),
       dailyLimit: verified(
         200,
-        "https://news.yahoo.co.jp/articles/71b5683b42720edfdf8ad0d2734c6aa0f0a82d2d",
+        "https://www.city.uki.kumamoto.jp/",
         "2026-07-31 12:00"
       ),
       ticketSystem: verified(
         true,
-        "https://anzen.m47.jp/p43/m772/2621562.html",
+        "https://www.city.uki.kumamoto.jp/",
         "2026-08-01 12:00"
       ),
       requiredDocuments: unverified<string[]>(),
       notes: verified(
         "本庁200組/日、三角・豊野支所各60組/日。上限到達で当日受付終了。",
-        "https://anzen.m47.jp/p43/m772/2621562.html",
+        "https://www.city.uki.kumamoto.jp/",
         "2026-08-01 12:00"
       ),
     },
@@ -159,18 +159,18 @@ export const DISASTER_OVERLAYS: DisasterOverlay[] = [
     municipalityCode: MUNICIPALITY_CODES.HIKAWA_TOWN,
     intensity: verified(
       "7",
-      "https://mainichi.jp/articles/20260731/k00/00m/040/285000c",
+      "https://www.town.hikawa.kumamoto.jp/list00849.html",
       "2026-07-31 12:00"
     ),
     damageSummary: verified(
       "最大震度7。町内全域で断水が続く。",
-      "https://mainichi.jp/articles/20260731/k00/00m/040/285000c",
+      "https://www.town.hikawa.kumamoto.jp/list00849.html",
       "2026-07-31 12:00"
     ),
     lifelineIssues: {
       waterOutage: verified(
         "町内全域約3200戸が断水。復旧まで半年から1年かかる可能性。",
-        "https://mainichi.jp/articles/20260731/k00/00m/040/285000c",
+        "https://www.town.hikawa.kumamoto.jp/list00849.html",
         "2026-07-31 12:00"
       ),
       powerOutage: unverified(),
@@ -228,7 +228,7 @@ export const DISASTER_OVERLAYS: DisasterOverlay[] = [
     lifelineIssues: {
       waterOutage: verified(
         "約2万5300世帯が断水（報道時点）",
-        "https://mainichi.jp/articles/20260731/k00/00m/040/285000c",
+        "https://www.city.yatsushiro.lg.jp/kiji00324826/index.html",
         "2026-07-31 12:00"
       ),
       powerOutage: unverified(),
@@ -256,7 +256,7 @@ export const DISASTER_OVERLAYS: DisasterOverlay[] = [
         "2026-07-31 12:00"
       ),
       onlineUrl: verified(
-        "https://logoform.jp/form/zis6/1724496",
+        "https://www.city.yatsushiro.lg.jp/kiji00324826/index.html",
         "https://www.city.yatsushiro.lg.jp/kiji00324826/index.html",
         "2026-07-31 12:00"
       ),

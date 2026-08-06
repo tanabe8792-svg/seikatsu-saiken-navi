@@ -13,7 +13,7 @@ export const REGIONAL_ALERTS: RegionalAlert[] = [
       "窓口混雑状況を確認してください。オンライン申請の有無を確認します。宇城市では1日200組の受付上限・整理券制です。",
     priority: "critical",
     journeyIds: ["J-03"],
-    sourceUrl: "https://news.yahoo.co.jp/articles/71b5683b42720edfdf8ad0d2734c6aa0f0a82d2d",
+    sourceUrl: "https://www.city.uki.kumamoto.jp/",
     updatedAt: "2026-07-31",
   },
   {
@@ -82,7 +82,7 @@ export const REGIONAL_ALERTS: RegionalAlert[] = [
       "復旧まで長期化する可能性があります。給水所情報をこまめに確認してください。",
     priority: "critical",
     journeyIds: ["J-02"],
-    sourceUrl: "https://mainichi.jp/articles/20260731/k00/00m/040/285000c",
+    sourceUrl: "https://www.town.hikawa.kumamoto.jp/list00849.html",
     updatedAt: "2026-07-31",
   },
   {

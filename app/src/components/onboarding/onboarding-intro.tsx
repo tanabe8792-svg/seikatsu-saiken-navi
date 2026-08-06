@@ -49,14 +49,14 @@ export function OnboardingIntro({
         質問をはじめる
       </Button>
       <p className="text-center text-sm text-muted-foreground">
-        登録不要 · 無料 · 約2分
+        登録不要 · 無料 · 約2分です
       </p>
 
       <Card>
         <CardContent className="space-y-3 p-5">
           <h2 className="text-lg font-bold">いまの段階に合わせて（任意）</h2>
           <p className="text-xs text-muted-foreground">
-            当てはまるものがあればタップ。最初はどれも選ばなくて大丈夫です。
+            当てはまるものがあればタップしてください。最初はどれも選ばなくて大丈夫です。
           </p>
           <div className="flex flex-wrap gap-2">
             {ONBOARDING_TIMING_OPTIONS.map((opt) => {

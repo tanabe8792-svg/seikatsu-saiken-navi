@@ -555,18 +555,18 @@ export function HomeDashboard() {
           </h2>
           <ul className="space-y-2">
             <li className="text-sm leading-relaxed">
-              · いまの状況を一緒に整理し、次に確認することを順番に案内する
+              · いまの状況を一緒に整理し、次に確認することを順番に案内します
             </li>
             <li className="text-sm leading-relaxed">
-              · 公式情報をもとに案内する（推測で決めません）
+              · 公式情報をもとに案内します（推測では決めません）
             </li>
             <li className="text-sm leading-relaxed">
-              · 登録不要・無料。わからない項目はそのままで進められる
+              · 登録不要・無料です。わからない項目はそのままで進められます
             </li>
           </ul>
           <ul className="space-y-1 border-t border-primary/15 pt-3">
             <li className="text-xs leading-relaxed text-muted-foreground">
-              · 大切な判断の前には、公式ページで最新も確認してください。
+              · 大切な判断の前には、公式ページで最新もご確認ください。
             </li>
             <li className="text-xs leading-relaxed text-muted-foreground">
               · 入力内容は当面この端末内に保存します（別端末へは引き継げません）。
@@ -581,7 +581,7 @@ export function HomeDashboard() {
             令和8年（2026年）7月28日 · 熊本地震
           </p>
           <p className="text-sm leading-relaxed text-stone-200/95">
-            再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理します。
+            再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理いたします。
           </p>
           <Button
             asChild
@@ -591,7 +591,7 @@ export function HomeDashboard() {
             <Link href="/start">質問をはじめる</Link>
           </Button>
           <p className="text-center text-xs text-stone-300/90">
-            登録不要 · 無料 · 約2分
+            登録不要 · 無料 · 約2分です
           </p>
         </CardContent>
       </Card>

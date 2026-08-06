@@ -13,14 +13,14 @@ import type { CaseFile } from "@/lib/case-management/types";
 import type { OnboardingTimingHint, UserProfile } from "@/lib/types";
 
 export const ONBOARDING_SERVICE_FEATURES = [
-  "いまの状況を一緒に整理し、次に確認することを順番に案内する",
-  "公式情報をもとに案内する（推測で決めません）",
-  "登録不要・無料。わからない項目はそのままで進められる",
+  "いまの状況を一緒に整理し、次に確認することを順番に案内します",
+  "公式情報をもとに案内します（推測では決めません）",
+  "登録不要・無料です。わからない項目はそのままで進められます",
 ] as const;
 
 /** できることと一緒に示す短い注意（表示専用） */
 export const ONBOARDING_INFO_HANDLING_SHORT = [
-  "大切な判断の前には、公式ページで最新も確認してください。",
+  "大切な判断の前には、公式ページで最新もご確認ください。",
   "入力内容は当面この端末内に保存します（別端末へは引き継げません）。",
 ] as const;
 
@@ -41,7 +41,7 @@ export const ONBOARDING_TIMING_OPTIONS: {
   {
     id: "weeks",
     label: "数週間経った",
-    note: "罹災証明・保険・支援制度など、手続きの本番",
+    note: "罹災証明・保険・支援制度など、手続きの本番です",
   },
   {
     id: "months",
@@ -56,7 +56,7 @@ export const ONBOARDING_TIMING_OPTIONS: {
   {
     id: "acute",
     label: "被災直後",
-    note: "安全確保が最も優先の段階",
+    note: "安全確保が最も優先の段階です",
   },
 ];
 
@@ -68,7 +68,7 @@ export const ONBOARDING_UNIVERSAL_MESSAGE =
 export const ONBOARDING_INTRO_LABEL = "令和8年熊本地震 — 生活再建ナビ";
 
 export const ONBOARDING_INTRO_LEAD =
-  "短い質問に答えると、あなた向けの「やること」を案内します。";
+  "短い質問にお答えいただくと、あなた向けの「やること」を案内いたします。";
 
 export interface PostJ00WelcomeMessage {
   title: string;

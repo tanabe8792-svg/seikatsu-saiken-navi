@@ -185,6 +185,9 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
   const browsingAhead =
     !isDone && recommended != null && recommended.id !== action.id;
   const isPhotoEvidenceAction = actionId === "rw-j03-photo";
+  const recommendedTitle = recommended
+    ? getActionWalkthrough(recommended.id, recommended.title).plainTitle
+    : "";
 
   const stepProgress = guide.steps.filter((s) =>
     completedSteps.includes(s.id)
@@ -333,7 +336,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             {isDone
               ? "確認できた手順"
               : browsingAhead
-                ? "先に見ている手順"
+                ? "あとで確認する手順"
                 : "いま進める手順"}
           </p>
           <h2 className="text-2xl font-bold leading-snug">{guide.plainTitle}</h2>
@@ -345,24 +348,19 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           {browsingAhead && recommended && (
             <div className="space-y-3 rounded-lg border border-amber-200/80 bg-amber-50/80 px-3 py-3 dark:border-amber-900/40 dark:bg-amber-950/30">
               <p className="text-sm font-medium text-amber-950 dark:text-amber-50">
-                いま優先して進めるのは、やること一覧の「いま」です
+                いま優先して進めていただきたいのは「{recommendedTitle}」です
               </p>
               <p className="text-sm leading-relaxed text-amber-950/90 dark:text-amber-50/90">
-                ここは先読みです。優先は「
-                {
-                  getActionWalkthrough(recommended.id, recommended.title)
-                    .plainTitle
-                }
-                」。先に見たあと、どこに戻りますか？
+                このページは、少しあとで確認していただいても大丈夫です。先に読み終えたあとは、やること一覧から「{recommendedTitle}」へお戻りください。
               </p>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Button asChild size="sm" className="h-10 flex-1">
                   <Link href={getCaseActionDetailPath(recommended.id)}>
-                    優先の手順へ戻る
+                    「{recommendedTitle}」へ戻る
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="sm" className="h-10 flex-1">
-                  <Link href="/actions">やること一覧で確認</Link>
+                  <Link href="/actions">やること一覧を見る</Link>
                 </Button>
               </div>
             </div>
