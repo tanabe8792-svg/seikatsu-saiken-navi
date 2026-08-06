@@ -108,7 +108,11 @@ export function IdentityRegistrationPanel() {
       </CardHeader>
       <CardContent className="space-y-5">
         <p className="text-sm leading-relaxed text-muted-foreground">
-          メールまたはLINEで本人確認すると、登録済みであることが各ページで分かります。通知の配信ではなく、<strong className="font-medium text-foreground">本人確認とデータの引き継ぎ</strong>が目的です。
+          あなたの<strong className="font-medium text-foreground">メールアドレス</strong>
+          または<strong className="font-medium text-foreground">LINEアカウント</strong>
+          で本人確認すると、登録済みであることが各ページで分かります。
+          <strong className="font-medium text-foreground">本人確認とデータの引き継ぎ</strong>
+          が目的です（メッセージ配信は行いません）。
         </p>
 
         {!configured && (
@@ -166,7 +170,7 @@ export function IdentityRegistrationPanel() {
                 onClick={() => setMethod("email")}
                 icon={Mail}
                 title="メールで本人確認"
-                description="確認メールのリンクをタップして登録"
+                description="あなたのメールアドレスに確認リンクを送ります"
               />
 
               <MethodButton
@@ -174,7 +178,7 @@ export function IdentityRegistrationPanel() {
                 onClick={() => setMethod("line")}
                 icon={MessageCircle}
                 title="LINEで本人確認"
-                description="LINEアカウントでログインして登録"
+                description="あなたのLINEアカウントでログインして登録"
               />
             </div>
 
@@ -223,7 +227,7 @@ export function IdentityRegistrationPanel() {
             {method === "line" && (
               <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  LINEアカウントでログインすると、本人確認済みとして登録されます。
+                  あなたのLINEアカウントでログインすると、本人確認済みとして登録されます。
                 </p>
                 <Button
                   type="button"
@@ -256,7 +260,7 @@ export function IdentityRegistrationPanel() {
           <p className="mt-1">
             設定手順は
             <Link
-              href="/about#line-login-setup"
+              href="/about#account-setup"
               className="mx-1 font-medium text-primary underline-offset-2 hover:underline"
             >
               このサービスについて

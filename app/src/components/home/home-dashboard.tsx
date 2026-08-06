@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Camera, CalendarClock, CheckCircle2, ChevronRight, ExternalLink, MessageCircle } from "lucide-react";
 import { AppLogo } from "@/components/brand/app-logo";
 import { IdentityRegisterPrompt } from "@/components/auth/identity-status-chip";
+import { FontSizeQuickControl } from "@/components/settings/font-size-quick-control";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmergencyContacts } from "@/components/emergency/emergency-contacts";
@@ -548,10 +549,12 @@ export function HomeDashboard() {
   }
 
   return (
-    <div className="space-y-4 pb-2">
-      <div className="flex flex-col items-center gap-3 px-2 pt-2 text-center">
+    <div className="space-y-5 pb-2">
+      <FontSizeQuickControl prominent className="mx-0" />
+
+      <div className="flex flex-col items-center gap-3 px-2 pt-1 text-center">
         <AppLogo size="hero" priority />
-        <p className="text-sm leading-relaxed text-muted-foreground">
+        <p className="text-base leading-relaxed text-muted-foreground">
           一歩ずつ、暮らしを取り戻すために
         </p>
       </div>
@@ -559,27 +562,27 @@ export function HomeDashboard() {
       <IdentityRegisterPrompt />
 
       <Card className="border-border bg-card">
-        <CardContent className="space-y-3 p-5">
-          <p className="text-sm font-medium text-muted-foreground">生活再建ナビ</p>
-          <h2 className="text-xl font-bold leading-snug">
+        <CardContent className="space-y-4 p-5">
+          <p className="text-base font-medium text-muted-foreground">生活再建ナビ</p>
+          <h2 className="text-2xl font-bold leading-snug">
             このサービスでできること
           </h2>
-          <ul className="space-y-2">
-            <li className="text-sm leading-relaxed">
+          <ul className="space-y-3">
+            <li className="text-base leading-relaxed">
               · いまの状況を一緒に整理し、次に確認することを順番に案内します
             </li>
-            <li className="text-sm leading-relaxed">
+            <li className="text-base leading-relaxed">
               · 公式情報をもとに案内します（推測では決めません）
             </li>
-            <li className="text-sm leading-relaxed">
+            <li className="text-base leading-relaxed">
               · 登録不要・無料です。わからない項目はそのままで進められます
             </li>
           </ul>
-          <ul className="space-y-1 border-t border-border pt-3">
-            <li className="text-xs leading-relaxed text-muted-foreground">
+          <ul className="space-y-2 border-t border-border pt-4">
+            <li className="text-sm leading-relaxed text-muted-foreground">
               · 大切な判断の前には、公式ページで最新もご確認ください。
             </li>
-            <li className="text-xs leading-relaxed text-muted-foreground">
+            <li className="text-sm leading-relaxed text-muted-foreground">
               · 入力内容は当面この端末内に保存します（別端末へは引き継げません）。
             </li>
           </ul>
@@ -588,23 +591,23 @@ export function HomeDashboard() {
 
       <Card className="border border-border bg-card shadow-sm">
         <CardContent className="space-y-4 p-5">
-          <p className="text-sm font-medium text-muted-foreground">
+          <p className="text-base font-medium text-muted-foreground">
             令和8年（2026年）7月28日 · 熊本地震
           </p>
-          <p className="text-sm leading-relaxed text-foreground">
+          <p className="text-base leading-relaxed text-foreground">
             再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理いたします。
           </p>
-          <Button asChild size="lg" className="h-14 w-full text-lg">
+          <Button asChild size="lg" className="h-16 w-full text-xl">
             <Link href="/start">質問をはじめる</Link>
           </Button>
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             登録不要 · 無料 · 約2分です
           </p>
         </CardContent>
       </Card>
 
       <details className="rounded-xl border border-destructive/20 bg-background px-4 py-3">
-        <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+        <summary className="cursor-pointer text-base font-medium text-muted-foreground">
           緊急のとき（119・110など）
         </summary>
         <div className="mt-3">

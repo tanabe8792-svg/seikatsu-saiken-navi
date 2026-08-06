@@ -66,7 +66,7 @@ export function IdentityRegisterPrompt({ className }: { className?: string }) {
     >
       <span className="font-medium text-foreground">マイページ登録（任意）</span>
       <span className="mt-1 block leading-relaxed">
-        メールまたはLINEで本人確認すると、別の端末からも続きを引き継げます。
+        あなたのメールまたはLINEアカウントで本人確認すると、別の端末からも続きを引き継げます。
       </span>
     </Link>
   );

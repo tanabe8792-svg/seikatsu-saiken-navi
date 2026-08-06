@@ -90,6 +90,14 @@
     font-size: 1.5rem;
   }
 
+  html[data-font-size="large"] .text-sm {
+    font-size: 1rem;
+  }
+
+  html[data-font-size="xlarge"] .text-sm {
+    font-size: 1.125rem;
+  }
+
   :focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }

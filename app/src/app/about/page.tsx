@@ -94,21 +94,22 @@ export default function AboutPage() {
           ))}
         </TrustSection>
 
-        <TrustSection heading="マイページ登録（本人確認）" id="line-login-setup">
+        <TrustSection heading="マイページ登録（本人確認）" id="account-setup">
           <p>
-            メールまたはLINEで本人確認すると、登録済みであることが各ページに表示されます。通知の配信ではなく、<strong>本人確認とデータの引き継ぎ</strong>が目的です。
+            あなたのメールアドレス、またはあなたのLINEアカウントで本人確認すると、登録済みであることが各ページに表示されます。
+            <strong>本人確認とデータの引き継ぎ</strong>が目的です。
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-            <li>メール：確認メールのリンクをタップして登録</li>
-            <li>LINE：LINEログイン画面で認証</li>
+            <li>メール：あなたのメールアドレスに届く確認リンクをタップ</li>
+            <li>LINE：あなたのLINEアカウントでログイン</li>
             <li>登録しなくても、やることの確認はすべて利用できます</li>
           </ul>
           <p className="text-sm text-muted-foreground">
-            管理者向けの詳しい設定手順は、リポジトリ内
+            管理者向けの設定手順は、リポジトリ内
             <code className="mx-1 rounded bg-muted px-1.5 py-0.5 text-xs">
-              docs/LINE_AND_EMAIL_AUTH_SETUP.md
+              docs/ACCOUNT_AUTH_SETUP.md
             </code>
-            に記載しています。
+            をご覧ください。
           </p>
         </TrustSection>
 

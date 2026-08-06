@@ -56,7 +56,7 @@ export default function MyPage() {
               <div className="space-y-2">
                 <h2 className="text-lg font-bold">マイページ登録（本人確認）</h2>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  メールまたはLINEで本人確認すると、登録済みであることが各ページで分かります。別の端末からも続きを引き継げます。
+                  あなたのメールアドレス、またはあなたのLINEアカウントで本人確認すると、登録済みであることが各ページで分かります。別の端末からも続きを引き継げます。
                 </p>
                 {identity && (
                   <p className="text-sm font-medium text-brand-green">{identityLabel}</p>
@@ -152,7 +152,7 @@ export default function MyPage() {
             note={
               identity
                 ? identityLabel ?? "本人確認済み"
-                : "メールまたはLINEで本人確認（任意）"
+                : "あなたのメール／LINEで本人確認（任意）"
             }
           />
           <div className="flex items-center gap-3 rounded-2xl border bg-muted/30 px-4 py-3">

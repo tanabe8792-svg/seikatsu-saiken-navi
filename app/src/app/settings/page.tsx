@@ -3,17 +3,10 @@
 import { Suspense, useEffect } from "react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { IdentityRegistrationPanel } from "@/components/auth/identity-registration-panel";
-import { Button } from "@/components/ui/button";
+import { FontSizeQuickControl } from "@/components/settings/font-size-quick-control";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useSettings } from "@/providers/settings-provider";
-import { FONT_SIZE_LABELS, type FontSize } from "@/lib/settings";
-import { cn } from "@/lib/utils";
-
-const FONT_OPTIONS: FontSize[] = ["normal", "large", "xlarge"];
 
 export default function SettingsPage() {
-  const { settings, setFontSize } = useSettings();
-
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.location.hash !== "#mypage-register") return;
@@ -39,32 +32,8 @@ export default function SettingsPage() {
           <CardHeader>
             <CardTitle>文字サイズ</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-base text-muted-foreground">
-              読みやすいサイズを選んでください。高齢者の方は「大きい」または「特大」がおすすめです。
-            </p>
-            <div className="grid gap-2">
-              {FONT_OPTIONS.map((size) => (
-                <Button
-                  key={size}
-                  variant={settings.fontSize === size ? "default" : "outline"}
-                  className="h-auto justify-start py-4"
-                  onClick={() => setFontSize(size)}
-                >
-                  <span
-                    className={cn(
-                      size === "large" && "text-lg",
-                      size === "xlarge" && "text-xl"
-                    )}
-                  >
-                    {FONT_SIZE_LABELS[size]}
-                    {size === "normal" && "（16px）"}
-                    {size === "large" && "（18px）"}
-                    {size === "xlarge" && "（20px）"}
-                  </span>
-                </Button>
-              ))}
-            </div>
+          <CardContent>
+            <FontSizeQuickControl />
           </CardContent>
         </Card>
       </main>
