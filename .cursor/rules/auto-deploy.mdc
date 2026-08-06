@@ -1,0 +1,13 @@
+---
+description: 修正後はコミット＆pushでVercel自動反映
+alwaysApply: true
+---
+
+# 自動デプロイ（毎回反映）
+
+アプリの修正・改善を行ったら、ユーザーに確認せず **コミットして `origin` へ push** する。
+
+- 対象: `main`（または作業中ブランチ）への push → Vercel が自動デプロイ
+- コミットメッセージは変更の「なぜ」を短く日本語または英語で
+- 秘密情報（`.env` 等）はコミットしない
+- push 後、公開URL（https://seikatsu-saiken-navi.vercel.app/）で確認できる旨を一言伝える
