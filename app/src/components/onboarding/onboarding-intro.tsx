@@ -4,12 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ONBOARDING_INTRO_LABEL,
-  ONBOARDING_INTRO_LEAD,
-  ONBOARDING_REASSURANCE,
-  ONBOARDING_DATA_NOTE,
+  ONBOARDING_INFO_HANDLING_SHORT,
   ONBOARDING_SERVICE_FEATURES,
   ONBOARDING_TIMING_OPTIONS,
-  ONBOARDING_UNIVERSAL_MESSAGE,
 } from "@/lib/onboarding/onboarding-copy";
 import type { OnboardingTimingHint } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -27,26 +24,9 @@ export function OnboardingIntro({
 }: OnboardingIntroProps) {
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-5">
-        <p className="text-sm font-medium text-primary">{ONBOARDING_INTRO_LABEL}</p>
-        <p className="mt-2 text-xl font-bold leading-snug">
-          無料で、次に確認することを一緒に整理します
-        </p>
-        <p className="mt-2 text-base leading-relaxed">{ONBOARDING_INTRO_LEAD}</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {ONBOARDING_UNIVERSAL_MESSAGE}
-        </p>
-      </div>
-
-      <Button size="lg" className="h-14 w-full text-lg" onClick={onStart}>
-        質問をはじめる
-      </Button>
-      <p className="text-center text-sm text-muted-foreground">
-        登録不要 · 無料 · 約2分
-      </p>
-
-      <Card>
+      <Card className="border-primary/25 bg-primary/5">
         <CardContent className="space-y-3 p-5">
+          <p className="text-sm font-medium text-primary">{ONBOARDING_INTRO_LABEL}</p>
           <h2 className="text-lg font-bold">このサービスでできること</h2>
           <ul className="space-y-2">
             {ONBOARDING_SERVICE_FEATURES.map((item) => (
@@ -55,11 +35,22 @@ export function OnboardingIntro({
               </li>
             ))}
           </ul>
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            {ONBOARDING_REASSURANCE.body} {ONBOARDING_DATA_NOTE}
-          </p>
+          <ul className="space-y-1 border-t border-primary/15 pt-3">
+            {ONBOARDING_INFO_HANDLING_SHORT.map((item) => (
+              <li key={item} className="text-xs leading-relaxed text-muted-foreground">
+                · {item}
+              </li>
+            ))}
+          </ul>
         </CardContent>
       </Card>
+
+      <Button size="lg" className="h-14 w-full text-lg" onClick={onStart}>
+        質問をはじめる
+      </Button>
+      <p className="text-center text-sm text-muted-foreground">
+        登録不要 · 無料 · 約2分
+      </p>
 
       <Card>
         <CardContent className="space-y-3 p-5">

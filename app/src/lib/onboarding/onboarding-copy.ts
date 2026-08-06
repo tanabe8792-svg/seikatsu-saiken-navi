@@ -13,9 +13,15 @@ import type { CaseFile } from "@/lib/case-management/types";
 import type { OnboardingTimingHint, UserProfile } from "@/lib/types";
 
 export const ONBOARDING_SERVICE_FEATURES = [
-  "いまの生活再建の状況を一緒に整理する",
-  "被害記録・支援制度・手続きを順番に案内する",
-  "公式情報をもとに案内する（推測はしません）",
+  "いまの状況を一緒に整理し、次に確認することを順番に案内する",
+  "公式情報をもとに案内する（推測で決めません）",
+  "登録不要・無料。わからない項目はそのままで進められる",
+] as const;
+
+/** できることと一緒に示す短い注意（表示専用） */
+export const ONBOARDING_INFO_HANDLING_SHORT = [
+  "大切な判断の前には、公式ページで最新も確認してください。",
+  "入力内容は当面この端末内に保存します（別端末へは引き継げません）。",
 ] as const;
 
 export const ONBOARDING_REASSURANCE = {
@@ -62,7 +68,7 @@ export const ONBOARDING_UNIVERSAL_MESSAGE =
 export const ONBOARDING_INTRO_LABEL = "令和8年熊本地震 — 生活再建ナビ";
 
 export const ONBOARDING_INTRO_LEAD =
-  "短い質問に答えると、あなた向けの「やること」を順番に案内します。登録は不要です。";
+  "短い質問に答えると、あなた向けの「やること」を案内します。";
 
 export interface PostJ00WelcomeMessage {
   title: string;
@@ -154,14 +160,13 @@ export function collectOnboardingIntroStrings(): string[] {
     ONBOARDING_INTRO_LEAD,
     "このサービスでできること",
     ...ONBOARDING_SERVICE_FEATURES,
+    ...ONBOARDING_INFO_HANDLING_SHORT,
     ONBOARDING_REASSURANCE.title,
     ONBOARDING_REASSURANCE.body,
     ONBOARDING_DATA_NOTE,
     "いまの段階に合わせて（任意）",
     ...ONBOARDING_TIMING_OPTIONS.flatMap((o) => [o.label, o.note]),
     ONBOARDING_UNIVERSAL_MESSAGE,
-    "無料で、次に確認することを一緒に整理します",
-    "次に確認することを、順番に案内します",
     "質問をはじめる",
     "登録不要 · 無料 · 約2分",
     "当てはまるものがあればタップ。最初はどれも選ばなくて大丈夫です。",

@@ -547,21 +547,42 @@ export function HomeDashboard() {
 
   return (
     <div className="space-y-4 pb-2">
+      <Card className="border-primary/30 bg-primary/5">
+        <CardContent className="space-y-3 p-5">
+          <p className="text-sm font-medium text-primary">生活再建ナビ</p>
+          <h2 className="text-xl font-bold leading-snug">
+            このサービスでできること
+          </h2>
+          <ul className="space-y-2">
+            <li className="text-sm leading-relaxed">
+              · いまの状況を一緒に整理し、次に確認することを順番に案内する
+            </li>
+            <li className="text-sm leading-relaxed">
+              · 公式情報をもとに案内する（推測で決めません）
+            </li>
+            <li className="text-sm leading-relaxed">
+              · 登録不要・無料。わからない項目はそのままで進められる
+            </li>
+          </ul>
+          <ul className="space-y-1 border-t border-primary/15 pt-3">
+            <li className="text-xs leading-relaxed text-muted-foreground">
+              · 大切な判断の前には、公式ページで最新も確認してください。
+            </li>
+            <li className="text-xs leading-relaxed text-muted-foreground">
+              · 入力内容は当面この端末内に保存します（別端末へは引き継げません）。
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+
       <Card className="overflow-hidden border-0 bg-gradient-to-b from-sky-950 via-slate-900 to-stone-900 text-stone-50 shadow-none">
         <CardContent className="space-y-4 p-5">
-          <p className="text-sm font-medium text-sky-200/90">生活再建ナビ</p>
           <p className="text-sm tracking-wide text-sky-100/80">
-            令和8年（2026年）7月28日
+            令和8年（2026年）7月28日 · 熊本地震
           </p>
-          <h2 className="text-2xl font-bold leading-snug">熊本地震</h2>
-          <div className="space-y-3 text-sm leading-relaxed text-stone-200/95">
-            <p>
-              その日、熊本の各地で強い揺れがありました。住まいが傷つき、水や電気が止まり、先の見通しが立たない日々が続きました。
-            </p>
-            <p>
-              再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理します。
-            </p>
-          </div>
+          <p className="text-sm leading-relaxed text-stone-200/95">
+            再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理します。
+          </p>
           <Button
             asChild
             size="lg"
@@ -571,26 +592,6 @@ export function HomeDashboard() {
           </Button>
           <p className="text-center text-xs text-stone-300/90">
             登録不要 · 無料 · 約2分
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="space-y-3 p-5">
-          <h2 className="text-lg font-bold">このサービスでできること</h2>
-          <ul className="space-y-2">
-            <li className="text-sm leading-relaxed">
-              · いまの生活再建の状況を一緒に整理する
-            </li>
-            <li className="text-sm leading-relaxed">
-              · 被害記録・支援制度・手続きを順番に案内する
-            </li>
-            <li className="text-sm leading-relaxed">
-              · 公式情報をもとに案内する（推測はしません）
-            </li>
-          </ul>
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            「わからない」項目があっても進められます。制度を代わりに決めるのではなく、次に確認することを見つけるお手伝いです。
           </p>
         </CardContent>
       </Card>

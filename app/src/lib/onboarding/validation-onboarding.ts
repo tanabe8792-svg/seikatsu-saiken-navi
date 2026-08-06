@@ -70,7 +70,7 @@ export function validateOnboardingCopy(): OnboardingValidationResult {
   steps.push("導入文チェック");
 
   const hasReassurance =
-    introStrings.some((s) => s.includes("わからない")) &&
+    introStrings.some((s) => s.includes("わからない") || s.includes("わからない項目")) &&
     introStrings.some((s) => s.includes("端末")) &&
     introStrings.some((s) => s.includes("無料"));
 

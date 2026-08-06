@@ -16,10 +16,10 @@ export function getDeadlineBadgeVariant(
 }
 
 export const COMPLETION_MESSAGES = [
-  "お疲れさまでした。一歩前進です。",
-  "よくできました。次の一歩も一緒に進みましょう。",
-  "完了です。着実に生活再建が進んでいます。",
-  "素晴らしいです。残りの項目も無理なく進めてください。",
+  "この確認は完了です。ひと息ついて大丈夫です。",
+  "ここまでの確認を記録しました。",
+  "このステップは完了です。続きはいつでも一覧から。",
+  "確認を残せました。無理せず進めましょう。",
 ];
 
 export function getRandomCompletionMessage(): string {

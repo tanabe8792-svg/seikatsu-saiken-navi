@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Camera,
   CheckCircle2,
@@ -73,7 +72,6 @@ function findAction(
 }
 
 export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
-  const router = useRouter();
   const { showToast } = useToast();
   const {
     session,
@@ -176,16 +174,6 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
   const survivorExplanation = buildSurvivorFriendlyExplanation(explanation);
   const procedure = getPrimaryProcedure(workingCaseFile, action);
   const recommended = getCurrentAction(workingCaseFile);
-  const pendingList = caseFile.pendingActions.filter(
-    (a) => a.status === "todo" || a.status === "doing"
-  );
-  const currentIndex = pendingList.findIndex((a) => a.id === action.id);
-  const nextInList =
-    currentIndex >= 0 ? pendingList[currentIndex + 1] : undefined;
-  const nextAfterThis =
-    nextInList ??
-    pendingList.find((a) => a.id !== action.id) ??
-    undefined;
   const procedureGuidance = getProcedureGuidanceForAction(actionId, profile);
   const overall = getCaseProgress(workingCaseFile);
 
@@ -332,14 +320,9 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
 
   function handleComplete() {
     if (!canFinishProcedure) return;
-    const next = caseFile!.pendingActions.find((a) => a.id !== action!.id);
     completeCaseAction(action!.id);
     showToast(getRandomCompletionMessage());
-    if (next) {
-      router.push(getCaseActionDetailPath(next.id));
-    } else {
-      router.push("/");
-    }
+    // 次の項目へ自動では進まない。完了の区切りを見せて休めるようにする。
   }
 
   return (
@@ -356,7 +339,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <h2 className="text-2xl font-bold leading-snug">{guide.plainTitle}</h2>
           {isDone && (
             <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-              ここまで確認できました。必要ならいつでも見返せます。
+              この確認は完了です。実際の申請や手続きは、それぞれの窓口・公式の案内に沿って進めてください。ここは見返し用に残せます。
             </p>
           )}
           {browsingAhead && recommended && (
@@ -644,7 +627,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               </span>
             </div>
             <p className="text-xs text-muted-foreground">
-              申請が終わったあとも、ここでチェックとメモができます。「この手順を終える」の条件には入りません。
+              申請が終わったあとも、ここでチェックとメモができます。「この確認は完了」の条件には入りません。
             </p>
             {renderStepList(followUpSteps, {
               locked: false,
@@ -665,7 +648,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             <p className="text-xs font-medium text-primary">あなたの進み具合</p>
             <p className="text-sm font-semibold">
               {isDone
-                ? "この手順は終えています"
+                ? "この確認は完了です"
                 : `手順 ${stepProgress}/${guide.steps.length} までチェック済み`}
             </p>
             {prepItems.length > 0 && (
@@ -749,7 +732,13 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         </p>
       )}
 
-      <div className="fixed bottom-16 left-0 right-0 z-40 border-t bg-background p-4 safe-bottom">
+      <div
+        className={`fixed bottom-14 left-0 right-0 z-40 border-t p-3 safe-bottom transition-colors ${
+          isDone
+            ? "border-emerald-200/80 bg-emerald-50 dark:border-emerald-900/40 dark:bg-emerald-950/40"
+            : "border-border bg-background"
+        }`}
+      >
         <div className="mx-auto flex max-w-lg flex-col gap-2">
           {!isDone &&
             ui.showEvidenceButton &&
@@ -782,33 +771,24 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               onClick={handleComplete}
             >
               <CheckCircle2 className="h-5 w-5" />
-              この手順を終える
+              この確認は完了
             </Button>
           )}
-          {isDone && nextAfterThis && (
-            <Button asChild size="lg" className="h-14 w-full text-lg">
-              <Link href={getCaseActionDetailPath(nextAfterThis.id)}>
-                次の手順へ
-              </Link>
+          {isDone && (
+            <>
+              <p className="text-center text-sm font-medium text-emerald-900 dark:text-emerald-100">
+                この確認は完了です
+              </p>
+              <Button asChild variant="outline" size="lg" className="h-12 w-full bg-background">
+                <Link href="/actions">やること一覧へ戻る</Link>
+              </Button>
+            </>
+          )}
+          {!isDone && (
+            <Button asChild variant="ghost" size="lg" className="h-11 w-full text-muted-foreground">
+              <Link href="/actions">やること一覧</Link>
             </Button>
           )}
-          {!isDone && nextInList && (
-            <Button asChild variant="outline" size="lg" className="h-12 w-full">
-              <Link href={getCaseActionDetailPath(nextInList.id)}>
-                一覧の次の項目を見る
-              </Link>
-            </Button>
-          )}
-          {!isDone && !nextInList && recommended && recommended.id !== action.id && (
-            <Button asChild variant="outline" size="lg" className="h-12 w-full">
-              <Link href={getCaseActionDetailPath(recommended.id)}>
-                優先の手順へ戻る
-              </Link>
-            </Button>
-          )}
-          <Button asChild variant="outline" size="lg" className="h-12 w-full">
-            <Link href="/actions">やること一覧へ（優先を確認）</Link>
-          </Button>
         </div>
       </div>
     </div>
