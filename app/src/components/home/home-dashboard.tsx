@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Camera, CalendarClock, CheckCircle2, ChevronRight, ExternalLink, MessageCircle } from "lucide-react";
+import { AppLogo } from "@/components/brand/app-logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmergencyContacts } from "@/components/emergency/emergency-contacts";
@@ -547,6 +548,13 @@ export function HomeDashboard() {
 
   return (
     <div className="space-y-4 pb-2">
+      <div className="flex flex-col items-center gap-3 px-2 pt-2 text-center">
+        <AppLogo size="hero" priority />
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          一歩ずつ、暮らしを取り戻すために
+        </p>
+      </div>
+
       <Card className="border-primary/30 bg-primary/5">
         <CardContent className="space-y-3 p-5">
           <p className="text-sm font-medium text-primary">生活再建ナビ</p>

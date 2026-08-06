@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { AppLogo } from "@/components/brand/app-logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -68,7 +69,7 @@ export function SiteNavMenu() {
             className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l bg-background shadow-xl"
           >
             <div className="flex h-14 items-center justify-between border-b px-4">
-              <p className="text-base font-semibold">メニュー</p>
+              <AppLogo href="/" size="sm" showWordmark />
               <Button
                 ref={closeRef}
                 type="button"

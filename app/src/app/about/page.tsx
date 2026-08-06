@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
+import { AppLogo } from "@/components/brand/app-logo";
 import { FeedbackForm } from "@/components/about/feedback-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,8 +24,13 @@ export default function AboutPage() {
       <SiteHeader title={TRUST_PAGE_TITLE} showBack backHref="/mypage" />
       <main className="space-y-5 px-4 py-4 pb-28">
         <Card className="border-primary/30 bg-primary/5">
-          <CardContent className="space-y-3 p-5">
-            <p className="text-sm font-medium text-primary">生活再建ナビ</p>
+          <CardContent className="space-y-4 p-5">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <AppLogo size="lg" />
+              <p className="text-sm text-muted-foreground">
+                一歩ずつ、暮らしを取り戻すために
+              </p>
+            </div>
             <h1 className="text-xl font-bold leading-snug">
               {J00_DISASTER_EVENT_LABEL}
             </h1>

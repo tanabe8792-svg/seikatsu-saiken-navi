@@ -34,7 +34,7 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-base text-muted-foreground">
-              画面の明るさを切り替えます。
+              画面の明るさを切り替えます。はじめは明るい表示をおすすめしています（読みやすさ・ロゴとの一体感のため）。
             </p>
             <ThemeToggleButtons />
           </CardContent>

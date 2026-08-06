@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AppLogo } from "@/components/brand/app-logo";
 import { SiteNavMenu } from "@/components/layout/site-nav-menu";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
 
@@ -30,12 +30,7 @@ export function SiteHeader({
               onBack={onBack}
             />
           ) : (
-            <Link
-              href="/"
-              className="truncate text-lg font-semibold tracking-tight"
-            >
-              {title}
-            </Link>
+            <AppLogo href="/" size="sm" showWordmark className="min-w-0" />
           )}
         </div>
         <SiteNavMenu />

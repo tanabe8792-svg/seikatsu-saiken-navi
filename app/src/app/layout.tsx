@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   title: "生活再建ナビ",
   description: "災害後の行動OS — 次に何をすればよいかを案内します",
   manifest: "/manifest.json",
+  icons: {
+    icon: [{ url: "/brand/logo.png", type: "image/png" }],
+    apple: [{ url: "/brand/logo.png", type: "image/png" }],
+  },
   appleWebApp: {
     capable: true,
     title: "生活再建ナビ",
@@ -24,8 +28,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#141820" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f3eb" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a2418" },
   ],
 };
 
@@ -37,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className="min-h-screen bg-background pb-20">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <SettingsProvider>
             <SessionProvider>
               <ToastProvider>

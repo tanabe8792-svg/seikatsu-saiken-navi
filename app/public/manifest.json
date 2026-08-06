@@ -1,19 +1,19 @@
 {
-  "name": "生活再建ナビ",
+  "name": "熊本 生活再建ナビ",
   "short_name": "再建ナビ",
   "description": "災害後の行動OS — 次に何をすればよいかを案内します",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fafafa",
-  "theme_color": "#0071e3",
+  "background_color": "#f7f3eb",
+  "theme_color": "#2f5c34",
   "orientation": "portrait-primary",
   "lang": "ja",
   "icons": [
     {
-      "src": "/icon",
+      "src": "/brand/logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
