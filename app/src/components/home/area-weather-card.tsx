@@ -154,6 +154,7 @@ export function AreaWeatherCard({ municipalityName }: AreaWeatherCardProps) {
             <SourceFreshnessNote
               fetchedAt={data.fetchedAt}
               label="この天気・警報の取得時点"
+              showStaleHint={false}
             />
             <p className="text-[11px] text-muted-foreground">
               出典: {data.sourceLabel}

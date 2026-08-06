@@ -17,6 +17,11 @@ interface SourceFreshnessNoteProps {
   className?: string;
   /** コンパクト表示 */
   compact?: boolean;
+  /**
+   * 古く感じたら公式確認、の案内を出すか。
+   * 天気のような「いま取得した」情報では false。
+   */
+  showStaleHint?: boolean;
 }
 
 /**
@@ -28,6 +33,7 @@ export function SourceFreshnessNote({
   label = "この案内の情報時点",
   className,
   compact = false,
+  showStaleHint = true,
 }: SourceFreshnessNoteProps) {
   const fromKb = describeSourceFreshness(updatedAt ?? null);
   const fromFetch = formatFetchedAt(fetchedAt ?? null);
@@ -70,9 +76,11 @@ export function SourceFreshnessNote({
       {fromKb?.timeNote && (
         <p className="pl-6 text-xs text-muted-foreground">{fromKb.timeNote}</p>
       )}
-      <p className="pl-6 text-xs leading-relaxed text-muted-foreground">
-        古く感じる場合や、申請・判断の前には、公式ページで最新をご自身でも確認してください。
-      </p>
+      {showStaleHint && (
+        <p className="pl-6 text-xs leading-relaxed text-muted-foreground">
+          古く感じる場合や、申請・判断の前には、公式ページで最新をご自身でも確認してください。
+        </p>
+      )}
     </div>
   );
 }
