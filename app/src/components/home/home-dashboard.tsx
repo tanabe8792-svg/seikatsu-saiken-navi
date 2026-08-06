@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Camera, CalendarClock, CheckCircle2, ChevronRight, ExternalLink, MessageCircle } from "lucide-react";
 import { AppLogo } from "@/components/brand/app-logo";
+import { IdentityRegisterPrompt } from "@/components/auth/identity-status-chip";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmergencyContacts } from "@/components/emergency/emergency-contacts";
@@ -554,6 +555,8 @@ export function HomeDashboard() {
           一歩ずつ、暮らしを取り戻すために
         </p>
       </div>
+
+      <IdentityRegisterPrompt />
 
       <Card className="border-border bg-card">
         <CardContent className="space-y-3 p-5">

@@ -22,17 +22,15 @@ import {
   getCaseProgress,
 } from "@/lib/case-management/action-queue";
 import { J00_DISASTER_EVENT_LABEL } from "@/lib/j00-hearing";
-import { getNotificationPreferenceSummary } from "@/lib/notifications/notification-preferences";
+import { useAuth } from "@/providers/auth-provider";
 import { OfficialLineFriendCard } from "@/components/line/official-line-friend-card";
-import { useSettings } from "@/providers/settings-provider";
 import { useUserSession } from "@/hooks/use-user-session";
 
 export default function MyPage() {
   const router = useRouter();
   const { session, loading, resetSession } = useUserSession();
-  const { settings } = useSettings();
+  const { identity, identityLabel } = useAuth();
   const { caseFile } = session;
-  const notifySummary = getNotificationPreferenceSummary(settings.notifications);
 
   if (loading) {
     return (
@@ -57,13 +55,13 @@ export default function MyPage() {
             <div className="flex items-start gap-3">
               <Bell className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
               <div className="space-y-2">
-                <h2 className="text-lg font-bold">マイページ登録（任意）</h2>
+                <h2 className="text-lg font-bold">マイページ登録（本人確認）</h2>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  最新の支援案内などを、メールやLINEですぐ受け取りたい方向けです。登録しなくても、やることの確認はすべてご利用いただけます。
+                  メールまたはLINEで本人確認すると、登録済みであることが各ページで分かります。別の端末からも続きを引き継げます。
                 </p>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  進捗や入力内容は、この端末の中に自動保存されます（同じ端末なら続きから再開できます）。マイページ登録は、通知用の連絡先を残す任意の機能です。
-                </p>
+                {identity && (
+                  <p className="text-sm font-medium text-brand-green">{identityLabel}</p>
+                )}
               </div>
             </div>
             <Button asChild size="lg" className="h-12 w-full">
@@ -153,18 +151,20 @@ export default function MyPage() {
           <MenuLink
             href="/settings#mypage-register"
             icon={Bell}
-            label="マイページ登録（任意）"
+            label="マイページ登録（本人確認）"
             note={
-              notifySummary === "アプリを開いたとき"
-                ? "最新情報の通知（任意）／ブックマーク案内"
-                : notifySummary
+              identity
+                ? identityLabel ?? "本人確認済み"
+                : "メールまたはLINEで本人確認（任意）"
             }
           />
           <div className="flex items-center gap-3 rounded-2xl border bg-muted/30 px-4 py-3">
             <Bell className="h-5 w-5 shrink-0 text-primary" />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium">いまの受け取り方</p>
-              <p className="text-sm text-muted-foreground">{notifySummary}</p>
+              <p className="text-sm font-medium">登録状態</p>
+              <p className="text-sm text-muted-foreground">
+                {identity ? identityLabel : "未登録（この端末のみ）"}
+              </p>
             </div>
           </div>
           <MenuLink

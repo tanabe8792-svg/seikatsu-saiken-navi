@@ -1,4 +1,5 @@
 import { AppLogo } from "@/components/brand/app-logo";
+import { IdentityStatusChip } from "@/components/auth/identity-status-chip";
 import { SiteNavMenu } from "@/components/layout/site-nav-menu";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
 
@@ -33,7 +34,10 @@ export function SiteHeader({
             <AppLogo href="/" size="sm" showWordmark className="min-w-0" />
           )}
         </div>
-        <SiteNavMenu />
+        <div className="flex shrink-0 items-center gap-2">
+          <IdentityStatusChip compact />
+          <SiteNavMenu />
+        </div>
       </div>
       {showBack && title !== "生活再建ナビ" && (
         <div className="mx-auto max-w-lg px-4 pb-3">

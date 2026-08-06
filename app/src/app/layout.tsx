@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/providers/auth-provider";
 import { BetaBanner } from "@/components/layout/beta-banner";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { OfflineBanner } from "@/components/layout/offline-banner";
@@ -42,8 +43,9 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <body className="min-h-screen bg-background pb-20">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <SettingsProvider>
-            <SessionProvider>
+          <AuthProvider>
+            <SettingsProvider>
+              <SessionProvider>
               <ToastProvider>
                 <a
                   href="#main-content"
@@ -61,8 +63,9 @@ export default function RootLayout({
                 </div>
                 <BottomNav />
               </ToastProvider>
-            </SessionProvider>
-          </SettingsProvider>
+              </SessionProvider>
+            </SettingsProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

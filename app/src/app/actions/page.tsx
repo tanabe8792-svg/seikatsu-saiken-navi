@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
+import { IdentityRegisterPrompt } from "@/components/auth/identity-status-chip";
 import { CaseActionsDashboard } from "@/components/actions/case-actions-dashboard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -75,6 +76,7 @@ export default function ActionsPage() {
             </CardContent>
           </Card>
         )}
+        <IdentityRegisterPrompt />
         <CaseActionsDashboard caseFile={caseFile} />
       </main>
     </>

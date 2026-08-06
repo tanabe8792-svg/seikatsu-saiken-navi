@@ -30,6 +30,9 @@ export async function saveSessionToSupabase(
       profile: session.profile,
       actions: session.actions,
       chat_history: session.chatHistory,
+      case_file: session.caseFile ?? null,
+      j00_step: session.j00Step ?? null,
+      onboarding_timing_hint: session.onboardingTimingHint ?? null,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" }
@@ -48,7 +51,9 @@ export async function loadSessionFromSupabase(
 
   const { data, error } = await supabase
     .from("user_sessions")
-    .select("profile, actions, chat_history, updated_at")
+    .select(
+      "profile, actions, chat_history, case_file, j00_step, onboarding_timing_hint, updated_at"
+    )
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -58,6 +63,11 @@ export async function loadSessionFromSupabase(
     profile: (data.profile as UserSession["profile"]) ?? {},
     actions: (data.actions as UserSession["actions"]) ?? [],
     chatHistory: (data.chat_history as UserSession["chatHistory"]) ?? [],
+    caseFile: (data.case_file as UserSession["caseFile"]) ?? undefined,
+    j00Step: (data.j00_step as UserSession["j00Step"]) ?? undefined,
+    onboardingTimingHint:
+      (data.onboarding_timing_hint as UserSession["onboardingTimingHint"]) ??
+      undefined,
     updatedAt: data.updated_at ?? new Date().toISOString(),
   };
 }

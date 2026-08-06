@@ -57,6 +57,12 @@ import {
   saveSessionToSupabase,
   signInAnonymously,
 } from "@/lib/supabase/browser";
+import { getAuthUser } from "@/lib/supabase/auth";
+import {
+  identityFromSupabaseUser,
+  isAnonymousSupabaseUser,
+} from "@/lib/auth/identity";
+import { subscribeToAuthChanges } from "@/lib/supabase/auth";
 import { mergeSessions } from "@/lib/supabase/config";
 
 type SessionAction = { type: "SET"; session: UserSession };
@@ -149,8 +155,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
           ]);
 
-        let id = await timeout(getCurrentUserId(), 2500);
-        if (!id) id = await timeout(signInAnonymously(), 2500);
+        const authUser = await timeout(getAuthUser(), 2500);
+        let id: string | null = null;
+
+        if (authUser && !isAnonymousSupabaseUser(authUser)) {
+          id = authUser.id;
+        } else {
+          id = await timeout(getCurrentUserId(), 2500);
+          if (!id) id = await timeout(signInAnonymously(), 2500);
+        }
+
         if (!id || cancelled) return local;
 
         setUserId(id);
@@ -163,6 +177,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       } catch (error) {
         console.error("Supabase session sync failed:", error);
         return local;
+      }
+    }
+
+    async function resyncAfterAuth() {
+      if (cancelled) return;
+      const local = loadSessionFromStorage();
+      const merged = await syncFromSupabase(local);
+      if (merged && !cancelled) {
+        dispatch({ type: "SET", session: merged });
+        saveSessionToStorage(merged);
       }
     }
 
@@ -193,9 +217,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
     void init();
 
+    const unsubscribeAuth = isSupabaseConfigured()
+      ? subscribeToAuthChanges((user) => {
+          if (user && identityFromSupabaseUser(user)) {
+            void resyncAfterAuth();
+          }
+        })
+      : () => undefined;
+
     return () => {
       cancelled = true;
       window.clearTimeout(loadingGuard);
+      unsubscribeAuth();
     };
   }, []);
 

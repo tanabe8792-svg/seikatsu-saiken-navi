@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { SiteHeader } from "@/components/layout/site-header";
+import { IdentityRegistrationPanel } from "@/components/auth/identity-registration-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSettings } from "@/providers/settings-provider";
 import { FONT_SIZE_LABELS, type FontSize } from "@/lib/settings";
-import { NotificationSettings } from "@/components/settings/notification-settings";
 import { ThemeToggleButtons } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,15 @@ export default function SettingsPage() {
     <>
       <SiteHeader title="設定" showBack backHref="/mypage" />
       <main className="space-y-6 px-4 py-6 pb-28">
-        <NotificationSettings />
+        <Suspense
+          fallback={
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              読み込み中…
+            </p>
+          }
+        >
+          <IdentityRegistrationPanel />
+        </Suspense>
 
         <Card>
           <CardHeader>
