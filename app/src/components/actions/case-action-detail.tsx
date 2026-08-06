@@ -45,7 +45,6 @@ import type { CaseAction } from "@/lib/case-management/types";
 import { getCaseActionDetailPath } from "@/lib/navigation";
 import { useUserSession } from "@/hooks/use-user-session";
 import { useToast } from "@/providers/toast-provider";
-import { getRandomCompletionMessage } from "@/lib/deadline";
 import { Textarea } from "@/components/ui/textarea";
 import { ProcedureContactAssist } from "@/components/actions/procedure-contact-assist";
 import { BusinessMunicipalityPicker } from "@/components/actions/business-municipality-picker";
@@ -326,22 +325,8 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
   function handleComplete() {
     if (!canFinishProcedure) return;
     completeCaseAction(action!.id);
-    showToast(getRandomCompletionMessage());
+    showToast(`「${guide.plainTitle}」を完了しました`);
     // 次の項目へ自動では進まない。完了の区切りを見せて休めるようにする。
-  }
-
-  function handleAlreadyDone() {
-    if (
-      !confirm(
-        "窓口や公式サイトなどでの手続きを、すでに終えている場合に押してください。このナビ上の「確認」を完了にします。よろしいですか？"
-      )
-    ) {
-      return;
-    }
-    completeCaseAction(action!.id, undefined, {
-      alreadyCompletedOutside: true,
-    });
-    showToast("すでに終えた手続きとして記録しました");
   }
 
   return (
@@ -358,7 +343,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <h2 className="text-2xl font-bold leading-snug">{guide.plainTitle}</h2>
           {isDone && (
             <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-              この確認は完了です。実際の申請や手続きは、それぞれの窓口・公式の案内に沿って進めてください。ここは見返し用に残せます。
+              「{guide.plainTitle}」は完了しています。実際の申請や手続きは、それぞれの窓口・公式の案内に沿って進めてください。ここは見返し用に残せます。
             </p>
           )}
           {browsingAhead && recommended && (
@@ -588,7 +573,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">準備物</h3>
             <p className="text-xs text-muted-foreground">
-              用意できたらチェック。ここが揃うと「この確認は完了」にできます。
+              用意できたらチェック。そろったら下の「{guide.plainTitle}を完了する」を押せます。
             </p>
             <ul className="space-y-3">
               {prepItems.map((item) => (
@@ -641,7 +626,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               </span>
             </div>
             <p className="text-xs text-muted-foreground">
-              申請が終わったあとも、ここでチェックとメモができます。「この確認は完了」の条件には入りません。
+              申請が終わったあとも、ここでチェックとメモができます。下の完了ボタンの条件には入りません。
             </p>
             {renderStepList(followUpSteps, {
               locked: false,
@@ -662,7 +647,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             <p className="text-xs font-medium text-primary">あなたの進み具合</p>
             <p className="text-sm font-semibold">
               {isDone
-                ? "この確認は完了です"
+                ? `「${guide.plainTitle}」は完了しています`
                 : `手順 ${stepProgress}/${guide.steps.length} までチェック済み`}
             </p>
             {prepItems.length > 0 && (
@@ -743,11 +728,11 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         <p className="px-1 text-sm leading-relaxed text-muted-foreground">
           {!evidenceReady
             ? isPhotoEvidenceAction
-              ? "写真を残すことと、「この確認は完了」は別です。写真を保存したあと、下の「この確認は完了」を押すと、この項目が終わります。"
+              ? "写真を残したら、下の完了ボタンでこの項目を終えられます。写真は何度でも追加できます。"
               : "先に「記録を残す」を押してください。"
             : !stepsDone
-              ? "手順のチェックが残っています。すべて確認できたら、下の「この確認は完了」を押してください。"
-              : "準備物のチェックが残っています。そろったら、下の「この確認は完了」を押してください。"}
+              ? "手順のチェックが残っています。"
+              : "準備物のチェックが残っています。"}
         </p>
       )}
 
@@ -759,11 +744,6 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         }`}
       >
         <div className="mx-auto flex max-w-lg flex-col gap-2">
-          {!isDone && (
-            <p className="px-1 text-center text-xs leading-relaxed text-muted-foreground">
-              カメラで撮っただけでは完了になりません。手順の最後に「この確認は完了」を押してください。
-            </p>
-          )}
           {!isDone &&
             ui.showEvidenceButton &&
             !ui.hasEvidence &&
@@ -784,7 +764,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               }
             >
               <Camera className="h-5 w-5" />
-              カメラで撮る（まだ完了ではありません）
+              カメラで撮る
             </Button>
           )}
           {!isDone && (
@@ -795,24 +775,13 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               onClick={handleComplete}
             >
               <CheckCircle2 className="h-5 w-5" />
-              この確認は完了
-            </Button>
-          )}
-          {!isDone && (
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              className="h-12 w-full"
-              onClick={handleAlreadyDone}
-            >
-              すでに手続きを終えている
+              「{guide.plainTitle}」を完了する
             </Button>
           )}
           {isDone && (
             <>
               <p className="text-center text-sm font-medium text-emerald-900 dark:text-emerald-100">
-                この確認は完了です
+                「{guide.plainTitle}」は完了しています
               </p>
               <Button asChild variant="outline" size="lg" className="h-12 w-full bg-background">
                 <Link href="/actions">やること一覧へ戻る</Link>

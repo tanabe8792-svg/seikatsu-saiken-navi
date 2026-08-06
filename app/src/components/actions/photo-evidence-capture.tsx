@@ -143,7 +143,7 @@ export function PhotoEvidenceCapture({
         <div>
           <h3 className="text-base font-semibold">被害の写真を残す</h3>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            カメラが起動します。撮った写真はこの端末に保存されます。写真を残しただけでは「確認完了」にはなりません。手順を終えたら、下の「この確認は完了」を押してください。
+            カメラが起動します。撮った写真はこの端末に保存されます。何度でも追加できます。
           </p>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
             いま写真は端末内のみです。家族とケースを共有しても、写真は自動では相手に届きません。必要な写真はLINE等で別途送ってください（共有相手からも見られる保存は今後追加予定）。
