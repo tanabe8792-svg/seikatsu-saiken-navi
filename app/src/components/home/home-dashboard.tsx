@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Camera, CalendarClock, CheckCircle2, ChevronRight, ExternalLink, MessageCircle } from "lucide-react";
 import { AppLogo } from "@/components/brand/app-logo";
+import { AreaWeatherCard } from "@/components/home/area-weather-card";
 import { IdentityRegisterPrompt } from "@/components/auth/identity-status-chip";
 import { FontSizeQuickControl } from "@/components/settings/font-size-quick-control";
 import { Button } from "@/components/ui/button";
@@ -127,6 +128,8 @@ export function HomeDashboard() {
 
       return (
         <div className="space-y-4">
+          <AreaWeatherCard municipalityName={profile.municipality} />
+
           {postJ00Welcome ? (
             <>
               <Card className="border-emerald-300/60 bg-emerald-50/50 dark:border-emerald-900/40 dark:bg-emerald-950/20">
@@ -468,6 +471,8 @@ export function HomeDashboard() {
 
     return (
       <div className="space-y-4">
+        <AreaWeatherCard municipalityName={profile.municipality} />
+
         <Card className="border-border bg-card">
           <CardContent className="space-y-4 p-6">
             <p className="text-sm font-medium text-muted-foreground">あなたの状況</p>

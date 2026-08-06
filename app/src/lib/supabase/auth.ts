@@ -26,7 +26,7 @@ export async function sendEmailVerificationLink(
     return {
       ok: false,
       message:
-        "メール認証の準備ができていません。Supabase の設定を管理者にお問い合わせください。",
+        "メール登録の準備ができていません。管理者向け: Vercel に NEXT_PUBLIC_SUPABASE_URL と NEXT_PUBLIC_SUPABASE_ANON_KEY を設定し、Supabase で Email ログインを有効にしてください（docs/ACCOUNT_AUTH_SETUP.md）。",
     };
   }
 
@@ -62,7 +62,7 @@ export async function signInWithLineOAuth(): Promise<
     return {
       ok: false,
       message:
-        "LINEログインの準備ができていません。Supabase と LINE Login の設定を管理者にお問い合わせください。",
+        "LINE登録の準備ができていません。管理者向け: Supabase と LINE Login を接続してください（docs/ACCOUNT_AUTH_SETUP.md）。",
     };
   }
 

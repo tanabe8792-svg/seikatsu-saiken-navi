@@ -54,9 +54,9 @@ export default function MyPage() {
             <div className="flex items-start gap-3">
               <Bell className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
               <div className="space-y-2">
-                <h2 className="text-lg font-bold">マイページ登録（本人確認）</h2>
+                <h2 className="text-lg font-bold">マイページ登録</h2>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  あなたのメールアドレス、またはあなたのLINEアカウントで本人確認すると、登録済みであることが各ページで分かります。別の端末からも続きを引き継げます。
+                  あなたのメールアドレス、またはあなたのLINEアカウントで登録できます。登録すると各ページで登録済みと表示され、別の端末からも続きを引き継げます。
                 </p>
                 {identity && (
                   <p className="text-sm font-medium text-brand-green">{identityLabel}</p>
@@ -148,11 +148,11 @@ export default function MyPage() {
           <MenuLink
             href="/settings#mypage-register"
             icon={Bell}
-            label="マイページ登録（本人確認）"
+            label="マイページ登録"
             note={
               identity
-                ? identityLabel ?? "本人確認済み"
-                : "あなたのメール／LINEで本人確認（任意）"
+                ? identityLabel ?? "登録済み"
+                : "メールまたはLINEで登録（任意）"
             }
           />
           <div className="flex items-center gap-3 rounded-2xl border bg-muted/30 px-4 py-3">

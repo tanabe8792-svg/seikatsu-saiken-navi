@@ -10,7 +10,7 @@ interface IdentityStatusChipProps {
   compact?: boolean;
 }
 
-/** ヘッダー等 — 本人確認済みなら表示 */
+/** ヘッダー等 — マイページ登録済みなら表示 */
 export function IdentityStatusChip({
   className,
   compact = false,
@@ -66,7 +66,7 @@ export function IdentityRegisterPrompt({ className }: { className?: string }) {
     >
       <span className="font-medium text-foreground">マイページ登録（任意）</span>
       <span className="mt-1 block leading-relaxed">
-        あなたのメールまたはLINEアカウントで本人確認すると、別の端末からも続きを引き継げます。
+        あなたのメールまたはLINEアカウントで登録すると、別の端末からも続きを引き継げます。
       </span>
     </Link>
   );

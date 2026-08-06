@@ -94,14 +94,13 @@ export default function AboutPage() {
           ))}
         </TrustSection>
 
-        <TrustSection heading="マイページ登録（本人確認）" id="account-setup">
+        <TrustSection heading="マイページ登録" id="account-setup">
           <p>
-            あなたのメールアドレス、またはあなたのLINEアカウントで本人確認すると、登録済みであることが各ページに表示されます。
-            <strong>本人確認とデータの引き継ぎ</strong>が目的です。
+            あなたのメールアドレス、またはあなたのLINEアカウントでマイページ登録できます。登録すると各ページに登録済みと表示され、別の端末からも続きを引き継げます。
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-            <li>メール：あなたのメールアドレスに届く確認リンクをタップ</li>
-            <li>LINE：あなたのLINEアカウントでログイン</li>
+            <li>メール：登録用リンク付きメールを受け取り、リンクをタップ</li>
+            <li>LINE：あなたのLINEアカウントでログインして登録</li>
             <li>登録しなくても、やることの確認はすべて利用できます</li>
           </ul>
           <p className="text-sm text-muted-foreground">

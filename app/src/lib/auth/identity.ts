@@ -22,13 +22,13 @@ export function maskEmail(email: string): string {
 
 export function formatVerifiedIdentityLabel(identity: VerifiedIdentity): string {
   if (identity.provider === "email" && identity.email) {
-    return `メール確認済み（${maskEmail(identity.email)}）`;
+    return `メール登録済み（${maskEmail(identity.email)}）`;
   }
   if (identity.provider === "line") {
     const name = identity.lineDisplayName ?? "LINE";
-    return `LINE確認済み（${name}）`;
+    return `LINE登録済み（${name}）`;
   }
-  return "本人確認済み";
+  return "マイページ登録済み";
 }
 
 export function identityFromSupabaseUser(user: {

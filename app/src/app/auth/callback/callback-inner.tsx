@@ -64,7 +64,7 @@ export default function AuthCallbackInner() {
           <>
             <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
             <p className="text-center text-sm text-muted-foreground" role="status">
-              本人確認を完了しています…
+              マイページ登録を完了しています…
             </p>
           </>
         ) : (

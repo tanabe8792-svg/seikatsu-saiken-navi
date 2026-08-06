@@ -1,9 +1,21 @@
-# アカウント本人確認 — セットアップ手順（ゆうさん向け）
+# マイページ登録 — セットアップ手順（ゆうさん向け）
 
 | 項目 | 内容 |
 |------|------|
-| 目的 | マイページ登録＝**本人確認**（ユーザーのメール / ユーザーのLINEアカウント） |
+| 目的 | マイページ登録（ユーザーのメール / ユーザーのLINEアカウント） |
 | 配信 | メッセージ配信は行いません |
+
+---
+
+## なぜボタンが押せない／メールが届かないか
+
+アプリは **Supabase Auth** でメール登録リンクを送ります。  
+Vercel に次の2つが入っていないと、送信できません。
+
+1. `NEXT_PUBLIC_SUPABASE_URL`
+2. `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+この2つを入れたあと、**必ず Redeploy** してください。
 
 ---
 
@@ -11,8 +23,8 @@
 
 ```
 ユーザー
-  ├ あなたのメール → 確認リンク → 本人確認済み
-  └ あなたのLINE   → LINEログイン → 本人確認済み
+  ├ あなたのメール → 登録用リンク → マイページ登録済み
+  └ あなたのLINE   → LINEログイン → マイページ登録済み
                 ↓
          Supabase Auth（サーバー）
                 ↓
@@ -27,7 +39,7 @@
 2. **Project Settings → API** から以下をコピー
    - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
    - `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Vercel → プロジェクト → **Settings → Environment Variables** に上記2つを追加
+3. Vercel → プロジェクト → **Settings → Environment Variables** に上記2つを追加（Production / Preview 両方）
 4. **Authentication → URL Configuration**
    - Site URL: `https://seikatsu-saiken-navi.vercel.app`
    - Redirect URLs に追加:
@@ -46,18 +58,18 @@ Supabase **SQL Editor** で `/database/supabase-schema.sql` を実行（未実�
 
 ---
 
-## ステップ3 — メール本人確認
+## ステップ3 — メール登録
 
 1. Supabase **Authentication → Providers → Email** を **ON**
-2. **Confirm email** を ON（確認メール必須にする場合）
+2. **Confirm email** を ON（メール確認を必須にする場合）
 3. **Authentication → Email Templates** で「Magic Link」の文面を必要に応じて調整
-4. 独自ドメインのメール送信を使う場合は Supabase の SMTP 設定（任意）
+4. Vercel で **Redeploy**
 
-**動作確認:** アプリ → 設定 → マイページ登録 → メール入力 → 届いたリンクをタップ
+**動作確認:** アプリ → 設定 → マイページ登録 → メール入力 → 「登録用メールを送信」→ 届いたリンクをタップ
 
 ---
 
-## ステップ4 — LINE Login（ユーザーのLINEアカウントで本人確認）
+## ステップ4 — LINE 登録（任意）
 
 > **LINE Login** チャネルを作成します（ユーザー自身のアカウントでログインする仕組みです）。
 
@@ -87,25 +99,9 @@ https://<your-supabase-project-ref>.supabase.co/auth/v1/callback
 1. **Authentication → Providers → LINE** を **ON**
 2. Channel ID / Channel Secret を貼り付け
 3. Save
+4. Vercel を Redeploy
 
-**動作確認:** アプリ → 設定 → マイページ登録 → LINEでログイン
-
----
-
-## ステップ5 — Vercel 再デプロイ
-
-環境変数を追加・変更したら **Redeploy** してください。
-
----
-
-## よくあるつまずき
-
-| 症状 | 確認すること |
-|------|----------------|
-| 「認証の設定が完了していません」 | Supabase の URL / anon key が Vercel に入っているか |
-| メールが届かない | Supabase の Email provider、迷惑メールフォルダ |
-| LINEログインが始まらない | Supabase で LINE provider ON、Callback URL 一致 |
-| ログイン後に進捗が消える | SQL extension 実行済みか、同じメール/LINEで再ログイン |
+**動作確認:** アプリ → 設定 → マイページ登録 → LINEで登録する
 
 ---
 
@@ -114,5 +110,6 @@ https://<your-supabase-project-ref>.supabase.co/auth/v1/callback
 - [ ] Supabase プロジェクト URL を Vercel に設定した
 - [ ] Supabase anon key を Vercel に設定した
 - [ ] Redirect URL を Supabase に登録した
-- [ ] LINE Login チャネルを作成した
-- [ ] Supabase の LINE provider を ON にした
+- [ ] Email provider を ON にした
+- [ ] Vercel を Redeploy した
+- [ ] （任意）LINE Login チャネルを作成し Supabase に接続した

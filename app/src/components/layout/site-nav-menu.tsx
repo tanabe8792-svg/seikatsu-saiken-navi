@@ -11,7 +11,7 @@ const MENU_LINKS = [
   { href: "/", label: "ホーム" },
   { href: "/actions", label: "やること一覧" },
   { href: "/records", label: "記録した写真" },
-  { href: "/settings#mypage-register", label: "マイページ登録（本人確認）" },
+  { href: "/settings#mypage-register", label: "マイページ登録" },
   { href: "/chat", label: "AI相談" },
   { href: "/mypage", label: "その他" },
   { href: "/settings", label: "設定" },
