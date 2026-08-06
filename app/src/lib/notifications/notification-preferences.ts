@@ -43,7 +43,7 @@ export const NOTIFICATION_CHANNEL_OPTIONS: {
     id: "line",
     label: "LINEで最新情報をすぐ受け取る",
     description:
-      "新しい支援案内など、すぐ知りたい方向け。LINEでもお知らせします（任意・配信開始は別途案内）。",
+      "公式LINE（@272pshvm）を友だち追加したうえで選んでください。新しい支援案内などをお知らせします（任意・配信連携は順次準備中）。",
     requiresContact: true,
   },
 ];
@@ -76,9 +76,7 @@ export function getNotificationPreferenceSummary(
       : "マイページ + メール（未入力）";
   }
   if (prefs.extraChannel === "line") {
-    return prefs.lineId
-      ? `マイページ + LINE（${maskLineId(prefs.lineId)}）`
-      : "マイページ + LINE（未入力）";
+    return "マイページ + LINE（公式アカウント）";
   }
   return "アプリを開いたとき";
 }
@@ -107,9 +105,7 @@ export function validateNotificationPreferences(
     }
   }
   if (prefs.extraChannel === "line") {
-    if (!prefs.lineId.trim()) {
-      return { valid: false, message: "LINE ID を入力してください" };
-    }
+    return { valid: true };
   }
   return { valid: true };
 }

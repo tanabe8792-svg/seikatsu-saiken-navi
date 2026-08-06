@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Bell, Mail, MessageCircle, Shield, Smartphone } from "lucide-react";
+import { Bell, ExternalLink, Mail, MessageCircle, Shield, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,10 @@ import {
   type NotificationExtraChannel,
   type NotificationPreferences,
 } from "@/lib/notifications/notification-preferences";
+import {
+  formatOfficialLineBasicId,
+  getOfficialLineAddFriendUrl,
+} from "@/lib/line/official-account";
 import { useSettings } from "@/providers/settings-provider";
 import { cn } from "@/lib/utils";
 
@@ -67,8 +71,7 @@ export function NotificationSettings() {
     settings.notifications.extraChannel !== "none" &&
     ((settings.notifications.extraChannel === "email" &&
       !!settings.notifications.email) ||
-      (settings.notifications.extraChannel === "line" &&
-        !!settings.notifications.lineId));
+      settings.notifications.extraChannel === "line");
 
   return (
     <Card id="mypage-register" className="border-border">
@@ -171,24 +174,31 @@ export function NotificationSettings() {
         )}
 
         {selected?.requiresContact && draft.extraChannel === "line" && (
-          <div className="space-y-2">
-            <label htmlFor="notify-line" className="text-sm font-medium">
-              LINE ID（または表示名）
-            </label>
-            <Input
-              id="notify-line"
-              type="text"
-              autoComplete="off"
-              placeholder="@example または表示名"
-              value={draft.lineId}
-              onChange={(e) => {
-                setDraft((prev) => ({ ...prev, lineId: e.target.value }));
-                setSaved(false);
-                setError(null);
-              }}
-            />
+          <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
+            <p className="text-sm font-medium">公式LINEアカウント</p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              通知を受け取るには、先に公式LINEを友だち追加してください。
+            </p>
             <p className="text-xs text-muted-foreground">
-              配信の開始時期が決まり次第、こちらからご案内します。
+              ID:{" "}
+              <span className="font-medium text-foreground">
+                {formatOfficialLineBasicId()}
+              </span>
+            </p>
+            <Button asChild variant="outline" className="h-12 w-full">
+              <a
+                href={getOfficialLineAddFriendUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle className="h-5 w-5" />
+                公式LINEを友だち追加する
+                <ExternalLink className="h-4 w-4 opacity-70" />
+              </a>
+            </Button>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              友だち追加後、下の「マイページ登録を保存」を押してください。メッセージ配信の自動連携は、LINE
+              Messaging API の設定が整い次第開始します。
             </p>
           </div>
         )}
