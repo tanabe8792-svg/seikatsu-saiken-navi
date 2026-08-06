@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { Camera, ImagePlus, Loader2, Trash2, X } from "lucide-react";
+import { Camera, ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { EvidenceInput } from "@/lib/case-management/evidence";
@@ -13,17 +13,13 @@ import {
 } from "@/lib/case-management/photo-store";
 import { useToast } from "@/providers/toast-provider";
 
-interface PendingPreview {
-  key: string;
-  file: File;
-  url: string;
-}
-
 interface PhotoEvidenceCaptureProps {
   caseId: string;
   actionId: string;
   onSubmitEvidence: (actionId: string, evidence: EvidenceInput) => void;
   alreadyHasEvidence?: boolean;
+  /** 手順ガイドのあとに表示するとき用 */
+  stepNumber?: number;
 }
 
 export function PhotoEvidenceCapture({
@@ -31,13 +27,13 @@ export function PhotoEvidenceCapture({
   actionId,
   onSubmitEvidence,
   alreadyHasEvidence = false,
+  stepNumber = 3,
 }: PhotoEvidenceCaptureProps) {
   const { showToast } = useToast();
   const cameraInputId = useId();
   const albumInputId = useId();
   const cameraRef = useRef<HTMLInputElement>(null);
   const albumRef = useRef<HTMLInputElement>(null);
-  const [pending, setPending] = useState<PendingPreview[]>([]);
   const [saved, setSaved] = useState<StoredPhotoMeta[]>([]);
   const [saving, setSaving] = useState(false);
   const [loadingSaved, setLoadingSaved] = useState(true);
@@ -60,56 +56,23 @@ export function PhotoEvidenceCapture({
     };
   }, [caseId, actionId]);
 
-  useEffect(() => {
-    return () => {
-      for (const item of pending) {
-        URL.revokeObjectURL(item.url);
-      }
-    };
-  }, [pending]);
-
-  function addFiles(fileList: FileList | null) {
+  async function saveFiles(fileList: FileList | null) {
     if (!fileList || fileList.length === 0) return;
-    const next: PendingPreview[] = [];
-    for (const file of Array.from(fileList)) {
-      if (!file.type.startsWith("image/")) continue;
-      next.push({
-        key: `${file.name}-${file.lastModified}-${Math.random()}`,
-        file,
-        url: URL.createObjectURL(file),
-      });
-    }
-    if (next.length === 0) {
+    const files = Array.from(fileList).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    if (files.length === 0) {
       showToast("画像ファイルを選んでください");
       return;
     }
-    setPending((prev) => [...prev, ...next].slice(0, 20));
-  }
 
-  function removePending(key: string) {
-    setPending((prev) => {
-      const target = prev.find((p) => p.key === key);
-      if (target) URL.revokeObjectURL(target.url);
-      return prev.filter((p) => p.key !== key);
-    });
-  }
-
-  async function handleSave() {
-    if (pending.length === 0) {
-      showToast("先に写真を撮るか選んでください");
-      return;
-    }
     setSaving(true);
     try {
       const metas = await savePhotosFromFiles({
         caseId,
         actionId,
-        files: pending.map((p) => p.file),
+        files: files.slice(0, 20),
       });
-      for (const item of pending) {
-        URL.revokeObjectURL(item.url);
-      }
-      setPending([]);
       const refreshed = await listPhotosForAction(caseId, actionId);
       setSaved(refreshed);
 
@@ -125,9 +88,9 @@ export function PhotoEvidenceCapture({
       };
       onSubmitEvidence(actionId, evidence);
       showToast(
-        alreadyHasEvidence
-          ? `${metas.length}枚を追加保存しました`
-          : `${metas.length}枚の写真を端末に残しました`
+        alreadyHasEvidence || refreshed.length > metas.length
+          ? `${metas.length}枚を端末に追加しました`
+          : `${metas.length}枚を端末に残しました`
       );
     } catch (error) {
       console.error(error);
@@ -138,15 +101,18 @@ export function PhotoEvidenceCapture({
   }
 
   return (
-    <Card id="photo-evidence-capture" className="border-border bg-card">
+    <Card
+      id="photo-evidence-capture"
+      className="border-2 border-brand-green/40 bg-card shadow-sm"
+    >
       <CardContent className="space-y-4 p-5">
         <div>
-          <h3 className="text-base font-semibold">被害の写真を残す</h3>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            カメラが起動します。撮った写真はこの端末に保存されます。何度でも追加できます。
+          <p className="text-xs font-medium text-brand-green">
+            手順 {stepNumber}（撮影）
           </p>
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            いま写真は端末内のみです。家族とケースを共有しても、写真は自動では相手に届きません。必要な写真はLINE等で別途送ってください（共有相手からも見られる保存は今後追加予定）。
+          <h3 className="mt-1 text-base font-semibold">カメラで撮って残す</h3>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            撮る・選ぶと、すぐにこの端末へ保存されます。別ボタンでの保存は不要です。何度でも追加できます。
           </p>
         </div>
 
@@ -158,7 +124,7 @@ export function PhotoEvidenceCapture({
           capture="environment"
           className="sr-only"
           onChange={(e) => {
-            addFiles(e.target.files);
+            void saveFiles(e.target.files);
             e.target.value = "";
           }}
         />
@@ -170,7 +136,7 @@ export function PhotoEvidenceCapture({
           multiple
           className="sr-only"
           onChange={(e) => {
-            addFiles(e.target.files);
+            void saveFiles(e.target.files);
             e.target.value = "";
           }}
         />
@@ -183,8 +149,12 @@ export function PhotoEvidenceCapture({
             onClick={() => cameraRef.current?.click()}
             disabled={saving}
           >
-            <Camera className="h-5 w-5" />
-            カメラで撮る
+            {saving ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Camera className="h-5 w-5" />
+            )}
+            {saving ? "端末に保存中…" : "カメラで撮る"}
           </Button>
           <Button
             type="button"
@@ -199,60 +169,16 @@ export function PhotoEvidenceCapture({
           </Button>
         </div>
 
-        {pending.length > 0 && (
-          <div className="space-y-3">
-            <p className="text-sm font-medium">
-              いま選んだ写真（{pending.length}枚）
-            </p>
-            <ul className="grid grid-cols-3 gap-2">
-              {pending.map((item) => (
-                <li
-                  key={item.key}
-                  className="relative aspect-square overflow-hidden rounded-lg border bg-muted"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={item.url}
-                    alt="撮影した写真のプレビュー"
-                    className="h-full w-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    aria-label="この写真をやめる"
-                    className="absolute right-1 top-1 rounded-full bg-background/90 p-1 shadow"
-                    onClick={() => removePending(item.key)}
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <Button
-              type="button"
-              size="lg"
-              className="h-12 w-full"
-              onClick={() => void handleSave()}
-              disabled={saving}
-            >
-              {saving ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  保存中…
-                </>
-              ) : (
-                <>この写真を端末に残す</>
-              )}
-            </Button>
-          </div>
-        )}
-
         <div className="rounded-lg border bg-background/70 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
-          写真はサーバーには送りません。この端末の中だけに残ります。機種変更やデータ消去の前に、必要ならアルバムにもコピーしてください。
+          写真はサーバーには送りません。この端末の中だけに残ります。機種変更の前に、必要ならアルバムにもコピーしてください。
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-medium">この手順で残した写真</p>
+            <p className="text-sm font-medium">
+              この端末に残した写真
+              {!loadingSaved && saved.length > 0 ? `（${saved.length}枚）` : ""}
+            </p>
             <Link
               href="/records"
               className="text-sm font-medium text-muted-foreground underline-offset-2 hover:underline"
@@ -264,12 +190,11 @@ export function PhotoEvidenceCapture({
             <p className="text-sm text-muted-foreground">読み込み中…</p>
           ) : saved.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              まだ写真はありません。上のボタンから撮れます。
+              まだありません。上のボタンから撮ると、すぐに残ります。
             </p>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              {saved.length}枚がこの端末に残っています。
-              {alreadyHasEvidence ? " 記録は反映済みです。" : ""}
+            <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100">
+              {saved.length}枚がこの端末に残っています。追加で撮っても大丈夫です。
             </p>
           )}
         </div>

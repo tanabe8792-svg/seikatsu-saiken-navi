@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   Camera,
   CheckCircle2,
+  ChevronDown,
   Circle,
   ExternalLink,
   Loader2,
@@ -201,72 +202,98 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
 
   function renderStepList(
     steps: typeof guide.steps,
-    options: { locked: boolean; numberFrom?: number }
+    options: { locked: boolean; numberFrom?: number; emphasize?: boolean }
   ) {
-    const { locked, numberFrom = 1 } = options;
+    const { locked, numberFrom = 1, emphasize = false } = options;
     return (
-      <ul className="space-y-4">
+      <ul className="space-y-0">
         {steps.map((step, index) => {
           const done = completedSteps.includes(step.id);
+          const isCurrent =
+            !done &&
+            steps.slice(0, index).every((s) => completedSteps.includes(s.id));
           return (
-            <li
-              key={step.id}
-              className={`rounded-xl border px-4 py-3 ${
-                done ? "border-border bg-card" : "bg-card"
-              }`}
-            >
-              <button
-                type="button"
-                disabled={locked}
-                onClick={() => toggleStep(step.id)}
-                className={`w-full text-left ${locked ? "opacity-80" : ""}`}
-              >
-                <div className="flex items-start gap-3">
-                  {done ? (
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  ) : (
-                    <Circle className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground/50" />
-                  )}
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <p className="text-sm font-semibold">
-                      {numberFrom + index}. {step.title}
-                    </p>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {step.body}
-                    </p>
-                  </div>
+            <li key={step.id}>
+              {index > 0 && (
+                <div className="flex justify-center py-1.5 text-muted-foreground">
+                  <ChevronDown className="h-5 w-5" aria-hidden />
                 </div>
-              </button>
-
+              )}
               <div
-                className="mt-3 space-y-2 border-t pt-3"
-                onClick={(e) => e.stopPropagation()}
+                className={`rounded-2xl border-2 px-4 py-4 transition-colors ${
+                  done
+                    ? "border-brand-green/50 bg-emerald-50/80 dark:border-brand-green/40 dark:bg-emerald-950/30"
+                    : isCurrent && emphasize
+                      ? "border-brand-green bg-card ring-2 ring-brand-green/25"
+                      : "border-border bg-card"
+                }`}
               >
-                <p className="text-xs font-medium text-muted-foreground">
-                  {step.memoLabel ?? "メモ"}
-                </p>
-                {step.memoChoices && step.memoChoices.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {step.memoChoices.map((choice) => (
-                      <button
-                        key={choice}
-                        type="button"
-                        disabled={locked}
-                        onClick={() => addMemoChoice(step.id, choice)}
-                        className="rounded-full border bg-background px-3 py-1.5 text-xs hover:bg-accent/50 disabled:opacity-50"
-                      >
-                        {choice}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <Textarea
-                  value={memos[step.id] ?? ""}
+                <button
+                  type="button"
                   disabled={locked}
-                  placeholder={step.memoPlaceholder ?? "メモを残せます"}
-                  className="min-h-[88px] text-sm"
-                  onChange={(e) => updateMemo(step.id, e.target.value)}
-                />
+                  onClick={() => toggleStep(step.id)}
+                  className={`w-full text-left ${locked ? "opacity-80" : ""}`}
+                >
+                  <div className="flex items-start gap-3">
+                    <span
+                      className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                        done
+                          ? "bg-brand-green text-white"
+                          : isCurrent
+                            ? "bg-muted text-foreground"
+                            : "bg-muted/60 text-muted-foreground"
+                      }`}
+                    >
+                      {done ? "✓" : numberFrom + index}
+                    </span>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <p className="text-base font-semibold">{step.title}</p>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        {step.body}
+                      </p>
+                      {!locked && (
+                        <p
+                          className={`pt-1 text-sm font-medium ${
+                            done ? "text-brand-green" : "text-primary"
+                          }`}
+                        >
+                          {done ? "確認済み（タップで戻せる）" : "読んだらタップしてチェック"}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </button>
+
+                <div
+                  className="mt-3 space-y-2 border-t pt-3"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {step.memoLabel ?? "メモ"}
+                  </p>
+                  {step.memoChoices && step.memoChoices.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {step.memoChoices.map((choice) => (
+                        <button
+                          key={choice}
+                          type="button"
+                          disabled={locked}
+                          onClick={() => addMemoChoice(step.id, choice)}
+                          className="rounded-full border bg-background px-3 py-1.5 text-xs hover:bg-accent/50 disabled:opacity-50"
+                        >
+                          {choice}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <Textarea
+                    value={memos[step.id] ?? ""}
+                    disabled={locked}
+                    placeholder={step.memoPlaceholder ?? "メモを残せます"}
+                    className="min-h-[88px] text-sm"
+                    onChange={(e) => updateMemo(step.id, e.target.value)}
+                  />
+                </div>
               </div>
             </li>
           );
@@ -455,16 +482,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         />
       )}
 
-      {isPhotoEvidenceAction && caseFile && (
-        <PhotoEvidenceCapture
-          caseId={caseFile.caseId}
-          actionId={actionId}
-          onSubmitEvidence={handlePhotoEvidence}
-          alreadyHasEvidence={ui.hasEvidence}
-        />
-      )}
-
-      {procedureGuidance && (
+      {procedureGuidance && !isPhotoEvidenceAction && (
         <Card className="border-border bg-card">
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">
@@ -560,13 +578,35 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
 
       <Card>
         <CardContent className="space-y-3 p-5">
-          <h3 className="text-base font-semibold">手順（ひとつずつ）</h3>
+          <h3 className="text-base font-semibold">
+            {isPhotoEvidenceAction ? "まず手順を確認する" : "手順（ひとつずつ）"}
+          </h3>
           <p className="text-xs text-muted-foreground">
-            できたものにチェック。分かったこと・予定はメモに残せます。
+            {isPhotoEvidenceAction
+              ? "上から順に読んでチェックすると、次の撮影に進めます。色が変わったら確認済みです。"
+              : "できたものにチェック。分かったこと・予定はメモに残せます。"}
           </p>
-          {renderStepList(guide.steps, { locked: isDone })}
+          {renderStepList(guide.steps, {
+            locked: isDone,
+            emphasize: isPhotoEvidenceAction,
+          })}
         </CardContent>
       </Card>
+
+      {isPhotoEvidenceAction && caseFile && (
+        <>
+          <div className="flex justify-center text-muted-foreground">
+            <ChevronDown className="h-6 w-6" aria-hidden />
+          </div>
+          <PhotoEvidenceCapture
+            caseId={caseFile.caseId}
+            actionId={actionId}
+            onSubmitEvidence={handlePhotoEvidence}
+            alreadyHasEvidence={ui.hasEvidence}
+            stepNumber={guide.steps.length + 1}
+          />
+        </>
+      )}
 
       {prepItems.length > 0 && (
         <Card className="border-amber-200/70 dark:border-amber-900/40">
@@ -620,13 +660,19 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         <Card className="border-sky-200/80 dark:border-sky-900/40">
           <CardContent className="space-y-3 p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="text-base font-semibold">申請後の進み具合</h3>
+              <h3 className="text-base font-semibold">
+                {isPhotoEvidenceAction
+                  ? "あとからの追加確認（任意）"
+                  : "申請後の進み具合"}
+              </h3>
               <span className="text-xs text-muted-foreground">
                 {followUpProgress}/{followUpSteps.length}
               </span>
             </div>
             <p className="text-xs text-muted-foreground">
-              申請が終わったあとも、ここでチェックとメモができます。下の完了ボタンの条件には入りません。
+              {isPhotoEvidenceAction
+                ? "雨のあとなど、あとから様子を見返すときのメモです。この項目の完了には必須ではありません。"
+                : "申請が終わったあとも、ここでチェックとメモができます。下の完了ボタンの条件には入りません。"}
             </p>
             {renderStepList(followUpSteps, {
               locked: false,
@@ -636,6 +682,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         </Card>
       )}
 
+      {!isPhotoEvidenceAction && (
       <Card>
         <CardContent className="space-y-4 p-5">
           <h3 className="text-base font-semibold">状況の整理</h3>
@@ -680,6 +727,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           )}
         </CardContent>
       </Card>
+      )}
 
       <Card>
         <CardContent className="space-y-2 p-5">
@@ -764,7 +812,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               }
             >
               <Camera className="h-5 w-5" />
-              カメラで撮る
+              {stepsDone ? "カメラで撮る" : "手順を見たあと、カメラへ進む"}
             </Button>
           )}
           {!isDone && (
