@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ListChecks, MoreHorizontal } from "lucide-react";
+import { CircleCheck, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** 2タブにしてスクロール領域を確保。ホームはヘッダー／メニューから。 */
 const navItems = [
-  { href: "/actions", label: "やること", icon: ListChecks },
+  { href: "/actions", label: "やること", icon: CircleCheck },
   { href: "/mypage", label: "その他", icon: MoreHorizontal },
 ] as const;
 

@@ -82,6 +82,7 @@ export function SupportDonationPanel() {
       ) : (
         <p className="text-xs leading-relaxed text-muted-foreground">
           {TRUST_CONTINUITY_SUPPORT.donationNote}
+          支払いが完了すると、応援したことをLINEやSNSで共有できる画面に進めます（任意です）。
         </p>
       )}
     </div>

@@ -116,6 +116,10 @@ E〜H は「後からでよい」です。ドメインなしでも `*.vercel.app
     - 自由: 「顧客が金額を選択」のリンク → `NEXT_PUBLIC_SUPPORT_DONATION_URL` または `_CUSTOM`
   - 補助: [PayPay.me](https://paypay.ne.jp/guide/paypay-me/) のURLを `NEXT_PUBLIC_SUPPORT_PAYPAY_URL` に
   - 設定後 Redeploy。「このサービスについて」→「活動を続けるために」に金額ボタンが出ます
+  - 支払い後の共有画面: 各 Payment Link の「支払い完了後」リダイレクトに
+    `https://seikatsu-saiken-navi.vercel.app/support/thanks?amount=500`（1000/3000/custom も同様）を設定
+- アカウント削除（ログイン中ユーザー）
+  - Vercel に `SUPABASE_SERVICE_ROLE_KEY` を入れるとサーバー側でもユーザー削除できます（未設定時は端末データ消去＋ログアウトのみ）
 - 問題が出たら Cursor に「この URL でこう壊れた」と伝える
 
 ---

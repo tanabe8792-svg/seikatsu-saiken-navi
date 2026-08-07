@@ -283,7 +283,7 @@ export default function MyPage() {
         </section>
 
         <Card className="border-destructive/20">
-          <CardContent className="p-4">
+          <CardContent className="space-y-3 p-4">
             <Button
               variant="ghost"
               className="h-auto w-full justify-start gap-3 px-2 py-2 text-destructive hover:bg-destructive/5 hover:text-destructive"
@@ -300,9 +300,26 @@ export default function MyPage() {
               <span className="text-left">
                 <span className="block text-base font-medium">データをリセット</span>
                 <span className="block text-sm font-normal opacity-80">
-                  入力内容と進捗を消します
+                  入力内容と進捗を消します（アカウントは残ります）
                 </span>
               </span>
+            </Button>
+            <Button
+              asChild
+              variant="ghost"
+              className="h-auto w-full justify-start gap-3 px-2 py-2 text-destructive hover:bg-destructive/5 hover:text-destructive"
+            >
+              <Link href="/mypage/delete-account">
+                <UserRound className="h-5 w-5 shrink-0" />
+                <span className="text-left">
+                  <span className="block text-base font-medium">
+                    アカウントを削除
+                  </span>
+                  <span className="block text-sm font-normal opacity-80">
+                    取り消せません。確認画面へ進みます
+                  </span>
+                </span>
+              </Link>
             </Button>
           </CardContent>
         </Card>

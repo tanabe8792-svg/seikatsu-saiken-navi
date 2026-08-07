@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AppLogo } from "@/components/brand/app-logo";
 import { FeedbackForm } from "@/components/about/feedback-form";
+import { ShareActions } from "@/components/about/share-actions";
 import { SupportDonationPanel } from "@/components/about/support-donation-panel";
 import { Card, CardContent } from "@/components/ui/card";
 import { J00_DISASTER_EVENT_LABEL } from "@/lib/j00-hearing";
@@ -98,6 +99,13 @@ export default function AboutPage() {
             {TRUST_CONTINUITY_SUPPORT.formLead}
           </p>
           <FeedbackForm kind="support" />
+        </TrustSection>
+
+        <TrustSection heading="この案内を広める" id="share">
+          <p>
+            家族や知人にこのナビを伝えると、必要な方に届きやすくなります。LINEやSNSで共有できます（任意です）。
+          </p>
+          <ShareActions kind="service" />
         </TrustSection>
 
         <TrustSection heading="マイページ登録" id="account-setup">
