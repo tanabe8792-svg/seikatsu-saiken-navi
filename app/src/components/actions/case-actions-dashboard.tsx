@@ -16,6 +16,7 @@ import {
 import { getActionWalkthrough } from "@/lib/case-management/action-walkthrough";
 import { getRecoveryPhaseDisplay } from "@/lib/case-management/recovery-dashboard";
 import type { CaseAction, CaseFile } from "@/lib/case-management/types";
+import { NowBadge } from "@/components/actions/now-badge";
 
 const PRIORITY_LABELS: Record<CaseAction["priority"], string> = {
   critical: "最優先",
@@ -114,8 +115,8 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
             </h2>
             <p className="text-xs text-muted-foreground">どれでも開けます</p>
           </div>
-          <p className="px-1 text-xs leading-relaxed text-muted-foreground">
-            スクロールして全体を見てから、「詳しく確認する」を押してください。順番は目安です。
+          <p className="px-1 text-sm leading-relaxed text-muted-foreground">
+            オレンジ色の「いま確認する」が、次に進める項目です。スクロールして全体を見てから、「詳しく確認する」を押してください。順番は目安です。
           </p>
           <ul className="space-y-3">
             {pending.map((action, index) => (
@@ -132,13 +133,16 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
       )}
 
       {current && (
-        <Card className="border border-border bg-card shadow-sm">
+        <Card className="border-2 border-[hsl(24_90%_40%)] bg-accent/50 shadow-sm">
           <CardContent className="space-y-3 p-5">
-            <p className="text-sm font-semibold text-foreground">
-              迷ったらここから（任意）
-            </p>
-            <ActionPreview action={current} isCurrent />
-            <Button asChild size="lg" className="h-12 w-full">
+            <div className="flex flex-wrap items-center gap-2">
+              <NowBadge size="lg" />
+              <p className="text-base font-semibold text-foreground">
+                迷ったらここから（任意）
+              </p>
+            </div>
+            <ActionPreview action={current} />
+            <Button asChild size="lg" className="h-12 w-full text-base">
               <Link href={getCaseActionDetailPath(current.id)}>
                 この項目を詳しく確認する
                 <ChevronRight className="h-5 w-5" />
@@ -166,13 +170,7 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
   );
 }
 
-function ActionPreview({
-  action,
-  isCurrent,
-}: {
-  action: CaseAction;
-  isCurrent?: boolean;
-}) {
+function ActionPreview({ action }: { action: CaseAction }) {
   const keyword = actionKeyword(action);
   const reason = formatActionFriendlyReason(action);
   const description = formatActionCompanionDescription(action);
@@ -180,17 +178,12 @@ function ActionPreview({
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
-        {isCurrent && (
-          <span className="rounded-full bg-brand-orange px-2.5 py-0.5 text-xs font-medium text-white">
-            いま
-          </span>
-        )}
-        <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
+        <span className="rounded-md bg-secondary px-2.5 py-1 text-sm font-medium text-secondary-foreground">
           {PRIORITY_LABELS[action.priority]}
         </span>
       </div>
       <p className="text-xl font-bold leading-snug">{keyword}</p>
-      <p className="text-sm leading-relaxed text-muted-foreground">
+      <p className="text-base leading-relaxed text-muted-foreground">
         {description || reason}
       </p>
     </div>
@@ -222,59 +215,63 @@ function ActionRow({
           done
             ? "border-border/60 bg-muted/20 transition-colors hover:bg-muted/40"
             : isCurrent
-              ? "border-border bg-card transition-colors hover:bg-muted/60"
+              ? "border-2 border-[hsl(24_90%_40%)] bg-accent/60 shadow-sm transition-colors hover:bg-accent/80"
               : "transition-colors hover:bg-accent/40"
         }
       >
         <CardContent className="flex items-start gap-3 p-4">
           <div className="mt-0.5 shrink-0">
             {done ? (
-              <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden />
+              <CheckCircle2 className="h-6 w-6 text-primary" aria-hidden />
             ) : (
               <Circle
-                className={`h-5 w-5 ${isCurrent ? "text-primary" : "text-muted-foreground/50"}`}
+                className={`h-6 w-6 ${isCurrent ? "text-[hsl(24_90%_38%)]" : "text-muted-foreground/50"}`}
                 aria-hidden
               />
             )}
           </div>
-          <div className="min-w-0 flex-1 space-y-1">
+          <div className="min-w-0 flex-1 space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
               {step != null && !done && (
-                <span className="text-xs font-medium text-muted-foreground">
+                <span className="text-sm font-medium text-muted-foreground">
                   {step}.
                 </span>
               )}
-              {isCurrent && !done && (
-                <span className="text-xs font-semibold text-brand-orange">いま</span>
-              )}
+              {isCurrent && !done && <NowBadge />}
               {done && (
-                <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                <span className="rounded-md bg-emerald-100 px-2.5 py-1 text-sm font-semibold text-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-200">
                   確認済み
                 </span>
               )}
             </div>
             <p
-              className={`text-base font-semibold leading-snug ${
+              className={`text-lg font-bold leading-snug ${
                 done ? "text-muted-foreground" : ""
               }`}
             >
               {keyword}
             </p>
             {!done && companion !== keyword && (
-              <p className="text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm leading-relaxed text-muted-foreground">
                 {companion}
               </p>
             )}
             {!done && (
-              <p className="pt-1 text-sm font-medium text-muted-foreground">
+              <p
+                className={`pt-1 text-base font-semibold ${
+                  isCurrent
+                    ? "text-[hsl(24_90%_32%)]"
+                    : "text-muted-foreground"
+                }`}
+              >
                 詳しく確認する
               </p>
             )}
           </div>
           <ChevronRight
-            className={`mt-1 h-5 w-5 shrink-0 ${
+            className={`mt-1 h-6 w-6 shrink-0 ${
               isCurrent && !done
-                ? "text-primary"
+                ? "text-[hsl(24_90%_38%)]"
                 : "text-muted-foreground/60"
             }`}
             aria-hidden

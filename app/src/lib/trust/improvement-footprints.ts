@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-now-badge-visibility",
+    date: "2026-08-07",
+    title: "「いま確認する」の目印を大きくしました",
+    summary:
+      "やること一覧の「いま」が小さすぎて見えにくかったため、濃いオレンジの大きな表示に変え、次に進める項目がすぐ分かるようにしました。",
+  },
+  {
     id: "2026-08-07-share-auth-plain",
     date: "2026-08-07",
     title: "家族への共有とログインの言い方を整えました",

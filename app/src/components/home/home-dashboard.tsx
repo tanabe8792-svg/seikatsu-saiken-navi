@@ -11,6 +11,7 @@ import { FontSizeQuickControl } from "@/components/settings/font-size-quick-cont
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmergencyContacts } from "@/components/emergency/emergency-contacts";
+import { NowBadge } from "@/components/actions/now-badge";
 import { useUserSession } from "@/hooks/use-user-session";
 import {
   formatCaseSituation,
@@ -238,11 +239,14 @@ export function HomeDashboard() {
                 </Card>
               )}
 
-              <Card className="overflow-hidden border border-border bg-card shadow-sm">
+              <Card className="overflow-hidden border-2 border-[hsl(24_90%_40%)] bg-accent/50 shadow-sm">
                 <CardContent className="space-y-4 p-5">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    次に確認すること
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <NowBadge size="lg" />
+                    <p className="text-base font-semibold text-foreground">
+                      次に確認すること
+                    </p>
+                  </div>
                   <p className="text-xl font-bold leading-snug">
                     {continuity.nextAction.headline}
                   </p>
@@ -535,11 +539,14 @@ export function HomeDashboard() {
   if (nextAction) {
     return (
       <div className="space-y-4">
-        <Card className="border-border bg-card">
+        <Card className="border-2 border-[hsl(24_90%_40%)] bg-accent/50">
           <CardContent className="space-y-4 p-6">
-            <p className="text-sm font-medium text-muted-foreground">
-              次に確認すること
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <NowBadge size="lg" />
+              <p className="text-base font-semibold text-foreground">
+                次に確認すること
+              </p>
+            </div>
             <p className="text-2xl font-bold leading-snug">{nextAction.title}</p>
             <p className="text-base text-muted-foreground">
               {nextAction.description}

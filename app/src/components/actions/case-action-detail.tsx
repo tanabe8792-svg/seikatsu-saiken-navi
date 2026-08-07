@@ -693,11 +693,11 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             </div>
           )}
           {browsingAhead && recommended && (
-            <div className="space-y-2 rounded-lg border border-amber-200/80 bg-amber-50/80 px-3 py-2.5 dark:border-amber-900/40 dark:bg-amber-950/30">
-              <p className="text-sm font-medium text-amber-950 dark:text-amber-50">
-                いま優先は「{recommendedTitle}」です
+            <div className="space-y-2 rounded-lg border-2 border-[hsl(24_90%_40%)] bg-accent/70 px-3 py-3 dark:bg-accent/40">
+              <p className="text-base font-bold text-[hsl(24_90%_28%)] dark:text-accent-foreground">
+                いま確認する項目は「{recommendedTitle}」です
               </p>
-              <Button asChild size="sm" className="h-9 w-full">
+              <Button asChild size="lg" className="h-11 w-full text-base">
                 <Link href={getCaseActionDetailPath(recommended.id)}>
                   「{recommendedTitle}」へ戻る
                 </Link>
