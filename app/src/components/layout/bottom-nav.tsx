@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CircleCheck, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
 /** 2タブにしてスクロール領域を確保。ホームはヘッダー／メニューから。 */
 const navItems = [
@@ -13,9 +14,17 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { viewportBottomOffset, navHeightPx } = useBottomChrome();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background safe-bottom">
+    <nav
+      className="fixed left-0 right-0 z-50 border-t bg-background"
+      style={{
+        bottom: viewportBottomOffset,
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        minHeight: navHeightPx,
+      }}
+    >
       <div className="mx-auto flex max-w-lg items-stretch justify-around px-2 py-1.5">
         {navItems.map(({ href, label, icon: Icon }) => {
           const active =

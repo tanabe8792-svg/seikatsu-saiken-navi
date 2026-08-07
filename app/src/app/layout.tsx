@@ -4,6 +4,7 @@ import { AuthProvider } from "@/providers/auth-provider";
 import { BetaBanner } from "@/components/layout/beta-banner";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { OfflineBanner } from "@/components/layout/offline-banner";
+import { BottomChromeProvider } from "@/providers/bottom-chrome-provider";
 import { SessionProvider } from "@/providers/session-provider";
 import { SettingsProvider } from "@/providers/settings-provider";
 import { ToastProvider } from "@/providers/toast-provider";
@@ -44,23 +45,25 @@ export default function RootLayout({
           <AuthProvider>
             <SettingsProvider>
               <SessionProvider>
-              <ToastProvider>
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
-                >
-                  メインコンテンツへスキップ
-                </a>
-                <OfflineBanner />
-                <BetaBanner />
-                <div
-                  id="main-content"
-                  className="relative z-0 mx-auto min-h-screen max-w-lg isolate bg-background"
-                >
-                  {children}
-                </div>
-                <BottomNav />
-              </ToastProvider>
+                <BottomChromeProvider>
+                  <ToastProvider>
+                    <a
+                      href="#main-content"
+                      className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+                    >
+                      メインコンテンツへスキップ
+                    </a>
+                    <OfflineBanner />
+                    <BetaBanner />
+                    <div
+                      id="main-content"
+                      className="relative z-0 mx-auto min-h-screen max-w-lg isolate bg-background"
+                    >
+                      {children}
+                    </div>
+                    <BottomNav />
+                  </ToastProvider>
+                </BottomChromeProvider>
               </SessionProvider>
             </SettingsProvider>
           </AuthProvider>

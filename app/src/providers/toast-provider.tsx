@@ -8,6 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
 interface Toast {
   id: string;
@@ -19,6 +20,30 @@ interface ToastContextValue {
 }
 
 const ToastContext = createContext<ToastContextValue | null>(null);
+
+function ToastViewport({ toasts }: { toasts: Toast[] }) {
+  const { viewportBottomOffset, navHeightPx } = useBottomChrome();
+  return (
+    <div
+      className="pointer-events-none fixed left-0 right-0 z-[60] mx-auto flex max-w-lg flex-col gap-2 px-4"
+      style={{
+        bottom: `calc(${viewportBottomOffset + navHeightPx + 16}px + env(safe-area-inset-bottom, 0px))`,
+      }}
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {toasts.map((toast) => (
+        <div
+          key={toast.id}
+          className="rounded-2xl border bg-card px-4 py-3 text-base font-medium shadow-lg animate-in fade-in slide-in-from-bottom-2"
+          role="status"
+        >
+          {toast.message}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -39,21 +64,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div
-        className="pointer-events-none fixed bottom-24 left-0 right-0 z-[60] mx-auto flex max-w-lg flex-col gap-2 px-4"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className="rounded-2xl border bg-card px-4 py-3 text-base font-medium shadow-lg animate-in fade-in slide-in-from-bottom-2"
-            role="status"
-          >
-            {toast.message}
-          </div>
-        ))}
-      </div>
+      <ToastViewport toasts={toasts} />
     </ToastContext.Provider>
   );
 }

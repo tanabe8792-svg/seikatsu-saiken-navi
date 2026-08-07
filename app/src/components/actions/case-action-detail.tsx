@@ -57,6 +57,7 @@ import {
 } from "@/lib/case-management/municipality-context";
 import { SourceFreshnessNote } from "@/components/common/source-freshness-note";
 import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
+import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
 interface CaseActionDetailProps {
   actionId: string;
@@ -75,6 +76,7 @@ function findAction(
 
 export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
   const { showToast } = useToast();
+  const { viewportBottomOffset, navHeightPx } = useBottomChrome();
   const {
     session,
     loading,
@@ -587,14 +589,14 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         </Card>
       )}
 
-      <Card>
+      <Card id="walkthrough-steps">
         <CardContent className="space-y-3 p-5">
           <h3 className="text-base font-semibold">
             {isPhotoEvidenceAction ? "まず手順を確認する" : "手順（ひとつずつ）"}
           </h3>
           <p className="text-xs text-muted-foreground">
             {isPhotoEvidenceAction
-              ? "上から順に読んでチェックすると、次の撮影に進めます。色が変わったら確認済みです。"
+              ? "上から順に読んでチェックしてください。全部チェックすると、下でカメラが使えます。"
               : "できたものにチェック。分かったこと・予定はメモに残せます。"}
           </p>
           {renderStepList(guide.steps, {
@@ -609,13 +611,27 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <div className="flex justify-center text-muted-foreground">
             <ChevronDown className="h-6 w-6" aria-hidden />
           </div>
-          <PhotoEvidenceCapture
-            caseId={caseFile.caseId}
-            actionId={actionId}
-            onSubmitEvidence={handlePhotoEvidence}
-            alreadyHasEvidence={ui.hasEvidence}
-            stepNumber={guide.steps.length + 1}
-          />
+          {stepsDone || isDone ? (
+            <PhotoEvidenceCapture
+              caseId={caseFile.caseId}
+              actionId={actionId}
+              onSubmitEvidence={handlePhotoEvidence}
+              alreadyHasEvidence={ui.hasEvidence}
+              stepNumber={guide.steps.length + 1}
+            />
+          ) : (
+            <Card
+              id="photo-evidence-capture"
+              className="border border-dashed border-border bg-muted/20"
+            >
+              <CardContent className="space-y-2 p-5">
+                <h3 className="text-base font-semibold">カメラで撮って残す</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  上の手順にチェックを付けると、ここで撮影できます。先に手順を読んでから撮ってください。
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </>
       )}
 
@@ -806,11 +822,14 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       )}
 
       <div
-        className={`fixed bottom-14 left-0 right-0 z-40 border-t p-3 safe-bottom transition-colors ${
+        className={`fixed left-0 right-0 z-40 border-t p-3 transition-colors ${
           isDone
             ? "border-emerald-200/80 bg-emerald-50 dark:border-emerald-900/40 dark:bg-emerald-950/40"
             : "border-border bg-background"
         }`}
+        style={{
+          bottom: `calc(${viewportBottomOffset + navHeightPx}px + env(safe-area-inset-bottom, 0px))`,
+        }}
       >
         <div className="mx-auto flex max-w-lg flex-col gap-2">
           {!isDone &&
@@ -826,14 +845,20 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             <Button
               size="lg"
               className="h-14 w-full text-lg"
-              onClick={() =>
+              onClick={() => {
+                if (!stepsDone) {
+                  document
+                    .getElementById("walkthrough-steps")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  return;
+                }
                 document
                   .getElementById("photo-evidence-capture")
-                  ?.scrollIntoView({ behavior: "smooth", block: "center" })
-              }
+                  ?.scrollIntoView({ behavior: "smooth", block: "center" });
+              }}
             >
               <Camera className="h-5 w-5" />
-              {stepsDone ? "カメラで撮る" : "手順を見たあと、カメラへ進む"}
+              {stepsDone ? "カメラへ進む" : "まず手順を確認する"}
             </Button>
           )}
           {!isDone && (
