@@ -34,19 +34,24 @@ export function ProcedurePhaseRail({
   return (
     <div className="space-y-2" aria-label="この手続きの進み方">
       <p className="text-xs font-medium text-foreground">{currentHint}</p>
-      <ol className="flex items-stretch gap-1.5">
+      <ol
+        className="grid gap-1.5"
+        style={{
+          gridTemplateColumns: `repeat(${phases.length}, minmax(0, 1fr))`,
+        }}
+      >
         {phases.map((phase, index) => {
           const interactive = Boolean(phase.targetId);
           const Inner = interactive ? "button" : "div";
           return (
-            <li key={phase.id} className="min-w-0 flex-1">
+            <li key={phase.id} className="min-w-0">
               <Inner
                 type={interactive ? "button" : undefined}
                 onClick={
                   interactive ? () => scrollTo(phase.targetId) : undefined
                 }
                 className={cn(
-                  "flex w-full flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-center transition",
+                  "flex h-full w-full flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-center transition",
                   interactive && "active:scale-[0.98]"
                 )}
                 aria-current={phase.status === "current" ? "step" : undefined}
@@ -61,19 +66,22 @@ export function ProcedurePhaseRail({
                 />
                 <span
                   className={cn(
-                    "text-[11px] leading-tight",
+                    "min-h-[2.5rem] text-[11px] leading-tight",
                     phase.status === "current"
                       ? "font-semibold text-foreground"
                       : "text-muted-foreground"
                   )}
                 >
                   {index + 1}.{phase.label}
+                  {phase.status === "current" && phase.detail ? (
+                    <>
+                      <br />
+                      <span className="font-normal text-muted-foreground">
+                        {phase.detail}
+                      </span>
+                    </>
+                  ) : null}
                 </span>
-                {phase.status === "current" && phase.detail ? (
-                  <span className="text-[10px] text-muted-foreground">
-                    {phase.detail}
-                  </span>
-                ) : null}
               </Inner>
             </li>
           );

@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 
 interface WalkthroughStepRailProps {
@@ -10,7 +11,7 @@ interface WalkthroughStepRailProps {
   currentNumber: number;
 }
 
-/** 手順の中での進み（1→2→3）。前進感だけを出す薄い表示 */
+/** 手順の中での進み（1→2→3）。丸は固定、間の線だけ均等に伸ばす */
 export function WalkthroughStepRail({
   total,
   completedCount,
@@ -30,23 +31,17 @@ export function WalkthroughStepRail({
           ? `手順は全部確認できました（${total}）`
           : `手順 ${currentNumber}/${total} を確認中`}
       </p>
-      <ol className="flex items-center">
+      <div className="flex w-full items-center" role="list">
         {Array.from({ length: total }, (_, i) => {
           const n = i + 1;
           const done = n <= completedCount;
           const current = !allDone && n === currentNumber;
+          const connectorDone = completedCount >= n;
+
           return (
-            <li key={n} className="flex min-w-0 flex-1 items-center last:flex-none">
-              {i > 0 && (
-                <span
-                  className={cn(
-                    "mx-0.5 h-0.5 min-w-[6px] flex-1 rounded-full transition-colors",
-                    completedCount >= i ? "bg-brand-green" : "bg-muted"
-                  )}
-                  aria-hidden
-                />
-              )}
+            <Fragment key={n}>
               <span
+                role="listitem"
                 className={cn(
                   "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold transition-colors",
                   done && "border-brand-green bg-brand-green text-white",
@@ -60,10 +55,19 @@ export function WalkthroughStepRail({
               >
                 {done ? "✓" : n}
               </span>
-            </li>
+              {i < total - 1 ? (
+                <span
+                  className={cn(
+                    "mx-2 h-0.5 min-w-0 flex-1 basis-0 rounded-full transition-colors",
+                    connectorDone ? "bg-brand-green" : "bg-muted"
+                  )}
+                  aria-hidden
+                />
+              ) : null}
+            </Fragment>
           );
         })}
-      </ol>
+      </div>
     </div>
   );
 }
