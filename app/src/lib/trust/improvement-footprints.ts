@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-auth-error-ja",
+    date: "2026-08-07",
+    title: "登録エラーの案内を分かりやすくしました",
+    summary:
+      "英語のまま出ていた登録エラーをやめ、「考えられる原因」と「こうすると進みやすいです」を日本語で出すようにしました。LINEでの登録もすぐ試せます。",
+  },
+  {
     id: "2026-08-07-readability-muni-home",
     date: "2026-08-07",
     title: "文字を大きくし、市役所の選択とホームを整えました",

@@ -17,6 +17,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/auth-provider";
 import { cn } from "@/lib/utils";
+import {
+  explainAuthError,
+  type UserFacingAuthError,
+} from "@/lib/auth/auth-errors";
 
 type AuthMode = "login" | "register";
 type ContactMethod = "email" | "line";
@@ -53,7 +57,7 @@ export function IdentityRegistrationPanel({
   const [method, setMethod] = useState<ContactMethod>("email");
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<UserFacingAuthError | null>(null);
   const [emailSent, setEmailSent] = useState(false);
   const [verifiedBanner, setVerifiedBanner] = useState(false);
 
@@ -69,12 +73,16 @@ export function IdentityRegistrationPanel({
 
   async function handleSendEmail() {
     if (!emailLooksValid) {
-      setError("メールアドレスの形式を確認してください。");
+      setError(
+        explainAuthError("メールアドレスの形式を確認してください。")
+      );
       return;
     }
     if (!configured) {
       setError(
-        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+        explainAuthError(
+          "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+        )
       );
       return;
     }
@@ -88,7 +96,7 @@ export function IdentityRegistrationPanel({
     const result = await sendEmailVerificationLink(email, next);
     setBusy(false);
     if (!result.ok) {
-      setError(toUserFacingAuthError(result.message));
+      setError(explainAuthError(result.message));
       return;
     }
     setEmailSent(true);
@@ -97,7 +105,9 @@ export function IdentityRegistrationPanel({
   async function handleLineLogin() {
     if (!configured) {
       setError(
-        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+        explainAuthError(
+          "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+        )
       );
       return;
     }
@@ -110,7 +120,7 @@ export function IdentityRegistrationPanel({
     const result = await signInWithLine(next);
     setBusy(false);
     if (!result.ok) {
-      setError(toUserFacingAuthError(result.message));
+      setError(explainAuthError(result.message));
     }
   }
 
@@ -320,18 +330,48 @@ export function IdentityRegistrationPanel({
         )}
 
         {error && (
-          <p className="text-sm text-destructive" role="alert">
-            {error}
-          </p>
+          <div
+            className="space-y-3 rounded-xl border-2 border-destructive/40 bg-destructive/5 px-4 py-4"
+            role="alert"
+          >
+            <p className="text-base font-bold text-destructive">{error.title}</p>
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-foreground">考えられる原因</p>
+              <p className="text-base leading-relaxed text-foreground">
+                {error.cause}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-foreground">こうすると進みやすいです</p>
+              <ul className="space-y-2">
+                {error.actions.map((action) => (
+                  <li
+                    key={action}
+                    className="text-base leading-relaxed text-foreground"
+                  >
+                    · {action}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {method === "email" && (
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 w-full"
+                disabled={busy}
+                onClick={() => {
+                  setMethod("line");
+                  setError(null);
+                }}
+              >
+                <MessageCircle className="h-4 w-4" />
+                LINEで登録・ログインを試す
+              </Button>
+            )}
+          </div>
         )}
       </CardContent>
     </Card>
   );
-}
-
-function toUserFacingAuthError(message: string): string {
-  if (/supabase|vercel|env|smtp|管理者|docs\//i.test(message)) {
-    return "いまはログインできませんでした。時間をおいて、もう一度お試しください。";
-  }
-  return message;
 }

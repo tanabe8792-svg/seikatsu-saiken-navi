@@ -3,6 +3,7 @@
 import type { User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "./browser";
 import { isSupabaseConfigured } from "./config";
+import { summarizeAuthError } from "@/lib/auth/auth-errors";
 
 export function getAuthCallbackUrl(nextPath = "/mypage"): string {
   if (typeof window === "undefined") {
@@ -50,7 +51,7 @@ export async function sendEmailVerificationLink(
   });
 
   if (error) {
-    return { ok: false, message: error.message };
+    return { ok: false, message: summarizeAuthError(error.message) };
   }
 
   return { ok: true };
@@ -69,7 +70,10 @@ export async function signInWithLineOAuth(
 
   const supabase = getSupabaseBrowserClient();
   if (!supabase) {
-    return { ok: false, message: "認証クライアントを初期化できませんでした。" };
+    return {
+      ok: false,
+      message: summarizeAuthError("auth client init failed"),
+    };
   }
 
   // Supabase には組み込み LINE が無いため、カスタムプロバイダー custom:line を使う
@@ -92,7 +96,7 @@ export async function signInWithLineOAuth(
   if (error) {
     return {
       ok: false,
-      message: "LINEログインを開始できませんでした。時間をおいて、もう一度お試しください。",
+      message: summarizeAuthError(error.message),
     };
   }
 

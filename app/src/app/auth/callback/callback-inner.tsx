@@ -7,22 +7,33 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { explainAuthError } from "@/lib/auth/auth-errors";
 
 export default function AuthCallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [error, setError] = useState<string | null>(null);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
+  const [errorCause, setErrorCause] = useState<string | null>(null);
+  const [errorActions, setErrorActions] = useState<string[]>([]);
 
   useEffect(() => {
     async function completeAuth() {
       if (!isSupabaseConfigured()) {
-        setError("ただいまログイン機能の準備中です。しばらくしてからお試しください。");
+        const explained = explainAuthError(
+          "ただいまログイン機能の準備中です。しばらくしてからお試しください。"
+        );
+        setErrorTitle(explained.title);
+        setErrorCause(explained.cause);
+        setErrorActions(explained.actions);
         return;
       }
 
       const supabase = getSupabaseBrowserClient();
       if (!supabase) {
-        setError("接続できませんでした。通信環境を確認して、もう一度お試しください。");
+        const explained = explainAuthError("network");
+        setErrorTitle(explained.title);
+        setErrorCause(explained.cause);
+        setErrorActions(explained.actions);
         return;
       }
 
@@ -34,23 +45,38 @@ export default function AuthCallbackInner() {
           const { error: exchangeError } =
             await supabase.auth.exchangeCodeForSession(code);
           if (exchangeError) {
-            setError(exchangeError.message);
+            const explained = explainAuthError(exchangeError.message);
+            setErrorTitle(explained.title);
+            setErrorCause(explained.cause);
+            setErrorActions(explained.actions);
             return;
           }
         }
 
         const { data, error: sessionError } = await supabase.auth.getSession();
         if (sessionError || !data.session) {
-          setError(
+          const explained = explainAuthError(
             "ログインを完了できませんでした。リンクの有効期限が切れている可能性があります。"
           );
+          setErrorTitle(explained.title);
+          setErrorCause(explained.cause);
+          setErrorActions([
+            "もう一度マイページから登録用メールを送ってください。",
+            "届いたメールの新しいリンクを開いてください。",
+            "LINEでの登録も試せます。",
+          ]);
           return;
         }
 
         const safeNext = next.startsWith("/") ? next : "/mypage";
         router.replace(safeNext);
-      } catch {
-        setError("ログイン処理中にエラーが発生しました。");
+      } catch (err) {
+        const explained = explainAuthError(
+          err instanceof Error ? err.message : "ログイン処理中にエラーが発生しました。"
+        );
+        setErrorTitle(explained.title);
+        setErrorCause(explained.cause);
+        setErrorActions(explained.actions);
       }
     }
 
@@ -61,22 +87,38 @@ export default function AuthCallbackInner() {
     <>
       <SiteHeader title="ログイン" showBack backHref="/mypage" />
       <main className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-4 py-8">
-        {!error ? (
+        {!errorTitle ? (
           <>
             <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
-            <p className="text-center text-sm text-muted-foreground" role="status">
+            <p className="text-center text-base text-muted-foreground" role="status">
               ログインを完了しています…
             </p>
           </>
         ) : (
-          <>
-            <p className="text-center text-sm text-destructive" role="alert">
-              {error}
-            </p>
-            <Button asChild variant="outline">
+          <div
+            className="w-full max-w-md space-y-4 rounded-xl border-2 border-destructive/40 bg-destructive/5 px-4 py-5"
+            role="alert"
+          >
+            <p className="text-lg font-bold text-destructive">{errorTitle}</p>
+            {errorCause && (
+              <div className="space-y-1">
+                <p className="text-sm font-semibold">考えられる原因</p>
+                <p className="text-base leading-relaxed">{errorCause}</p>
+              </div>
+            )}
+            {errorActions.length > 0 && (
+              <ul className="space-y-2">
+                {errorActions.map((action) => (
+                  <li key={action} className="text-base leading-relaxed">
+                    · {action}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <Button asChild variant="outline" className="h-12 w-full">
               <a href="/mypage">マイページに戻る</a>
             </Button>
-          </>
+          </div>
         )}
       </main>
     </>
