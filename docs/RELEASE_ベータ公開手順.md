@@ -111,8 +111,9 @@ E〜H は「後からでよい」です。ドメインなしでも `*.vercel.app
 - 活動費のご支援リンク（任意）
   - おすすめ: [Stripe Payment Links](https://stripe.com/jp/payments/payment-links)
     - Apple Pay・クレジットカードに標準対応。ダッシュボードで PayPay も有効化できる
-    - 「顧客が金額を選択」のリンクを1本作る → Vercel に `NEXT_PUBLIC_SUPPORT_DONATION_URL`
-    - または 300/500/1000/3000 円の固定リンクを作り `NEXT_PUBLIC_SUPPORT_DONATION_URL_300` などに設定
+    - アプリは **500 / 1,000 / 3,000 / 自由金額** の4択（コーヒー等の誤解しやすい表現は使わない）
+    - 固定: `NEXT_PUBLIC_SUPPORT_DONATION_URL_500` / `_1000` / `_3000`
+    - 自由: 「顧客が金額を選択」のリンク → `NEXT_PUBLIC_SUPPORT_DONATION_URL` または `_CUSTOM`
   - 補助: [PayPay.me](https://paypay.ne.jp/guide/paypay-me/) のURLを `NEXT_PUBLIC_SUPPORT_PAYPAY_URL` に
   - 設定後 Redeploy。「このサービスについて」→「活動を続けるために」に金額ボタンが出ます
 - 問題が出たら Cursor に「この URL でこう壊れた」と伝える

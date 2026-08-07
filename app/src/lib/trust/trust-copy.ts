@@ -71,15 +71,8 @@ export const TRUST_CONTINUITY_SUPPORT = {
     "どうしても伝えたいことだけ書いてください（任意）。改善のご意見は上の「改善の声」へ。",
 } as const;
 
-/** 活動費の金額案（高額に見せず、用途が分かるように） */
+/** 活動費の金額案（500 / 1000 / 3000 / 自由）※「コーヒー」等の誤読しやすい表現は使わない */
 export const SUPPORT_DONATION_TIERS = [
-  {
-    yen: 300,
-    id: "300",
-    title: "300円",
-    purpose: "ひと息つくコーヒー代に",
-    detail: "開発の合間の休憩代になります",
-  },
   {
     yen: 500,
     id: "500",
@@ -100,6 +93,13 @@ export const SUPPORT_DONATION_TIERS = [
     title: "3,000円",
     purpose: "改善の開発時間に",
     detail: "使いやすさや新機能の実装の足しに",
+  },
+  {
+    yen: 0,
+    id: "custom",
+    title: "金額を自分で決める",
+    purpose: "自由な金額",
+    detail: "決済画面でお好きな金額を入力できます",
   },
 ] as const;
 
@@ -122,15 +122,18 @@ export function getSupportDonationUrl(): string | undefined {
   return trimEnvUrl(process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL);
 }
 
-/** 金額別リンク（未設定なら共通リンクへ） */
+/** 金額別リンク。固定額は専用URLのみ。自由は CUSTOM または共通URL */
 export function getSupportDonationTierUrl(tierId: string): string | undefined {
   const byTier: Record<string, string | undefined> = {
-    "300": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_300,
     "500": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_500,
     "1000": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_1000,
     "3000": process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_3000,
+    custom: process.env.NEXT_PUBLIC_SUPPORT_DONATION_URL_CUSTOM,
   };
-  return trimEnvUrl(byTier[tierId]) ?? getSupportDonationUrl();
+  const specific = trimEnvUrl(byTier[tierId]);
+  if (specific) return specific;
+  if (tierId === "custom") return getSupportDonationUrl();
+  return undefined;
 }
 
 /** PayPay.me など PayPay 専用（任意） */

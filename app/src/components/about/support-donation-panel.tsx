@@ -3,7 +3,6 @@ import {
   SUPPORT_DONATION_TIERS,
   TRUST_CONTINUITY_SUPPORT,
   getSupportDonationTierUrl,
-  getSupportDonationUrl,
   getSupportPayPayUrl,
   hasAnySupportDonationLink,
 } from "@/lib/trust/trust-copy";
@@ -14,7 +13,6 @@ import { cn } from "@/lib/utils";
  */
 export function SupportDonationPanel() {
   const ready = hasAnySupportDonationLink();
-  const fallbackUrl = getSupportDonationUrl();
   const payPayUrl = getSupportPayPayUrl();
 
   return (
@@ -65,18 +63,6 @@ export function SupportDonationPanel() {
           );
         })}
       </ul>
-
-      {ready && fallbackUrl ? (
-        <a
-          href={fallbackUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 text-center text-base font-semibold text-white hover:opacity-95"
-        >
-          {TRUST_CONTINUITY_SUPPORT.donationButtonLabel}
-          <ExternalLink className="h-4 w-4" aria-hidden />
-        </a>
-      ) : null}
 
       {payPayUrl ? (
         <a
