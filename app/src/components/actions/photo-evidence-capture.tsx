@@ -212,7 +212,7 @@ export function PhotoEvidenceCapture({
                 {copyingAlbum ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : null}
-                {copyingAlbum ? "開いています…" : "はい、残す"}
+                {copyingAlbum ? "開いています…" : "残す"}
               </Button>
               <Button
                 type="button"
@@ -222,7 +222,7 @@ export function PhotoEvidenceCapture({
                 disabled={copyingAlbum}
                 onClick={() => setPendingAlbumIds([])}
               >
-                いまはしない
+                残さない
               </Button>
             </div>
           </div>

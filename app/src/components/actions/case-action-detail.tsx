@@ -230,47 +230,51 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                       : "border-border bg-card"
                 }`}
               >
-                <button
-                  type="button"
-                  disabled={false}
-                  onClick={() => toggleStep(step.id)}
-                  className={`flex w-full items-start gap-3 rounded-xl px-2 py-2 text-left transition active:scale-[0.99] ${
-                    done
-                      ? "bg-emerald-50/80 dark:bg-emerald-950/20"
-                      : "hover:bg-muted/40"
-                  }`}
-                  aria-pressed={done}
-                >
+                <div className="flex items-start gap-3 px-1">
                   <span
-                    className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 text-base font-bold shadow-sm ${
+                    className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 text-sm font-bold ${
                       done
                         ? "border-brand-green bg-brand-green text-white"
-                        : "border-brand-green/40 bg-background text-foreground"
+                        : "border-border bg-background text-foreground"
                     }`}
                     aria-hidden
                   >
                     {done ? "✓" : numberFrom + index}
                   </span>
-                  <div className="min-w-0 flex-1 space-y-1.5">
+                  <div className="min-w-0 flex-1 space-y-1">
                     <p className="text-base font-semibold leading-snug">
                       {step.title}
                     </p>
                     <p className="text-sm leading-relaxed text-muted-foreground">
                       {step.body}
                     </p>
-                    <span
-                      className={`mt-1 inline-flex min-h-11 w-full items-center justify-center rounded-xl border-2 px-3 py-2.5 text-sm font-semibold ${
-                        done
-                          ? "border-brand-green bg-brand-green text-white"
-                          : "border-brand-green/50 bg-background text-brand-green"
-                      }`}
-                    >
-                      {done
-                        ? "確認済み（もう一度押すと戻せます）"
-                        : "読んだらここを押して確認"}
-                    </span>
                   </div>
-                </button>
+                </div>
+
+                <div className="mt-3 flex flex-wrap gap-2 px-1">
+                  {!done ? (
+                    <button
+                      type="button"
+                      onClick={() => toggleStep(step.id)}
+                      className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border-2 border-brand-green bg-brand-green px-3 py-2 text-sm font-semibold text-white active:scale-[0.99]"
+                    >
+                      確認した
+                    </button>
+                  ) : (
+                    <>
+                      <span className="inline-flex min-h-11 flex-1 items-center justify-center rounded-xl border-2 border-brand-green bg-brand-green/15 px-3 py-2 text-sm font-semibold text-brand-green">
+                        確認済み
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => toggleStep(step.id)}
+                        className="inline-flex min-h-11 items-center justify-center rounded-xl border-2 border-border bg-background px-3 py-2 text-sm font-medium text-foreground active:scale-[0.99]"
+                      >
+                        まだ見ていない（戻す）
+                      </button>
+                    </>
+                  )}
+                </div>
 
                 <div
                   className="mt-3 space-y-2 border-t pt-3 px-1"
@@ -412,7 +416,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             </div>
           )}
           <p className="text-xs leading-relaxed text-muted-foreground">
-            読んだ手順は、緑の「確認」ボタンを押してください。色が変わったら確認済みです。もう一度押すと戻せます（この端末に残ります）。
+            読んだ手順は「確認した」を押してください。戻すときは「まだ見ていない（戻す）」がすぐ横に出ます。
           </p>
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">
@@ -602,8 +606,8 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           </h3>
           <p className="text-xs text-muted-foreground">
             {isPhotoEvidenceAction
-              ? "上から順に読んで、緑のボタンを押して確認してください。もう一度押すと戻せます。全部確認すると、下でカメラが使えます。"
-              : "読んだら緑のボタンを押して確認。もう一度押すと戻せます。分かったこと・予定はメモに残せます。"}
+              ? "上から順に読んで「確認した」を押してください。戻すときは「まだ見ていない（戻す）」です。全部確認すると、下でカメラが使えます。"
+              : "読んだら「確認した」を押してください。戻すときは「まだ見ていない（戻す）」です。分かったこと・予定はメモに残せます。"}
           </p>
           {renderStepList(guide.steps, {
             locked: isDone,
