@@ -70,12 +70,11 @@ export function validateOnboardingCopy(): OnboardingValidationResult {
   steps.push("導入文チェック");
 
   const hasReassurance =
-    introStrings.some((s) => s.includes("わからない") || s.includes("わからない項目")) &&
-    introStrings.some((s) => s.includes("端末")) &&
-    introStrings.some((s) => s.includes("無料"));
+    introStrings.some((s) => s.includes("無料")) &&
+    introStrings.some((s) => s.includes("登録なし") || s.includes("登録不要"));
 
   if (!hasReassurance) {
-    gaps.push("登録・保存・無料の説明なし");
+    gaps.push("無料・登録なしの説明なし");
   }
   steps.push("安心表現");
 

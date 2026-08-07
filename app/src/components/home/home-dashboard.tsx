@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Camera, CalendarClock, CheckCircle2, ChevronRight } from "lucide-react";
 import { AppLogo } from "@/components/brand/app-logo";
-import { IdentityRegisterPrompt } from "@/components/auth/identity-status-chip";
-import { FontSizeQuickControl } from "@/components/settings/font-size-quick-control";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmergencyContacts } from "@/components/emergency/emergency-contacts";
@@ -338,31 +336,24 @@ export function HomeDashboard() {
     <div className="space-y-5 pb-2">
       <div className="flex flex-col items-center gap-3 px-2 pt-2 text-center">
         <AppLogo size="hero" priority />
-        <p className="text-lg leading-relaxed text-muted-foreground">
-          一歩ずつ、暮らしを取り戻すために
-        </p>
       </div>
 
       <Card className="border-2 border-primary/20 bg-card shadow-sm">
         <CardContent className="space-y-4 p-6">
           <h2 className="text-2xl font-bold leading-snug">
-            次に確認することを、順番に案内します
+            状況を整理し、確認することを順番に案内します
           </h2>
-          <p className="text-base leading-relaxed text-muted-foreground">
-            令和8年熊本地震向け。無料・登録なしで始められます。わからない項目はそのままで大丈夫です。
-          </p>
+          <p className="text-lg text-muted-foreground">無料・登録なし</p>
           <Button asChild size="lg" className="h-16 w-full text-xl">
             <Link href="/start">状況を選んで案内を作る</Link>
           </Button>
           <p className="text-center text-base text-muted-foreground">
-            約2分です
+            <Link href="/faq" className="underline underline-offset-2">
+              くわしくはよくある質問へ
+            </Link>
           </p>
         </CardContent>
       </Card>
-
-      <IdentityRegisterPrompt />
-
-      <FontSizeQuickControl className="mx-0" />
 
       <details className="rounded-xl border border-destructive/20 bg-background px-4 py-3">
         <summary className="cursor-pointer text-base font-medium text-muted-foreground">

@@ -13,12 +13,11 @@ import type { CaseFile } from "@/lib/case-management/types";
 import type { OnboardingTimingHint, UserProfile } from "@/lib/types";
 
 export const ONBOARDING_SERVICE_FEATURES = [
-  "いまの状況を整理し、次に確認することを順番に案内します",
-  "公式情報をもとに案内します（推測では決めません）",
-  "登録不要・無料です。わからない項目はそのままで進められます",
+  "状況を整理し、確認することを順番に案内します",
+  "無料・登録なしで使えます",
 ] as const;
 
-/** できることと一緒に示す短い注意（表示専用） */
+/** くわしい注意は FAQ へ。導入画面では出さない。 */
 export const ONBOARDING_INFO_HANDLING_SHORT = [
   "大切な判断の前には、公式ページで最新もご確認ください。",
   "入力内容はこの端末内に保存します。運営のサーバーへは自動では送りません（別端末へは引き継げません）。",
@@ -158,17 +157,11 @@ export function collectOnboardingIntroStrings(): string[] {
   return [
     ONBOARDING_INTRO_LABEL,
     ONBOARDING_INTRO_LEAD,
-    "このサービスでできること",
     ...ONBOARDING_SERVICE_FEATURES,
-    ...ONBOARDING_INFO_HANDLING_SHORT,
-    ONBOARDING_REASSURANCE.title,
-    ONBOARDING_REASSURANCE.body,
-    ONBOARDING_DATA_NOTE,
-    "いまの段階に合わせて（任意）",
-    ...ONBOARDING_TIMING_OPTIONS.flatMap((o) => [o.label, o.note]),
-    ONBOARDING_UNIVERSAL_MESSAGE,
     "状況を選んで案内を作る",
-    "登録不要 · 無料 · 約2分",
-    "当てはまるものがあればタップ。最初はどれも選ばなくて大丈夫です。",
+    "無料・登録なし",
+    "くわしくはよくある質問へ",
+    "いまの段階（任意）",
+    ...ONBOARDING_TIMING_OPTIONS.map((o) => o.label),
   ];
 }

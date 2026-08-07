@@ -376,25 +376,9 @@ export default function J00HearingPage() {
                 <h2 className="text-xl font-bold leading-snug">
                   {J00_DISASTER_EVENT_LABEL}
                 </h2>
-                <p className="text-base leading-relaxed">
+                <p className="text-lg leading-relaxed">
                   {J00_STEP1_COPY.lead}
                 </p>
-              </div>
-
-              <div className="space-y-2 rounded-lg border bg-muted/30 px-4 py-4">
-                <p className="text-sm font-medium leading-relaxed">
-                  {J00_STEP1_COPY.helpLead}
-                </p>
-                <ul className="space-y-2">
-                  {J00_STEP1_COPY.helpItems.map((item) => (
-                    <li
-                      key={item}
-                      className="text-sm leading-relaxed text-muted-foreground"
-                    >
-                      · {item}
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               <Button
@@ -414,7 +398,6 @@ export default function J00HearingPage() {
           <>
             <ChoiceList
               title="お住まいの地域は？"
-              subtitle="被害の大きい地域と、熊本県以外の主な市から選べます。なければ「その他」を選んでください。"
               groups={MUNICIPALITY_CHOICE_GROUPS}
               selected={profile.municipality}
               onSelect={(v) =>

@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-intro-less-text",
+    date: "2026-08-07",
+    title: "はじめの画面の文字を減らしました",
+    summary:
+      "最初に必要な案内だけ残し（状況の整理・順番の案内・無料・登録なし）、くわしい説明はよくある質問へ移しました。",
+  },
+  {
     id: "2026-08-07-auth-error-ja",
     date: "2026-08-07",
     title: "登録エラーの案内を分かりやすくしました",

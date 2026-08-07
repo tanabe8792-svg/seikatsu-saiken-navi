@@ -24,14 +24,9 @@ export const J00_DISASTER_EVENT_LABEL = DISASTER_EVENT_R8_KUMAMOTO.name;
 
 /** J-00 ステップ1 — 熊本地震専用の案内（表示専用） */
 export const J00_STEP1_COPY = {
-  lead:
-    "このあと、お住まいの地域や被害の状況などを、いくつかお聞きします。",
-  helpLead: "お聞きした内容をもとに、次のことをお手伝いします。",
-  helpItems: [
-    "今のあなたに必要な確認や手続きを、順番に案内します",
-    "支援制度など、公式の情報源へつなぎます",
-    "推測ではなく、確認できた情報をもとに進めます",
-  ],
+  lead: "このあと、地域や被害の状況をいくつかお聞きします。",
+  helpLead: "",
+  helpItems: [] as string[],
 } as const;
 
 export const DISASTER_TYPE_OPTIONS = [J00_DISASTER_TYPE] as const;
