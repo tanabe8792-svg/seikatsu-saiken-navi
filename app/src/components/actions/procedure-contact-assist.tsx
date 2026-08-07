@@ -70,7 +70,9 @@ export function ProcedureContactAssist({
     <div className="space-y-4">
       <div>
         <h4 className="text-sm font-semibold">{plan.heading}</h4>
-        <p className="mt-1 text-xs text-muted-foreground">{plan.intro}</p>
+        {plan.intro ? (
+          <p className="mt-1 text-xs text-muted-foreground">{plan.intro}</p>
+        ) : null}
       </div>
 
       <ol className="space-y-3">
@@ -79,15 +81,12 @@ export function ProcedureContactAssist({
             key={`${step.priority}-${step.title}`}
             className="rounded-xl border bg-background/80 px-4 py-3"
           >
-            <p className="text-xs font-medium text-primary">
-              優先 {step.priority}
-            </p>
-            <p className="mt-1 text-sm font-semibold leading-snug">
-              {step.title}
-            </p>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              {step.whyFirst}
-            </p>
+            <p className="text-sm font-semibold leading-snug">{step.title}</p>
+            {step.whyFirst ? (
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                {step.whyFirst}
+              </p>
+            ) : null}
 
             <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
               {step.phone && (
@@ -102,65 +101,53 @@ export function ProcedureContactAssist({
                   {step.email}
                 </span>
               )}
-              {step.hours && <span>受付: {step.hours}</span>}
+              {step.hours && <span>{step.hours}</span>}
             </div>
 
-            <div className="mt-3 space-y-2 border-t pt-3">
-              <p className="text-xs font-medium text-foreground">
-                電話の前に用意
-              </p>
-              <ul className="space-y-1 text-xs text-muted-foreground">
-                {step.prepare.map((item) => (
-                  <li key={item}>・{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mt-3 space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-xs font-medium text-foreground">
-                  話す順番（カンペ）
-                </p>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className="h-8 shrink-0 text-xs"
-                  onClick={() =>
-                    handleCopy(
-                      `say-${step.priority}`,
-                      step.sayScript.map((s, i) => `${i + 1}. ${s}`).join("\n"),
-                      "カンペをコピーしました"
-                    )
-                  }
-                >
-                  {copiedKey === `say-${step.priority}` ? (
-                    <Check className="h-3.5 w-3.5" />
-                  ) : (
-                    <Copy className="h-3.5 w-3.5" />
-                  )}
-                  コピー
-                </Button>
+            <details className="mt-3 border-t pt-3">
+              <summary className="cursor-pointer text-xs font-medium text-foreground">
+                連絡の前に見るメモ
+              </summary>
+              <div className="mt-2 space-y-3">
+                <ul className="space-y-1 text-xs text-muted-foreground">
+                  {step.prepare.map((item) => (
+                    <li key={item}>・{item}</li>
+                  ))}
+                </ul>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-medium text-foreground">
+                      話す内容
+                    </p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="h-8 shrink-0 text-xs"
+                      onClick={() =>
+                        handleCopy(
+                          `say-${step.priority}`,
+                          step.sayScript.map((s, i) => `${i + 1}. ${s}`).join("\n"),
+                          "話す内容をコピーしました"
+                        )
+                      }
+                    >
+                      {copiedKey === `say-${step.priority}` ? (
+                        <Check className="h-3.5 w-3.5" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                      コピー
+                    </Button>
+                  </div>
+                  <ol className="space-y-1 text-xs leading-relaxed text-muted-foreground">
+                    {step.sayScript.map((line) => (
+                      <li key={line}>・{line}</li>
+                    ))}
+                  </ol>
+                </div>
               </div>
-              <ol className="space-y-1 text-xs leading-relaxed text-muted-foreground">
-                {step.sayScript.map((line, i) => (
-                  <li key={line}>
-                    {i + 1}. {line}
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="mt-3 space-y-1">
-              <p className="text-xs font-medium text-foreground">
-                聞かれやすいこと
-              </p>
-              <ul className="space-y-1 text-xs text-muted-foreground">
-                {step.likelyAsked.map((item) => (
-                  <li key={item}>・{item}</li>
-                ))}
-              </ul>
-            </div>
+            </details>
 
             <div className="mt-3 flex flex-col gap-2">
               {step.phone && step.phone.includes("／") === false && (
@@ -178,7 +165,7 @@ export function ProcedureContactAssist({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {step.officialLabel ?? "公式案内を開く"}
+                    {step.officialLabel ?? "案内を開く"}
                     <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </Button>
@@ -189,119 +176,105 @@ export function ProcedureContactAssist({
       </ol>
 
       {draft && filled && (
-        <div className="rounded-xl border border-dashed bg-background/80 px-4 py-4 space-y-3">
-          <div>
-            <h4 className="text-sm font-semibold">メール文面を作る</h4>
-            <p className="mt-1 text-xs text-muted-foreground">
-              必要事項を入れて、件名・本文をコピーできます。
+        <details className="rounded-xl border border-dashed bg-background/80 px-4 py-3">
+          <summary className="cursor-pointer text-sm font-semibold">
+            メール文面が必要なとき
+          </summary>
+          <div className="mt-3 space-y-3">
+            <p className="text-xs text-muted-foreground">
               {draft.toAddress
-                ? ` 宛先の目安: ${draft.toLabel}（${draft.toAddress}）`
-                : ` 宛先は優先窓口の案内で確認してください（${draft.toLabel}）`}
+                ? `宛先の目安: ${draft.toLabel}（${draft.toAddress}）`
+                : `宛先は相談先の案内で確認してください（${draft.toLabel}）`}
             </p>
-          </div>
 
-          <div className="space-y-2">
-            {draft.fields.map((field) => (
-              <div key={field.key} className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">
-                  {field.label}
-                </label>
-                {field.key === "damage" ||
-                field.key === "need" ||
-                field.key === "done" ? (
-                  <Textarea
-                    value={values[field.key] ?? ""}
-                    placeholder={field.placeholder}
-                    className="min-h-[72px] text-sm"
-                    onChange={(e) =>
-                      setValues((prev) => ({
-                        ...prev,
-                        [field.key]: e.target.value,
-                      }))
-                    }
-                  />
+            <div className="space-y-2">
+              {draft.fields.map((field) => (
+                <div key={field.key} className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    {field.label}
+                  </label>
+                  {field.key === "damage" ||
+                  field.key === "need" ||
+                  field.key === "done" ? (
+                    <Textarea
+                      value={values[field.key] ?? ""}
+                      placeholder={field.placeholder}
+                      className="min-h-[72px] text-sm"
+                      onChange={(e) =>
+                        setValues((prev) => ({
+                          ...prev,
+                          [field.key]: e.target.value,
+                        }))
+                      }
+                    />
+                  ) : (
+                    <Input
+                      value={values[field.key] ?? ""}
+                      placeholder={field.placeholder}
+                      onChange={(e) =>
+                        setValues((prev) => ({
+                          ...prev,
+                          [field.key]: e.target.value,
+                        }))
+                      }
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-2 rounded-lg bg-muted/40 px-3 py-3">
+              <p className="text-xs font-medium">件名</p>
+              <p className="text-sm leading-relaxed">{filled.subject}</p>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="h-9 w-full"
+                onClick={() =>
+                  handleCopy("subject", filled.subject, "件名をコピーしました")
+                }
+              >
+                {copiedKey === "subject" ? (
+                  <Check className="h-3.5 w-3.5" />
                 ) : (
-                  <Input
-                    value={values[field.key] ?? ""}
-                    placeholder={field.placeholder}
-                    onChange={(e) =>
-                      setValues((prev) => ({
-                        ...prev,
-                        [field.key]: e.target.value,
-                      }))
-                    }
-                  />
+                  <Copy className="h-3.5 w-3.5" />
                 )}
-              </div>
-            ))}
-          </div>
-
-          <div className="space-y-2 rounded-lg bg-muted/40 px-3 py-3">
-            <p className="text-xs font-medium">件名</p>
-            <p className="text-sm leading-relaxed">{filled.subject}</p>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              className="h-9 w-full"
-              onClick={() =>
-                handleCopy("subject", filled.subject, "件名をコピーしました")
-              }
-            >
-              {copiedKey === "subject" ? (
-                <Check className="h-3.5 w-3.5" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-              件名をコピー
-            </Button>
-          </div>
-
-          <div className="space-y-2 rounded-lg bg-muted/40 px-3 py-3">
-            <p className="text-xs font-medium">本文</p>
-            <pre className="whitespace-pre-wrap text-xs leading-relaxed text-muted-foreground">
-              {filled.body}
-            </pre>
-            <Button
-              type="button"
-              size="sm"
-              className="h-10 w-full"
-              onClick={() =>
-                handleCopy("body", filled.body, "本文をコピーしました")
-              }
-            >
-              {copiedKey === "body" ? (
-                <Check className="h-3.5 w-3.5" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-              本文をコピー
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              className="h-9 w-full"
-              onClick={() =>
-                handleCopy(
-                  "all",
-                  `件名: ${filled.subject}\n\n${filled.body}`,
-                  "件名と本文をコピーしました"
-                )
-              }
-            >
-              件名＋本文をまとめてコピー
-            </Button>
-            {filled.mailtoHref && (
-              <Button asChild size="sm" variant="secondary" className="h-9 w-full">
-                <a href={filled.mailtoHref}>
-                  <Mail className="h-3.5 w-3.5" />
-                  メールアプリで開く
-                </a>
+                件名をコピー
               </Button>
-            )}
+            </div>
+
+            <div className="space-y-2 rounded-lg bg-muted/40 px-3 py-3">
+              <p className="text-xs font-medium">本文</p>
+              <pre className="whitespace-pre-wrap text-xs leading-relaxed text-muted-foreground">
+                {filled.body}
+              </pre>
+              <Button
+                type="button"
+                size="sm"
+                className="h-10 w-full"
+                onClick={() =>
+                  handleCopy("body", filled.body, "本文をコピーしました")
+                }
+              >
+                {copiedKey === "body" ? (
+                  <Check className="h-3.5 w-3.5" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+                本文をコピー
+              </Button>
+              {filled.mailtoHref && (
+                <Button asChild size="sm" variant="outline" className="h-9 w-full">
+                  <a href={filled.mailtoHref}>
+                    <Mail className="h-3.5 w-3.5" />
+                    メールアプリで開く
+                  </a>
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        </details>
       )}
     </div>
   );

@@ -698,7 +698,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         <CardContent className="space-y-4 p-5">
           <h3 className="text-base font-semibold">状況の整理</h3>
           <p className="text-xs text-muted-foreground">
-            「あなたの進み具合」と「公式手続きの記録」は別物です。混同しないように分けて表示しています。
+            いまの進み具合と、手続きの記録です。
           </p>
 
           <div className="rounded-xl border border-border bg-card px-4 py-3 space-y-1">
@@ -724,7 +724,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           {procedure && (
             <div className="rounded-xl border px-4 py-3 space-y-1">
               <p className="text-xs font-medium text-muted-foreground">
-                公式手続きの記録（このナビ上）
+                手続きの記録
               </p>
               <p className="text-sm font-semibold">{procedure.name}</p>
               <p className="text-sm">

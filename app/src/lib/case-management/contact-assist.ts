@@ -167,8 +167,7 @@ export function getBusinessContactAssistPlan(
       priority: 1,
       title: "まず：八代商工会議所（特別相談窓口）",
       channel: "phone",
-      whyFirst:
-        "八代市内の事業者向けに、地震の特別相談窓口が開いています。県より先に地元へ。",
+      whyFirst: "地元の特別相談窓口です。まずはここへ。",
       phone: "0965-32-6191",
       hours: "平日 9:00〜17:00（土日祝除く）",
       officialHref: "https://8246cci.or.jp/hotnews/9126/",
@@ -182,8 +181,7 @@ export function getBusinessContactAssistPlan(
       priority: 1,
       title: "まず：氷川町商工会",
       channel: "email",
-      whyFirst:
-        "氷川町の事業者は、町の商工会がいつもの相談先です。メールでも受け付けています。",
+      whyFirst: "地元の事業者向け相談です。まずはここへ。",
       phone: "0965-62-2021",
       email: "hikawa@kumashoko.or.jp",
       hours: "商工会の案内に従ってください",
@@ -198,8 +196,7 @@ export function getBusinessContactAssistPlan(
       priority: 1,
       title: "まず：熊本市 商業金融課（金融・事業用り災証明）",
       channel: "phone",
-      whyFirst:
-        "市制度融資と事業用り災証明の窓口です。資金と証明の入口をまとめて確認できます。",
+      whyFirst: "市の融資・事業用り災証明の窓口です。",
       phone: "096-328-2424",
       hours: "平日 8:30〜17:15（休日対応あり・最新は公式で確認）",
       officialHref: "https://www.city.kumamoto.jp/kiji00372112/index.html",
@@ -237,8 +234,7 @@ export function getBusinessContactAssistPlan(
       priority: 1,
       title: `まず：${name}の商工会・商工会議所`,
       channel: "web",
-      whyFirst:
-        "県の電話にいきなり全員が集中しないよう、地元の商工団体が入口です。",
+      whyFirst: "地元の商工団体が相談の入口です。",
       officialHref: municipality?.officialUrl,
       officialLabel: `${name}公式サイトで商工・事業者相談を探す`,
       prepare: COMMON_PREPARE,
@@ -251,8 +247,7 @@ export function getBusinessContactAssistPlan(
     priority: steps.length + 1,
     title: "必要なら：熊本県（県制度融資・経営）",
     channel: "phone",
-    whyFirst:
-      "県の制度融資や広域の経営相談向け。地元で案内されたあとに使うとスムーズです。",
+    whyFirst: "県の融資や経営相談。地元のあとで使うとスムーズです。",
     phone: "金融 096-333-2314 ／ 経営 096-333-2326",
     hours: "平日・土日祝 8:30〜17:15（年末年始除く）",
     officialHref:
@@ -271,7 +266,7 @@ export function getBusinessContactAssistPlan(
     priority: steps.length + 1,
     title: "広げたいとき：よろず支援拠点",
     channel: "phone",
-    whyFirst: "県内事業者向けの経営相談。制度の見取り図がほしいときに。",
+    whyFirst: "制度の見取り図がほしいときの経営相談です。",
     phone: "096-286-3355",
     hours: "平日 9:00〜17:00",
     officialHref: "https://www.kmt-ti.or.jp/archives/23253",
@@ -288,9 +283,8 @@ export function getBusinessContactAssistPlan(
   }
 
   return {
-    heading: "相談の順番とカンペ",
-    intro:
-      "電話番号の羅列ではなく、誰に・どの順で・何を準備して話すかをここにまとめました。メールは下で文面を作ってコピーできます。",
+    heading: "相談先（上から順に）",
+    intro: "電話・メールの前に、下のメモを見ておくと話しやすいです。",
     steps,
     emailDraft,
   };

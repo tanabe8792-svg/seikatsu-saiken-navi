@@ -211,10 +211,10 @@ function businessGuidance(profile: UserProfile): ProcedureGuidanceView {
   return {
     title: `${name}の店舗・事業再建 申請案内`,
     intro: shopDiffers
-      ? `店舗の所在地（${name}）向けの相談順です。住まい（${homeName}）の手続きとは別に案内しています。`
-      : "番号の羅列はしません。下の「相談の順番とカンペ」で、誰に・何を準備して・何を話すかを一緒に整えます。メール文面も作れます。",
+      ? `店舗は${name}、住まいは${homeName}です。店舗向けの相談を下にまとめました。`
+      : "店舗・事業所向けの相談先です。上から順に連絡してみてください。",
     summary:
-      "住家の手続きとは別に、店舗・事業所向けの相談があります。対象かの判断は各機関の案内が正です。まずは優先順位1の窓口へ。",
+      "住家の手続きとは別です。くわしい条件は、連絡先の案内に従ってください。",
     facts: [],
     links: dedupeLinks(links),
     sourceUpdatedAt: "2026-08-03 12:00",
