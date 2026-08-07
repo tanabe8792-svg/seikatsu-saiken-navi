@@ -12,6 +12,7 @@ import {
   TRUST_DEVELOPER,
   TRUST_FEEDBACK,
   TRUST_INFO_HANDLING,
+  TRUST_PERSONAL_DATA,
   TRUST_PAGE_TITLE,
   TRUST_WHY_BUILT,
   getTrustFeedbackFormUrl,
@@ -67,6 +68,12 @@ export default function AboutPage() {
 
         <TrustSection heading={TRUST_INFO_HANDLING.heading}>
           {TRUST_INFO_HANDLING.body.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
+        </TrustSection>
+
+        <TrustSection heading={TRUST_PERSONAL_DATA.heading} id="privacy">
+          {TRUST_PERSONAL_DATA.body.map((p) => (
             <p key={p}>{p}</p>
           ))}
         </TrustSection>

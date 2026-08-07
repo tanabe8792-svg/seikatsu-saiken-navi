@@ -12,6 +12,7 @@ import {
   TRUST_FAQ_OPERATOR_ANSWER,
   TRUST_FEEDBACK,
   TRUST_INFO_HANDLING,
+  TRUST_PERSONAL_DATA,
   TRUST_PAGE_TITLE,
   TRUST_WHY_BUILT,
 } from "@/lib/trust/trust-copy";
@@ -92,6 +93,8 @@ function collectStaticCopyStrings(): Array<{ label: string; text: string }> {
     ...TRUST_DEVELOPER.body,
     TRUST_INFO_HANDLING.heading,
     ...TRUST_INFO_HANDLING.body,
+    TRUST_PERSONAL_DATA.heading,
+    ...TRUST_PERSONAL_DATA.body,
     TRUST_FEEDBACK.lead,
     TRUST_FEEDBACK.note,
     TRUST_CONTINUITY_SUPPORT.heading,

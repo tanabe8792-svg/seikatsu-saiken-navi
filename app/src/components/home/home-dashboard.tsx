@@ -596,7 +596,7 @@ export function HomeDashboard() {
               · 大切な判断の前には、公式ページで最新もご確認ください。
             </li>
             <li className="text-sm leading-relaxed text-muted-foreground">
-              · 入力内容は当面この端末内に保存します（別端末へは引き継げません）。
+              · 入力内容はこの端末内に保存します。運営のサーバーへは自動では送りません（別端末へは引き継げません）。
             </li>
           </ul>
         </CardContent>

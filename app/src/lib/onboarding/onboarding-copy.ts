@@ -21,7 +21,7 @@ export const ONBOARDING_SERVICE_FEATURES = [
 /** できることと一緒に示す短い注意（表示専用） */
 export const ONBOARDING_INFO_HANDLING_SHORT = [
   "大切な判断の前には、公式ページで最新もご確認ください。",
-  "入力内容は当面この端末内に保存します（別端末へは引き継げません）。",
+  "入力内容はこの端末内に保存します。運営のサーバーへは自動では送りません（別端末へは引き継げません）。",
 ] as const;
 
 export const ONBOARDING_REASSURANCE = {

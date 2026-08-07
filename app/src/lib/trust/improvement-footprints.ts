@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-privacy-handling",
+    date: "2026-08-07",
+    title: "個人情報の扱いをはっきり書きました",
+    summary:
+      "「このサービスについて」とよくある質問に、端末内保存・自動送信しないこと・運営者が全員分を見られない設計を、わかりやすい日本語で追記しました。",
+  },
+  {
     id: "2026-08-07-photo-ask-album",
     date: "2026-08-07",
     title: "写真アプリへの保存は確認してから",
