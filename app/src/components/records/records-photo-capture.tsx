@@ -3,10 +3,10 @@
 import { useId, useRef, useState } from "react";
 import { Camera, ImagePlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { savePhotosFromFiles, offerSavedPhotosToDeviceAlbum } from "@/lib/case-management/photo-store";
+import { savePhotosFromFiles } from "@/lib/case-management/photo-store";
 import { useToast } from "@/providers/toast-provider";
 
-/** 被害写真ページ用：端末内にだけ残す簡易撮影 */
+/** 被害写真ページ用：サイト内（端末の IndexedDB）へだけ残す */
 export function RecordsPhotoCapture({
   caseId,
   onSaved,
@@ -32,26 +32,15 @@ export function RecordsPhotoCapture({
     }
     setSaving(true);
     try {
-      const metas = await savePhotosFromFiles({
+      await savePhotosFromFiles({
         caseId,
         actionId: "rw-j03-photo",
         files,
       });
-      const album = await offerSavedPhotosToDeviceAlbum(metas.map((m) => m.id));
-      if (album.ok > 0 && album.mode === "shared") {
-        showToast(
-          `${files.length}枚をサイトに残し、アルバム保存の画面を開きました`
-        );
-      } else if (album.ok > 0) {
-        showToast(`${files.length}枚をサイトに残し、端末への保存も開始しました`);
-      } else {
-        showToast(
-          `${files.length}枚をサイトに残しました。下からアルバムにも保存できます`
-        );
-      }
+      showToast(`${files.length}枚をこのサイトに残しました`);
       onSaved();
     } catch {
-      showToast("保存できませんでした（端末の制限の可能性があります）");
+      showToast("保存できませんでした。もう一度お試しください");
     } finally {
       setSaving(false);
       if (cameraRef.current) cameraRef.current.value = "";
@@ -92,7 +81,7 @@ export function RecordsPhotoCapture({
           ) : (
             <Camera className="h-5 w-5" />
           )}
-          撮影する
+          {saving ? "残しています…" : "撮影する"}
         </Button>
         <Button
           type="button"
@@ -107,7 +96,7 @@ export function RecordsPhotoCapture({
         </Button>
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        写真はサーバーに送らず、このサイトと端末に残します。撮影後、アルバムやファイルへの保存画面が出ることがあります。
+        写真はサーバーに送らず、このサイトにすぐ残します。アルバムへ自動では保存しません。必要なら下の一覧から、あとで端末にコピーできます。
       </p>
     </div>
   );

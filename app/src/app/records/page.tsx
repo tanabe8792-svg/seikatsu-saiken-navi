@@ -70,8 +70,8 @@ export default function RecordsPage() {
       const ok = await downloadPhotoToDevice(photoId);
       showToast(
         ok
-          ? "端末への保存を開始しました（アルバム／ダウンロード）"
-          : "保存できませんでした"
+          ? "端末へのコピーを開始しました（保存先は機種により異なります）"
+          : "コピーできませんでした"
       );
     } catch {
       showToast("保存に失敗しました");

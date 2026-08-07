@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-photo-no-auto-album",
+    date: "2026-08-07",
+    title: "撮影後の止まりにくさを改善",
+    summary:
+      "撮ったあと自動でアルバム保存画面を開かないようにしました。写真はこのサイトにすぐ残り、アルバムへのコピーは必要なときだけです。",
+  },
+  {
     id: "2026-08-07-check-urls",
     date: "2026-08-07",
     title: "確認ボタンと公式リンクを見直し",
@@ -22,9 +29,9 @@ export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
     id: "2026-08-07-album-save",
     date: "2026-08-07",
-    title: "撮った写真をアルバムにも残しやすく",
+    title: "撮った写真をこのサイトに残す",
     summary:
-      "撮影後に、サイト内だけでなく端末のアルバムやファイルへ保存する画面を開くようにしました。",
+      "撮影した写真をサーバーに送らず、この端末のサイト内に残せるようにしました。アルバムへのコピーは必要なときだけ行えます。",
   },
   {
     id: "2026-08-07-photo-flow",
