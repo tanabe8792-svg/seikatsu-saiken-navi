@@ -57,6 +57,8 @@ import {
 } from "@/lib/case-management/municipality-context";
 import { SourceFreshnessNote } from "@/components/common/source-freshness-note";
 import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
+import { ProcedurePhaseRail, type ProcedurePhase } from "@/components/actions/procedure-phase-rail";
+import { PrepNextDestination } from "@/components/actions/prep-next-destination";
 import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
 interface CaseActionDetailProps {
@@ -202,6 +204,123 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
     completedSteps.includes(s.id)
   ).length;
   const prepProgress = prepItems.filter((p) => p.done).length;
+
+  const procedurePhases: ProcedurePhase[] = (() => {
+    const phases: ProcedurePhase[] = [];
+
+    if (isPhotoEvidenceAction) {
+      const stepsStatus: ProcedurePhase["status"] = isDone
+        ? "done"
+        : stepsDone
+          ? "done"
+          : "current";
+      phases.push({
+        id: "steps",
+        label: "手順",
+        detail: `${stepProgress}/${guide.steps.length}`,
+        status: stepsStatus,
+        targetId: "walkthrough-steps",
+      });
+      const photoStatus: ProcedurePhase["status"] = isDone
+        ? "done"
+        : !stepsDone
+          ? "upcoming"
+          : ui.hasEvidence
+            ? "done"
+            : "current";
+      phases.push({
+        id: "photo",
+        label: "撮影",
+        status: photoStatus,
+        targetId: "photo-evidence-capture",
+      });
+      phases.push({
+        id: "done",
+        label: "完了",
+        status: isDone
+          ? "done"
+          : ui.hasEvidence && stepsDone
+            ? "current"
+            : "upcoming",
+      });
+      return phases;
+    }
+
+    const stepsStatus: ProcedurePhase["status"] = isDone
+      ? "done"
+      : stepsDone
+        ? "done"
+        : "current";
+    phases.push({
+      id: "steps",
+      label: "手順",
+      detail: `${stepProgress}/${guide.steps.length}`,
+      status: stepsStatus,
+      targetId: "walkthrough-steps",
+    });
+
+    if (prepItems.length > 0) {
+      const prepStatus: ProcedurePhase["status"] = isDone
+        ? "done"
+        : !stepsDone
+          ? "upcoming"
+          : prepDone
+            ? "done"
+            : "current";
+      phases.push({
+        id: "prep",
+        label: "準備",
+        detail: `${prepProgress}/${prepItems.length}`,
+        status: prepStatus,
+        targetId: "prep-checklist",
+      });
+    }
+
+    if (procedureGuidance) {
+      const applyReady = stepsDone && prepDone;
+      const applyStatus: ProcedurePhase["status"] = isDone
+        ? "done"
+        : !applyReady
+          ? "upcoming"
+          : "current";
+      phases.push({
+        id: "apply",
+        label: "申請",
+        status: applyStatus,
+        targetId:
+          prepItems.length > 0
+            ? "prep-next-destination"
+            : "procedure-guidance",
+      });
+    }
+
+    phases.push({
+      id: "done",
+      label: "完了",
+      status: isDone
+        ? "done"
+        : stepsDone && prepDone && evidenceReady
+          ? "current"
+          : "upcoming",
+    });
+
+    return phases;
+  })();
+
+  const currentPhase = procedurePhases.find((p) => p.status === "current");
+  const currentPhaseHint = isDone
+    ? "この手続きは、サイト上では完了しています"
+    : currentPhase?.id === "steps"
+      ? `いまは手順の確認（${stepProgress}/${guide.steps.length}）`
+      : currentPhase?.id === "prep"
+        ? `いまは準備物の確認（${prepProgress}/${prepItems.length}）`
+        : currentPhase?.id === "photo"
+          ? "いまは写真を撮って残す段階"
+          : currentPhase?.id === "apply"
+            ? "準備がそろいました。次は申請・連絡先へ"
+            : currentPhase?.id === "done"
+              ? "そろったら、下の完了ボタンを押せます"
+              : "この手続きの進み方";
 
   function renderStepList(
     steps: typeof guide.steps,
@@ -424,23 +543,14 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <p className="text-xs leading-relaxed text-muted-foreground">
             読んだ手順は「確認した」を押してください。戻すときは「まだ見ていない（戻す）」がすぐ横に出ます。
           </p>
+          <ProcedurePhaseRail
+            phases={procedurePhases}
+            currentHint={currentPhaseHint}
+          />
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">
               全体 {overall.completed}/{overall.total}
             </span>
-            <span>
-              この手順 {stepProgress}/{guide.steps.length}
-            </span>
-            {prepItems.length > 0 && (
-              <span>
-                準備物 {prepProgress}/{prepItems.length}
-              </span>
-            )}
-            {followUpSteps.length > 0 && (
-              <span>
-                申請後 {followUpProgress}/{followUpSteps.length}
-              </span>
-            )}
             {profile.municipality && (
               <span>
                 {actionId === "rw-j04-business-recovery"
@@ -448,17 +558,6 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                   : `地域: ${resolveHomeMunicipalityName(profile)}`}
               </span>
             )}
-          </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-primary transition-all"
-              style={{
-                width:
-                  overall.total > 0
-                    ? `${(overall.completed / overall.total) * 100}%`
-                    : "0%",
-              }}
-            />
           </div>
         </CardContent>
       </Card>
@@ -511,7 +610,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       )}
 
       {procedureGuidance && !isPhotoEvidenceAction && (
-        <Card className="border-border bg-card">
+        <Card id="procedure-guidance" className="border-border bg-card">
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">
               {procedureGuidance.title}
@@ -652,7 +751,10 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       )}
 
       {prepItems.length > 0 && (
-        <Card className="border-amber-200/70 dark:border-amber-900/40">
+        <Card
+          id="prep-checklist"
+          className="border-amber-200/70 dark:border-amber-900/40"
+        >
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">準備物</h3>
             <p className="text-xs text-muted-foreground">
@@ -695,6 +797,9 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                 </li>
               ))}
             </ul>
+            {procedureGuidance && !isPhotoEvidenceAction && !isDone && (
+              <PrepNextDestination guidance={procedureGuidance} />
+            )}
           </CardContent>
         </Card>
       )}
