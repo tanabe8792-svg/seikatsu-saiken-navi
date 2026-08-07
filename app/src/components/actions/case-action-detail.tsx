@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Camera,
@@ -77,6 +77,16 @@ function findAction(
   );
 }
 
+function scrollToElementId(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function walkthroughStepElementId(stepId: string) {
+  return `walkthrough-step-${stepId}`;
+}
+
 export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
   const { showToast } = useToast();
   const { viewportBottomOffset, navHeightPx } = useBottomChrome();
@@ -93,6 +103,13 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [prepTick, setPrepTick] = useState(0);
   const [memos, setMemos] = useState<Record<string, string>>({});
+  const [progressReady, setProgressReady] = useState(false);
+  const didResumeScroll = useRef(false);
+
+  useEffect(() => {
+    didResumeScroll.current = false;
+    setProgressReady(false);
+  }, [actionId, caseFile?.caseId]);
 
   useEffect(() => {
     if (!caseFile) return;
@@ -110,7 +127,69 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       );
     }
     setMemos(next);
+    setProgressReady(true);
   }, [caseFile?.caseId, actionId]);
+
+  useEffect(() => {
+    if (!progressReady || didResumeScroll.current || loading || !caseFile) {
+      return;
+    }
+
+    const found = findAction(
+      caseFile.pendingActions,
+      caseFile.completedActions,
+      actionId
+    );
+    if (!found || found.status === "done") return;
+
+    const guideNow = getActionWalkthrough(actionId, found.title);
+    const doneStepIds = getCompletedWalkthroughSteps(
+      caseFile.caseId,
+      actionId
+    );
+    const working = syncDocumentRecords(caseFile);
+    const programIdsNow = found.relatedProgramIds ?? [];
+    const prepNow = resolvePrepChecklist(working, guideNow, programIdsNow);
+    const prepDoneNow = areResolvedPrepItemsDone(prepNow);
+    const stepsDoneNow = areAllWalkthroughStepsDone(guideNow, doneStepIds);
+    const uiNow = getActionCompletionUIState(working, found);
+    const hasGuidance = Boolean(
+      getProcedureGuidanceForAction(actionId, profile)
+    );
+    const isPhoto = actionId === "rw-j03-photo";
+
+    const firstIncomplete = guideNow.steps.find(
+      (s) => !doneStepIds.includes(s.id)
+    );
+    const hasStepProgress = doneStepIds.some((id) =>
+      guideNow.steps.some((s) => s.id === id)
+    );
+    const hasPrepProgress = prepNow.some((p) => p.done);
+    const hasProgress =
+      hasStepProgress || hasPrepProgress || uiNow.hasEvidence;
+
+    if (!hasProgress) return;
+
+    let targetId: string | null = null;
+    if (!stepsDoneNow && firstIncomplete) {
+      targetId = walkthroughStepElementId(firstIncomplete.id);
+    } else if (prepNow.length > 0 && !prepDoneNow) {
+      targetId = "prep-checklist";
+    } else if (isPhoto && !uiNow.hasEvidence) {
+      targetId = "photo-evidence-capture";
+    } else if (hasGuidance) {
+      targetId =
+        prepNow.length > 0 ? "prep-next-destination" : "procedure-guidance";
+    } else {
+      targetId = "procedure-complete";
+    }
+
+    didResumeScroll.current = true;
+    const timer = window.setTimeout(() => {
+      scrollToElementId(targetId!);
+    }, 320);
+    return () => window.clearTimeout(timer);
+  }, [progressReady, loading, caseFile, actionId, profile, prepTick]);
 
   const action = caseFile
     ? findAction(caseFile.pendingActions, caseFile.completedActions, actionId)
@@ -215,12 +294,18 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         : stepsDone
           ? "done"
           : "current";
+      const firstIncompletePhotoStep = guide.steps.find(
+        (s) => !completedSteps.includes(s.id)
+      );
       phases.push({
         id: "steps",
         label: "手順",
         detail: `${stepProgress}/${guide.steps.length}`,
         status: stepsStatus,
-        targetId: "walkthrough-steps",
+        targetId:
+          !stepsDone && firstIncompletePhotoStep
+            ? walkthroughStepElementId(firstIncompletePhotoStep.id)
+            : "walkthrough-steps",
       });
       const photoStatus: ProcedurePhase["status"] = isDone
         ? "done"
@@ -243,6 +328,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           : ui.hasEvidence && stepsDone
             ? "current"
             : "upcoming",
+        targetId: "procedure-complete",
       });
       return phases;
     }
@@ -252,12 +338,18 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       : stepsDone
         ? "done"
         : "current";
+    const firstIncompleteStep = guide.steps.find(
+      (s) => !completedSteps.includes(s.id)
+    );
     phases.push({
       id: "steps",
       label: "手順",
       detail: `${stepProgress}/${guide.steps.length}`,
       status: stepsStatus,
-      targetId: "walkthrough-steps",
+      targetId:
+        !stepsDone && firstIncompleteStep
+          ? walkthroughStepElementId(firstIncompleteStep.id)
+          : "walkthrough-steps",
     });
 
     if (prepItems.length > 0) {
@@ -303,6 +395,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         : stepsDone && prepDone && evidenceReady
           ? "current"
           : "upcoming",
+      targetId: "procedure-complete",
     });
 
     return phases;
@@ -343,7 +436,12 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                 </div>
               )}
               <div
-                className={`rounded-2xl border-2 px-3 py-3 transition-colors ${
+                id={
+                  numberFrom === 1
+                    ? walkthroughStepElementId(step.id)
+                    : `followup-step-${step.id}`
+                }
+                className={`scroll-mt-4 rounded-2xl border-2 px-3 py-3 transition-colors ${
                   done
                     ? "border-brand-green bg-emerald-100 dark:border-brand-green dark:bg-emerald-950/50"
                     : isCurrent && emphasize
@@ -613,7 +711,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       )}
 
       {procedureGuidance && !isPhotoEvidenceAction && (
-        <Card id="procedure-guidance" className="border-border bg-card">
+        <Card id="procedure-guidance" className="scroll-mt-4 border-border bg-card">
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">
               {procedureGuidance.title}
@@ -707,15 +805,18 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         </Card>
       )}
 
-      <Card id="walkthrough-steps">
+      <Card id="walkthrough-steps" className="scroll-mt-4">
         <CardContent className="space-y-3 p-4">
           <h3 className="text-base font-semibold">
             {isPhotoEvidenceAction ? "まず手順を確認する" : "手順（ひとつずつ）"}
           </h3>
           <WalkthroughStepRail
-            total={guide.steps.length}
+            stepIds={guide.steps.map((s) => s.id)}
             completedCount={stepProgress}
             currentNumber={currentStepNumber}
+            onJumpToStep={(stepId) =>
+              scrollToElementId(walkthroughStepElementId(stepId))
+            }
           />
           {renderStepList(guide.steps, {
             locked: isDone,
@@ -756,7 +857,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       {prepItems.length > 0 && (
         <Card
           id="prep-checklist"
-          className="border-amber-200/70 dark:border-amber-900/40"
+          className="scroll-mt-4 border-amber-200/70 dark:border-amber-900/40"
         >
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">準備物</h3>
@@ -927,6 +1028,8 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           </p>
         </details>
       )}
+
+      <div id="procedure-complete" className="scroll-mt-4 h-0" aria-hidden />
 
       {!isDone && (!stepsDone || !prepDone || !evidenceReady) && (
         <p className="px-1 text-sm leading-relaxed text-muted-foreground">

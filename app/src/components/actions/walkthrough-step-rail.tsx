@@ -4,19 +4,22 @@ import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 
 interface WalkthroughStepRailProps {
-  total: number;
+  stepIds: string[];
   /** 確認済みの数（0〜total） */
   completedCount: number;
   /** いま見ている手順番号（1始まり）。全部済みなら total */
   currentNumber: number;
+  onJumpToStep: (stepId: string) => void;
 }
 
-/** 手順の中での進み（1→2→3）。丸は固定、間の線だけ均等に伸ばす */
+/** 手順の中での進み（1→2→3）。丸は固定、間の線だけ均等。押すとその手順へ。 */
 export function WalkthroughStepRail({
-  total,
+  stepIds,
   completedCount,
   currentNumber,
+  onJumpToStep,
 }: WalkthroughStepRailProps) {
+  const total = stepIds.length;
   if (total <= 1) return null;
 
   const allDone = completedCount >= total;
@@ -28,22 +31,24 @@ export function WalkthroughStepRail({
     >
       <p className="text-xs text-muted-foreground">
         {allDone
-          ? `手順は全部確認できました（${total}）`
-          : `手順 ${currentNumber}/${total} を確認中`}
+          ? `手順は全部確認できました（${total}） · 番号を押すとその手順へ`
+          : `手順 ${currentNumber}/${total} を確認中 · 番号を押すとその手順へ`}
       </p>
       <div className="flex w-full items-center" role="list">
-        {Array.from({ length: total }, (_, i) => {
+        {stepIds.map((stepId, i) => {
           const n = i + 1;
           const done = n <= completedCount;
           const current = !allDone && n === currentNumber;
           const connectorDone = completedCount >= n;
 
           return (
-            <Fragment key={n}>
-              <span
+            <Fragment key={stepId}>
+              <button
+                type="button"
                 role="listitem"
+                onClick={() => onJumpToStep(stepId)}
                 className={cn(
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold transition-colors",
+                  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold transition active:scale-95",
                   done && "border-brand-green bg-brand-green text-white",
                   current &&
                     "border-brand-orange bg-brand-orange text-white shadow-sm",
@@ -51,10 +56,11 @@ export function WalkthroughStepRail({
                     !current &&
                     "border-border bg-background text-muted-foreground"
                 )}
+                aria-label={`手順${n}へ移動`}
                 aria-current={current ? "step" : undefined}
               >
                 {done ? "✓" : n}
-              </span>
+              </button>
               {i < total - 1 ? (
                 <span
                   className={cn(

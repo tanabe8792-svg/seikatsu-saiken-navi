@@ -34,6 +34,9 @@ export function ProcedurePhaseRail({
   return (
     <div className="space-y-2" aria-label="この手続きの進み方">
       <p className="text-xs font-medium text-foreground">{currentHint}</p>
+      <p className="text-[11px] text-muted-foreground">
+        段階を押すと、その場所へ移動します
+      </p>
       <ol
         className="grid gap-1.5"
         style={{
@@ -54,6 +57,11 @@ export function ProcedurePhaseRail({
                   "flex h-full w-full flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-center transition",
                   interactive && "active:scale-[0.98]"
                 )}
+                aria-label={
+                  interactive
+                    ? `${phase.label}へ移動`
+                    : undefined
+                }
                 aria-current={phase.status === "current" ? "step" : undefined}
               >
                 <span
