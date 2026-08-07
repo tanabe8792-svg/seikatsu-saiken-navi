@@ -43,6 +43,7 @@ import {
   getProcedureStatusPlainExplanation,
 } from "@/lib/case-management/procedures";
 import type { CaseAction } from "@/lib/case-management/types";
+import { getActionTemplate } from "@/lib/case-management/action-templates";
 import { getCaseActionDetailPath } from "@/lib/navigation";
 import { useUserSession } from "@/hooks/use-user-session";
 import { useToast } from "@/providers/toast-provider";
@@ -226,25 +227,86 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
   }
 
   if (!caseFile || !workingCaseFile) {
+    const template = getActionTemplate(actionId);
+    const previewGuide = getActionWalkthrough(
+      actionId,
+      template?.title ?? "確認"
+    );
     return (
-      <div className="space-y-4 py-8">
-        <p className="text-center text-muted-foreground">
-          まだ状況の整理が完了していません。
-        </p>
+      <div className="space-y-4 py-6">
+        <Card>
+          <CardContent className="space-y-3 p-5">
+            <p className="text-sm font-medium text-muted-foreground">
+              手続きの案内
+            </p>
+            <h2 className="text-2xl font-bold leading-snug">
+              {previewGuide.plainTitle}
+            </h2>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              まだ状況の整理が始まっていないため、チェックや完了の記録はできません。先に状況を選ぶと、やること一覧から進められます。
+            </p>
+            {template ? (
+              <p className="text-sm leading-relaxed">{previewGuide.explanation}</p>
+            ) : null}
+          </CardContent>
+        </Card>
         <Button asChild size="lg" className="h-14 w-full">
           <Link href="/start">はじめる</Link>
+        </Button>
+        <Button asChild variant="outline" size="lg" className="h-12 w-full">
+          <Link href="/actions">やること一覧を見る</Link>
         </Button>
       </div>
     );
   }
 
   if (!action) {
+    const template = getActionTemplate(actionId);
+    const previewGuide = getActionWalkthrough(
+      actionId,
+      template?.title ?? "確認"
+    );
+    const recommendedNow = getCurrentAction(workingCaseFile);
     return (
-      <div className="space-y-4 py-8">
-        <p className="text-center text-muted-foreground">
-          この項目は見つかりませんでした。
-        </p>
-        <Button asChild size="lg" className="h-14 w-full">
+      <div className="space-y-4 py-6">
+        <Card>
+          <CardContent className="space-y-3 p-5">
+            <p className="text-sm font-medium text-muted-foreground">
+              手続きの案内
+            </p>
+            <h2 className="text-2xl font-bold leading-snug">
+              {previewGuide.plainTitle}
+            </h2>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {template
+                ? "この項目は、いまのやること一覧には入っていません。案内だけ先に読めます。進めるときは一覧から選んでください。"
+                : "このリンクでは項目を開けませんでした。やること一覧から進めてください。"}
+            </p>
+            {template ? (
+              <>
+                <p className="text-sm leading-relaxed">
+                  {previewGuide.explanation}
+                </p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {previewGuide.whyNow}
+                </p>
+              </>
+            ) : null}
+          </CardContent>
+        </Card>
+        {recommendedNow ? (
+          <Button asChild size="lg" className="h-14 w-full">
+            <Link href={getCaseActionDetailPath(recommendedNow.id)}>
+              いまの項目「
+              {
+                getActionWalkthrough(recommendedNow.id, recommendedNow.title)
+                  .plainTitle
+              }
+              」へ
+            </Link>
+          </Button>
+        ) : null}
+        <Button asChild size="lg" className="h-12 w-full" variant="outline">
           <Link href="/actions">やること一覧へ</Link>
         </Button>
       </div>

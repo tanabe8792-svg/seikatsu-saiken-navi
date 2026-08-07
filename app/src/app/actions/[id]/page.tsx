@@ -1,8 +1,9 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { AlertCircle, FileText, Phone } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ActionDetailFooter } from "@/components/actions/action-detail-footer";
 import { getProcedureById } from "@/lib/procedures";
+import { shouldRedirectToCaseAction } from "@/lib/navigation";
 
 export default async function ActionDetailPage({
   params,
@@ -10,6 +11,12 @@ export default async function ActionDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  const caseActionId = shouldRedirectToCaseAction(id);
+  if (caseActionId) {
+    redirect(`/actions/case/${caseActionId}`);
+  }
+
   const procedure = getProcedureById(id);
 
   if (!procedure) {
