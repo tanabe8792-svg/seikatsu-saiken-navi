@@ -127,6 +127,7 @@ export {
   getCaseProgress,
   generateActionQueue,
   completeCaseAction,
+  reopenCaseAction,
   addEvidenceToCaseFile,
   getTriggerIdsFromCaseFile,
   createCaseFile,

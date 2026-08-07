@@ -81,6 +81,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
     session,
     loading,
     completeCaseAction,
+    reopenCaseAction,
     submitActionEvidence,
     markDocumentPrepared,
     updateProfile,
@@ -378,6 +379,11 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
     // 次の項目へ自動では進まない。完了の区切りを見せて休めるようにする。
   }
 
+  function handleReopen() {
+    reopenCaseAction(action!.id);
+    showToast(`「${guide.plainTitle}」の完了を取り消しました`);
+  }
+
   return (
     <div className="space-y-4 pb-40">
       <Card className="border-border bg-card">
@@ -392,7 +398,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <h2 className="text-2xl font-bold leading-snug">{guide.plainTitle}</h2>
           {isDone && (
             <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-              「{guide.plainTitle}」は完了しています。実際の申請や手続きは、それぞれの窓口・公式の案内に沿って進めてください。ここは見返し用に残せます。
+              このサイトでは「{guide.plainTitle}」を完了にしています。窓口や保険会社への申請がまだなら、下の「完了を取り消す」で戻せます。写真やメモはそのまま残ります。
             </p>
           )}
           {browsingAhead && recommended && (
@@ -709,10 +715,10 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             {!isPhotoEvidenceAction && isDone && (
               <div className="rounded-xl border border-sky-300/80 bg-sky-50 px-3 py-3 dark:border-sky-800 dark:bg-sky-950/30">
                 <p className="text-sm font-semibold text-sky-950 dark:text-sky-50">
-                  いまは「結果の連絡待ち」です
+                  いまは「結果の連絡待ち」として見返せます
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-sky-900/90 dark:text-sky-100/90">
-                  申請は記録済みです。下で「調査の案内が届いたか」「まだ待ち中か」を残せます。窓口から指示があれば、その案内に従ってください。
+                  このサイトで完了にしたあと用のメモです。実際の申請がまだなら、下の「完了を取り消す」で未完了に戻せます。窓口から案内があれば、その指示に従ってください。
                 </p>
               </div>
             )}
@@ -872,25 +878,43 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             </Button>
           )}
           {!isDone && (
-            <Button
-              size="lg"
-              className="h-14 w-full text-lg"
-              disabled={!canFinishProcedure}
-              onClick={handleComplete}
-            >
-              <CheckCircle2 className="h-5 w-5" />
-              「{guide.plainTitle}」を完了する
-            </Button>
+            <>
+              <Button
+                size="lg"
+                className="h-14 w-full text-lg"
+                disabled={!canFinishProcedure}
+                onClick={handleComplete}
+              >
+                <CheckCircle2 className="h-5 w-5" />
+                「{guide.plainTitle}」を完了する
+              </Button>
+              <p className="px-1 text-center text-xs leading-relaxed text-muted-foreground">
+                {isPhotoEvidenceAction
+                  ? "写真を残せたら完了にできます。押し間違えたら、あとから取り消せます。"
+                  : "窓口や保険会社への申請が終わってから押してください。押し間違えたら、あとから取り消せます。"}
+              </p>
+            </>
           )}
           {isDone && (
-            <>
-              <p className="text-center text-sm font-medium text-emerald-900 dark:text-emerald-100">
-                「{guide.plainTitle}」は完了しています
-              </p>
-              <Button asChild variant="outline" size="lg" className="h-12 w-full bg-background">
-                <Link href="/actions">やること一覧へ戻る</Link>
+            <div className="flex gap-2">
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="h-12 min-w-0 flex-1 bg-background"
+              >
+                <Link href="/actions">やること一覧</Link>
               </Button>
-            </>
+              <Button
+                type="button"
+                variant="secondary"
+                size="lg"
+                className="h-12 min-w-0 flex-1"
+                onClick={handleReopen}
+              >
+                完了を取り消す
+              </Button>
+            </div>
           )}
           {!isDone && (
             <Button asChild variant="ghost" size="lg" className="h-11 w-full text-muted-foreground">

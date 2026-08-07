@@ -24,6 +24,7 @@ import type { EvidenceInput } from "@/lib/case-management/evidence";
 import {
   addEvidenceToCaseFile,
   completeCaseAction as completeCaseActionLogic,
+  reopenCaseAction as reopenCaseActionLogic,
   getTriggerIdsFromCaseFile,
   refreshActionQueueForPhase,
 } from "@/lib/case-management/action-queue";
@@ -93,6 +94,7 @@ interface SessionContextValue {
     evidence?: EvidenceInput,
     options?: { alreadyCompletedOutside?: boolean }
   ) => void;
+  reopenCaseAction: (actionId: string) => void;
   submitActionEvidence: (
     actionId: string,
     evidence?: EvidenceInput
@@ -344,6 +346,26 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [persist]
   );
 
+  const reopenCaseAction = useCallback(
+    (actionId: string) => {
+      void persist((current) => {
+        if (!current.caseFile) return current;
+        const triggerIds = getTriggerIdsFromCaseFile(current.caseFile);
+        const caseFile = reopenCaseActionLogic(
+          current.caseFile,
+          actionId,
+          triggerIds
+        );
+        return sessionWithContinuitySnapshot({
+          ...current,
+          caseFile,
+          caseWorkerSummary: caseFileToLegacySummary(caseFile),
+        });
+      });
+    },
+    [persist]
+  );
+
   const submitActionEvidence = useCallback(
     (actionId: string, evidence?: EvidenceInput) => {
       void persist((current) => {
@@ -484,6 +506,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setCaseFile,
       initializeCase,
       completeCaseAction,
+      reopenCaseAction,
       submitActionEvidence,
       markDocumentPrepared,
       startRecoveryPhase,
@@ -504,6 +527,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setCaseFile,
       initializeCase,
       completeCaseAction,
+      reopenCaseAction,
       submitActionEvidence,
       markDocumentPrepared,
       startRecoveryPhase,

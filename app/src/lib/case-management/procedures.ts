@@ -311,9 +311,13 @@ function updateProcedure(
             ...patch,
             updatedAt: now,
             submittedAt:
-              patch.status === "submitted" && !p.submittedAt
-                ? (patch.submittedAt ?? now)
-                : p.submittedAt,
+              patch.status === "not_started" || patch.status === "preparing"
+                ? undefined
+                : patch.status === "submitted" && !p.submittedAt
+                  ? (patch.submittedAt ?? now)
+                  : "submittedAt" in patch
+                    ? patch.submittedAt
+                    : p.submittedAt,
           }
         : p
     );
@@ -382,6 +386,39 @@ export function syncProceduresOnActionComplete(
         status: nextStatus,
         relatedActionId: completedAction.id,
       });
+    }
+  }
+
+  return procedures;
+}
+
+/** Action 完了取り消し時に、その完了で進めた Procedure を戻す */
+export function syncProceduresOnActionReopen(
+  caseFile: CaseFile,
+  reopenedAction: CaseAction
+): ExternalProcedure[] {
+  let procedures = [...(caseFile.procedures ?? [])];
+  const stillCompletedIds = new Set(
+    caseFile.completedActions
+      .filter((a) => a.id !== reopenedAction.id)
+      .map((a) => a.id)
+  );
+
+  for (const template of PROCEDURE_TEMPLATES) {
+    const submitsOn = template.submitOnActionComplete ?? [];
+    if (submitsOn.includes(reopenedAction.id)) {
+      const stillSubmittedByOther = submitsOn.some(
+        (id) => id !== reopenedAction.id && stillCompletedIds.has(id)
+      );
+      if (!stillSubmittedByOther) {
+        const stillActivated = (
+          template.activateOnActionComplete ?? []
+        ).some((id) => stillCompletedIds.has(id));
+        procedures = updateProcedure(procedures, template.programId, {
+          status: stillActivated ? "preparing" : "not_started",
+          relatedActionId: reopenedAction.id,
+        });
+      }
     }
   }
 

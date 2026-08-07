@@ -26,6 +26,7 @@ import {
   getPrimaryProcedure,
   syncProcedureOnEvidenceSubmit,
   syncProceduresOnActionComplete,
+  syncProceduresOnActionReopen,
 } from "./procedures";
 import {
   applyRecoveryPhaseTransition,
@@ -427,6 +428,23 @@ function advanceJourney(
   return current;
 }
 
+function deriveActiveJourneyFromCompleted(
+  completedActions: CaseAction[]
+): CaseFile["activeJourney"] {
+  let best: CaseFile["activeJourney"] = null;
+  let bestIdx = -1;
+  for (const action of completedActions) {
+    const idx = JOURNEY_ORDER.indexOf(
+      action.journeyId as (typeof JOURNEY_ORDER)[number]
+    );
+    if (idx > bestIdx) {
+      bestIdx = idx;
+      best = action.journeyId;
+    }
+  }
+  return best;
+}
+
 function deriveCaseStatus(
   pending: CaseAction[],
   completed: CaseAction[],
@@ -624,6 +642,74 @@ export function completeCaseAction(
     blocked: false,
     workerMessage: resultFile.workerMessage,
   };
+}
+
+/** サイト上の完了を取り消し、手続きを未完了に戻す */
+export function reopenCaseAction(
+  caseFile: CaseFile,
+  actionId: string,
+  triggerIds: string[]
+): CaseFile {
+  const actionIndex = caseFile.completedActions.findIndex(
+    (a) => a.id === actionId
+  );
+  if (actionIndex < 0) return caseFile;
+
+  const now = new Date().toISOString();
+  const action = caseFile.completedActions[actionIndex];
+  const reopened: CaseAction = {
+    ...action,
+    status: "todo",
+    completedAt: undefined,
+  };
+  const completedActions = caseFile.completedActions.filter(
+    (_, i) => i !== actionIndex
+  );
+  const pendingActions = [
+    reopened,
+    ...caseFile.pendingActions.map((a) => ({ ...a, status: "todo" as const })),
+  ];
+  const procedures = syncProceduresOnActionReopen(caseFile, action);
+  const activeJourney = deriveActiveJourneyFromCompleted(completedActions);
+
+  let resultFile: CaseFile = {
+    ...caseFile,
+    updatedAt: now,
+    lastContactAt: now,
+    activeJourney,
+    pendingActions,
+    completedActions,
+    procedures,
+    status: deriveCaseStatus(pendingActions, completedActions, procedures),
+    decisions: [
+      ...caseFile.decisions,
+      {
+        timestamp: now,
+        triggerIds,
+        selectedActionId: reopened.id,
+        selectedActionTitle: reopened.title,
+        reason: `${reopened.title}の完了を取り消しました`,
+        confidence: "medium",
+        previousAction: { id: reopened.id, title: reopened.title },
+        evidenceStatus: getEvidenceStatusForAction(caseFile, reopened),
+        outcome: "selected",
+        nextAction: { id: reopened.id, title: reopened.title },
+      },
+    ],
+    workerMessage: `「${reopened.title}」を未完了に戻しました。窓口での申請がまだなら、こちらから進め直せます。`,
+  };
+
+  resultFile = {
+    ...resultFile,
+    deadlines: syncDeadlinesAfterProcedureChange(resultFile, {
+      municipalityCode: caseFile.municipalityCode,
+      damageLevel: caseFile.damageLevel,
+      housingTenure: caseFile.housingTenure,
+    } as CaseProfile),
+  };
+  resultFile = syncDocumentRecords(resultFile);
+  resultFile = syncCaseTimeline(resultFile);
+  return resultFile;
 }
 
 /** 状況サマリー文字列（ホーム表示用） */
