@@ -248,7 +248,7 @@ export function IdentityRegistrationPanel({
 
             {method === "email" && (
               <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
-                <label htmlFor="auth-email" className="text-sm font-medium">
+                <label htmlFor="auth-email" className="text-base font-medium">
                   メールアドレス
                 </label>
                 <Input
@@ -263,31 +263,31 @@ export function IdentityRegistrationPanel({
                     setEmailSent(false);
                     setError(null);
                   }}
+                  className="h-12 text-base"
                 />
+                <p className="rounded-lg border border-amber-200/80 bg-amber-50/80 px-3 py-3 text-base leading-relaxed text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-50">
+                  同じメールで以前登録した人・別の端末から続ける人へ：届いたメールのリンクを開いてください。この端末に残った進捗は消えません。
+                </p>
                 {emailSent ? (
                   <div
                     className="space-y-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30"
                     role="status"
                   >
-                    <p className="text-sm font-semibold text-amber-950 dark:text-amber-50">
-                      メールを送りました。届いたリンクをタップしてください
+                    <p className="text-base font-semibold text-amber-950 dark:text-amber-50">
+                      メールを送りました。届いたリンクを開いてください
                     </p>
-                    <p className="text-sm leading-relaxed text-amber-900 dark:text-amber-100">
-                      {mode === "login" ? "ログイン" : "登録"}
-                      は、メール内のリンクを開くと完了します。完了すると「マイページ登録が完了しました」と大きく表示されます。
-                    </p>
-                    <p className="text-sm font-medium leading-relaxed text-amber-950 dark:text-amber-50">
-                      メールが見つからないときは、迷惑メールフォルダ（迷惑メール／Junk）も確認してください。
+                    <p className="text-base leading-relaxed text-amber-900 dark:text-amber-100">
+                      迷惑メールフォルダに入ることがあります。
                     </p>
                   </div>
                 ) : (
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    メールアドレスを入れて、下のボタンを押してください。リンク付きのメールが届きます。迷惑メールフォルダに入ることがあります。
+                  <p className="text-base leading-relaxed text-muted-foreground">
+                    下のボタンを押すと、リンク付きのメールが届きます。
                   </p>
                 )}
                 <Button
                   type="button"
-                  className="h-12 w-full"
+                  className="h-12 w-full text-base"
                   disabled={!canSendEmail}
                   onClick={() => void handleSendEmail()}
                 >

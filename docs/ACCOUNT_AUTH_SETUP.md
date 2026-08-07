@@ -60,27 +60,19 @@ Supabase **SQL Editor** で `/database/supabase-schema.sql` を実行（未実�
 
 ---
 
-## ステップ3 — メール登録
+## ステップ3 — メール登録（エラーを止める）
 
-1. Supabase **Authentication → Providers → Email** を **ON**
-2. **Confirm email** を ON（メール確認を必須にする場合）
-3. **Authentication → Email Templates** で「Magic Link」の文面を必要に応じて調整
-4. Vercel で **Redeploy**
+くわしい手順は **`docs/登録メールエラーを止める手順.md`** を見てください（ゆうさん向け・番号つき）。
 
-### 「登録用メールを送れませんでした」と出るとき
+要点だけ：
 
-アプリの入力ミスではなく、**Supabase がメールを送れない**ときに多いです。
+1. Resend で API Key と送り元ドメインを用意する  
+2. Supabase → Project Settings → Authentication → **SMTP Settings** に Resend を入れる  
+3. Authentication → Providers → Email を ON  
+4. Site URL / Redirect URL を本番に合わせる  
+5. マイページからテスト送信する  
 
-| よくある原因 | 確認場所 |
-|--------------|----------|
-| 無料のメール送信上限 | Supabase → Authentication → Users / Logs |
-| Custom SMTP の設定ミス | Project Settings → Authentication → SMTP |
-| まだ SMTP を付けていない | 本番では Custom SMTP（Resend 等）推奨 |
-
-**すでに登録済み**でも、同じ「登録用メールを送信」でログイン用リンクが送られる仕組みです。  
-そのため「Error sending confirmation email」は、多くの場合「すでに登録済み」ではありません。
-
-**動作確認:** アプリ → マイページ → メール入力 → 「登録用メールを送信」→ 届いたリンクをタップ
+メールが使えるまでのあいだは、利用者に **LINE 登録** を案内してください。
 
 ---
 
