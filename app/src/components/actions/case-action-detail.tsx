@@ -59,6 +59,7 @@ import { SourceFreshnessNote } from "@/components/common/source-freshness-note";
 import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
 import { ProcedurePhaseRail, type ProcedurePhase } from "@/components/actions/procedure-phase-rail";
 import { PrepNextDestination } from "@/components/actions/prep-next-destination";
+import { WalkthroughStepRail } from "@/components/actions/walkthrough-step-rail";
 import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
 interface CaseActionDetailProps {
@@ -337,8 +338,8 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           return (
             <li key={step.id}>
               {index > 0 && (
-                <div className="flex justify-center py-1.5 text-muted-foreground">
-                  <ChevronDown className="h-5 w-5" aria-hidden />
+                <div className="flex justify-center py-0.5 text-muted-foreground">
+                  <ChevronDown className="h-4 w-4" aria-hidden />
                 </div>
               )}
               <div
@@ -503,10 +504,14 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
     showToast(`「${guide.plainTitle}」の完了を取り消しました`);
   }
 
+  const currentStepNumber = stepsDone
+    ? guide.steps.length
+    : Math.min(stepProgress + 1, guide.steps.length);
+
   return (
-    <div className="space-y-4 pb-40">
+    <div className={`space-y-4 ${isDone ? "pb-8" : "pb-28"}`}>
       <Card className="border-border bg-card">
-        <CardContent className="space-y-3 p-5">
+        <CardContent className="space-y-3 p-4">
           <p className="text-sm font-medium text-muted-foreground">
             {isDone
               ? "確認できた手順"
@@ -516,49 +521,47 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           </p>
           <h2 className="text-2xl font-bold leading-snug">{guide.plainTitle}</h2>
           {isDone && (
-            <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-              このサイトでは「{guide.plainTitle}」を完了にしています。窓口や保険会社への申請がまだなら、下の「完了を取り消す」で戻せます。写真やメモはそのまま残ります。
-            </p>
-          )}
-          {browsingAhead && recommended && (
-            <div className="space-y-3 rounded-lg border border-amber-200/80 bg-amber-50/80 px-3 py-3 dark:border-amber-900/40 dark:bg-amber-950/30">
-              <p className="text-sm font-medium text-amber-950 dark:text-amber-50">
-                いま優先して進めていただきたいのは「{recommendedTitle}」です
+            <div className="space-y-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 dark:border-emerald-900/40 dark:bg-emerald-950/30">
+              <p className="text-sm text-emerald-900 dark:text-emerald-100">
+                このサイトでは完了にしています。窓口への申請がまだなら取り消せます。
               </p>
-              <p className="text-sm leading-relaxed text-amber-950/90 dark:text-amber-50/90">
-                このページは、少しあとで確認していただいても大丈夫です。先に読み終えたあとは、やること一覧から「{recommendedTitle}」へお戻りください。
-              </p>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <Button asChild size="sm" className="h-10 flex-1">
-                  <Link href={getCaseActionDetailPath(recommended.id)}>
-                    「{recommendedTitle}」へ戻る
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="sm" className="h-10 flex-1">
-                  <Link href="/actions">やること一覧を見る</Link>
-                </Button>
-              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="h-9"
+                onClick={handleReopen}
+              >
+                完了を取り消す
+              </Button>
             </div>
           )}
-          <p className="text-xs leading-relaxed text-muted-foreground">
-            読んだ手順は「確認した」を押してください。戻すときは「まだ見ていない（戻す）」がすぐ横に出ます。
-          </p>
+          {browsingAhead && recommended && (
+            <div className="space-y-2 rounded-lg border border-amber-200/80 bg-amber-50/80 px-3 py-2.5 dark:border-amber-900/40 dark:bg-amber-950/30">
+              <p className="text-sm font-medium text-amber-950 dark:text-amber-50">
+                いま優先は「{recommendedTitle}」です
+              </p>
+              <Button asChild size="sm" className="h-9 w-full">
+                <Link href={getCaseActionDetailPath(recommended.id)}>
+                  「{recommendedTitle}」へ戻る
+                </Link>
+              </Button>
+            </div>
+          )}
           <ProcedurePhaseRail
             phases={procedurePhases}
             currentHint={currentPhaseHint}
           />
-          <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">
-              全体 {overall.completed}/{overall.total}
-            </span>
-            {profile.municipality && (
-              <span>
-                {actionId === "rw-j04-business-recovery"
-                  ? `店舗: ${resolveBusinessMunicipalityName(profile)}`
-                  : `地域: ${resolveHomeMunicipalityName(profile)}`}
-              </span>
-            )}
-          </div>
+          <p className="text-xs text-muted-foreground">
+            全体 {overall.completed}/{overall.total}
+            {profile.municipality
+              ? ` · ${
+                  actionId === "rw-j04-business-recovery"
+                    ? `店舗: ${resolveBusinessMunicipalityName(profile)}`
+                    : `地域: ${resolveHomeMunicipalityName(profile)}`
+                }`
+              : ""}
+          </p>
         </CardContent>
       </Card>
 
@@ -705,15 +708,15 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
       )}
 
       <Card id="walkthrough-steps">
-        <CardContent className="space-y-3 p-5">
+        <CardContent className="space-y-3 p-4">
           <h3 className="text-base font-semibold">
             {isPhotoEvidenceAction ? "まず手順を確認する" : "手順（ひとつずつ）"}
           </h3>
-          <p className="text-xs text-muted-foreground">
-            {isPhotoEvidenceAction
-              ? "上から順に読んで「確認した」を押してください。戻すときは「まだ見ていない（戻す）」です。全部確認すると、下でカメラが使えます。"
-              : "読んだら「確認した」を押してください。戻すときは「まだ見ていない（戻す）」です。分かったこと・予定はメモに残せます。"}
-          </p>
+          <WalkthroughStepRail
+            total={guide.steps.length}
+            completedCount={stepProgress}
+            currentNumber={currentStepNumber}
+          />
           {renderStepList(guide.steps, {
             locked: isDone,
             emphasize: isPhotoEvidenceAction,
@@ -818,20 +821,17 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               </span>
             </div>
             {!isPhotoEvidenceAction && isDone && (
-              <div className="rounded-xl border border-sky-300/80 bg-sky-50 px-3 py-3 dark:border-sky-800 dark:bg-sky-950/30">
-                <p className="text-sm font-semibold text-sky-950 dark:text-sky-50">
-                  いまは「結果の連絡待ち」として見返せます
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-sky-900/90 dark:text-sky-100/90">
-                  このサイトで完了にしたあと用のメモです。実際の申請がまだなら、下の「完了を取り消す」で未完了に戻せます。窓口から案内があれば、その指示に従ってください。
-                </p>
-              </div>
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                申請後のメモ用です。窓口から案内があれば、その指示に従ってください。
+              </p>
             )}
-            <p className="text-xs text-muted-foreground">
-              {isPhotoEvidenceAction
-                ? "雨のあとなど、あとから様子を見返すときのメモです。この項目の完了には必須ではありません。"
-                : "申請が終わったあとも、ここでチェックとメモができます。下の完了ボタンの条件には入りません。"}
-            </p>
+            {!isDone && (
+              <p className="text-xs text-muted-foreground">
+                {isPhotoEvidenceAction
+                  ? "雨のあとなど、あとから様子を見返すときのメモです。この項目の完了には必須ではありません。"
+                  : "申請が終わったあとも、ここでチェックとメモができます。下の完了ボタンの条件には入りません。"}
+              </p>
+            )}
             {renderStepList(followUpSteps, {
               locked: false,
               numberFrom: 1,
@@ -840,9 +840,9 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         </Card>
       )}
 
-      {!isPhotoEvidenceAction && (
+      {!isPhotoEvidenceAction && !isDone && (
       <Card>
-        <CardContent className="space-y-4 p-5">
+        <CardContent className="space-y-4 p-4">
           <h3 className="text-base font-semibold">状況の整理</h3>
           <p className="text-xs text-muted-foreground">
             いまの進み具合と、手続きの記録です。
@@ -851,9 +851,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           <div className="rounded-xl border border-border bg-card px-4 py-3 space-y-1">
             <p className="text-xs font-medium text-primary">あなたの進み具合</p>
             <p className="text-sm font-semibold">
-              {isDone
-                ? `「${guide.plainTitle}」は完了しています`
-                : `手順 ${stepProgress}/${guide.steps.length} までチェック済み`}
+              {`手順 ${stepProgress}/${guide.steps.length} までチェック済み`}
             </p>
             {prepItems.length > 0 && (
               <p className="text-xs text-muted-foreground">
@@ -942,92 +940,58 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         </p>
       )}
 
-      <div
-        className={`fixed left-0 right-0 z-40 border-t p-3 transition-colors ${
-          isDone
-            ? "border-emerald-200/80 bg-emerald-50 dark:border-emerald-900/40 dark:bg-emerald-950/40"
-            : "border-border bg-background"
-        }`}
-        style={{
-          bottom: `calc(${viewportBottomOffset + navHeightPx}px + env(safe-area-inset-bottom, 0px))`,
-        }}
-      >
-        <div className="mx-auto flex max-w-lg flex-col gap-2">
-          {!isDone &&
-            ui.showEvidenceButton &&
-            !ui.hasEvidence &&
-            !isPhotoEvidenceAction && (
-            <Button size="lg" className="h-14 w-full text-lg" onClick={handleEvidence}>
-              <Camera className="h-5 w-5" />
-              記録を残す
-            </Button>
-          )}
-          {!isDone && isPhotoEvidenceAction && !ui.hasEvidence && (
+      {!isDone && (
+        <div
+          className="fixed left-0 right-0 z-40 border-t border-border bg-background p-2"
+          style={{
+            bottom: `calc(${viewportBottomOffset + navHeightPx}px + env(safe-area-inset-bottom, 0px))`,
+          }}
+        >
+          <div className="mx-auto flex max-w-lg flex-col gap-1.5">
+            {ui.showEvidenceButton &&
+              !ui.hasEvidence &&
+              !isPhotoEvidenceAction && (
+                <Button
+                  size="lg"
+                  className="h-12 w-full text-base"
+                  onClick={handleEvidence}
+                >
+                  <Camera className="h-5 w-5" />
+                  記録を残す
+                </Button>
+              )}
+            {isPhotoEvidenceAction && !ui.hasEvidence && (
+              <Button
+                size="lg"
+                className="h-12 w-full text-base"
+                onClick={() => {
+                  if (!stepsDone) {
+                    document
+                      .getElementById("walkthrough-steps")
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    return;
+                  }
+                  document
+                    .getElementById("photo-evidence-capture")
+                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
+                }}
+              >
+                <Camera className="h-5 w-5" />
+                {stepsDone ? "カメラへ進む" : "まず手順を確認する"}
+              </Button>
+            )}
             <Button
               size="lg"
-              className="h-14 w-full text-lg"
-              onClick={() => {
-                if (!stepsDone) {
-                  document
-                    .getElementById("walkthrough-steps")
-                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  return;
-                }
-                document
-                  .getElementById("photo-evidence-capture")
-                  ?.scrollIntoView({ behavior: "smooth", block: "center" });
-              }}
+              className="h-12 w-full text-base"
+              disabled={!canFinishProcedure}
+              onClick={handleComplete}
             >
-              <Camera className="h-5 w-5" />
-              {stepsDone ? "カメラへ進む" : "まず手順を確認する"}
+              <CheckCircle2 className="h-5 w-5" />
+              「{guide.plainTitle}」を完了する
             </Button>
-          )}
-          {!isDone && (
-            <>
-              <Button
-                size="lg"
-                className="h-14 w-full text-lg"
-                disabled={!canFinishProcedure}
-                onClick={handleComplete}
-              >
-                <CheckCircle2 className="h-5 w-5" />
-                「{guide.plainTitle}」を完了する
-              </Button>
-              <p className="px-1 text-center text-xs leading-relaxed text-muted-foreground">
-                {isPhotoEvidenceAction
-                  ? "写真を残せたら完了にできます。押し間違えたら、あとから取り消せます。"
-                  : "窓口や保険会社への申請が終わってから押してください。押し間違えたら、あとから取り消せます。"}
-              </p>
-            </>
-          )}
-          {isDone && (
-            <div className="flex gap-2">
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="h-12 min-w-0 flex-1 bg-background"
-              >
-                <Link href="/actions">やること一覧</Link>
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                size="lg"
-                className="h-12 min-w-0 flex-1"
-                onClick={handleReopen}
-              >
-                完了を取り消す
-              </Button>
-            </div>
-          )}
-          {!isDone && (
-            <Button asChild variant="ghost" size="lg" className="h-11 w-full text-muted-foreground">
-              <Link href="/actions">やること一覧</Link>
-            </Button>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
