@@ -233,13 +233,13 @@ export async function downloadPhotoToDevice(
 }
 
 /**
- * アルバム／ダウンロードへ残す（サーバー不要）。
- * iOS などでは共有シートから「画像を保存」が確実なことが多い。
+ * アルバム／写真アプリへ残す（サーバー不要）。
+ * iPhone などでは共有シートの「画像を保存」が確実です。サイレント保存はブラウザではできません。
  */
 export async function offerBlobToDeviceAlbum(
   blob: Blob,
   filename: string
-): Promise<"shared" | "downloaded" | "failed"> {
+): Promise<"shared" | "downloaded" | "cancelled" | "failed"> {
   const mime = blob.type || "image/jpeg";
   const file = new File([blob], filename, { type: mime });
 
@@ -257,15 +257,13 @@ export async function offerBlobToDeviceAlbum(
       return "shared";
     }
   } catch (error) {
-    // ユーザーが共有をキャンセルした場合は失敗扱いにしない（ダウンロードへ）
     if (
       error instanceof DOMException &&
       (error.name === "AbortError" || error.name === "NotAllowedError")
     ) {
-      // fall through to download
-    } else {
-      console.warn("[photos] share failed, fallback to download", error);
+      return "cancelled";
     }
+    console.warn("[photos] share failed, fallback to download", error);
   }
 
   try {
@@ -277,43 +275,81 @@ export async function offerBlobToDeviceAlbum(
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    // iOS などでは revoke を少し遅らせる
+    window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
     return "downloaded";
   } catch {
     return "failed";
   }
 }
 
-/** 撮影直後に、サイト内保存に加えて端末側へも残す */
+/** 複数枚を一度に写真アプリ／端末へ渡す（可能なら1回の共有シート） */
 export async function offerSavedPhotosToDeviceAlbum(
   photoIds: string[]
-): Promise<{ ok: number; failed: number; mode: "shared" | "downloaded" | "mixed" | "none" }> {
-  let ok = 0;
-  let failed = 0;
-  const modes = new Set<"shared" | "downloaded">();
-
+): Promise<{
+  ok: number;
+  failed: number;
+  cancelled: boolean;
+  mode: "shared" | "downloaded" | "mixed" | "none";
+}> {
+  const files: File[] = [];
   for (const id of photoIds) {
     const blob = await getPhotoBlob(id);
-    if (!blob) {
-      failed += 1;
-      continue;
-    }
-    const result = await offerBlobToDeviceAlbum(
-      blob,
-      `生活再建ナビ-記録-${id.slice(-8)}.jpg`
+    if (!blob) continue;
+    files.push(
+      new File([blob], `生活再建ナビ-記録-${id.slice(-8)}.jpg`, {
+        type: blob.type || "image/jpeg",
+      })
     );
-    if (result === "failed") failed += 1;
-    else {
-      ok += 1;
-      modes.add(result);
+  }
+
+  if (files.length === 0) {
+    return { ok: 0, failed: photoIds.length, cancelled: false, mode: "none" };
+  }
+
+  try {
+    if (
+      typeof navigator !== "undefined" &&
+      typeof navigator.share === "function" &&
+      typeof navigator.canShare === "function" &&
+      navigator.canShare({ files })
+    ) {
+      await navigator.share({
+        files,
+        title: "被害の記録写真",
+      });
+      return {
+        ok: files.length,
+        failed: 0,
+        cancelled: false,
+        mode: "shared",
+      };
+    }
+  } catch (error) {
+    if (
+      error instanceof DOMException &&
+      (error.name === "AbortError" || error.name === "NotAllowedError")
+    ) {
+      return { ok: 0, failed: 0, cancelled: true, mode: "none" };
     }
   }
 
-  let mode: "shared" | "downloaded" | "mixed" | "none" = "none";
-  if (modes.size === 1) mode = [...modes][0]!;
-  else if (modes.size > 1) mode = "mixed";
+  let ok = 0;
+  let failed = 0;
+  for (const file of files) {
+    const result = await offerBlobToDeviceAlbum(file, file.name);
+    if (result === "failed") failed += 1;
+    else if (result === "cancelled") {
+      /* skip */
+    } else ok += 1;
+  }
 
-  return { ok, failed, mode };
+  return {
+    ok,
+    failed,
+    cancelled: false,
+    mode: ok > 0 ? "downloaded" : "none",
+  };
 }
 
 export async function clearAllPhotos(): Promise<void> {

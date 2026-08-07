@@ -13,11 +13,18 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-photo-dual-save",
+    date: "2026-08-07",
+    title: "写真をサイトと写真アプリの両方に残せるように",
+    summary:
+      "撮るとサイトにすぐ残し、続けて写真アプリにも同じ写真を残す画面を開きます。キャンセルしてもボタンからやり直せます。",
+  },
+  {
     id: "2026-08-07-photo-no-auto-album",
     date: "2026-08-07",
     title: "撮影後の止まりにくさを改善",
     summary:
-      "撮ったあと自動でアルバム保存画面を開かないようにしました。写真はこのサイトにすぐ残り、アルバムへのコピーは必要なときだけです。",
+      "撮ったあとに待ちが長くなる動きをやめ、サイト内への保存を先に完了するようにしました。",
   },
   {
     id: "2026-08-07-check-urls",
