@@ -20,7 +20,7 @@ export function SupportDonationPanel() {
       <div className="space-y-2">
         <p className="text-base font-bold">活動費で応援する</p>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          任意です。金額を選ぶだけで大丈夫です。
+          任意です。無理のない範囲で、下から金額をお選びください。
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
           <PaymentChip label="Apple Pay" />
