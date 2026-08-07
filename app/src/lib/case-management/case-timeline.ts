@@ -163,7 +163,7 @@ function formatCurrentProcedureStatus(procedure: ExternalProcedure): string {
 
 function formatPhaseSummary(mode: "acute" | "recovery"): string {
   return mode === "recovery"
-    ? "生活再建の伴走を開始しました"
+    ? "生活の立て直しの確認を始めました"
     : "発災直後の対応を開始しました";
 }
 

@@ -63,7 +63,7 @@ export function createInitialRecoveryPhase(
     return {
       mode: "recovery",
       enteredAt: now,
-      transitionReason: "再建伴走の開始を選択しました",
+      transitionReason: "生活の立て直しの確認を始めました",
       transitionTriggerIds: [USER_RECOVERY_START_TRIGGER],
     };
   }
@@ -72,7 +72,7 @@ export function createInitialRecoveryPhase(
   const transitionReason =
     elapsed >= RECOVERY_AUTO_DAYS
       ? `被災から${elapsed}日経過したため生活再建フェーズで開始`
-      : "生活再建の伴走を開始";
+      : "生活の立て直しの確認を始めました";
 
   return {
     mode: "recovery",
@@ -202,7 +202,7 @@ export function applyUserRecoveryPhaseTransition(
   caseFile: CaseFile
 ): CaseFile {
   const now = new Date().toISOString();
-  const reason = "安全確保後、再建伴走の開始を選択しました";
+  const reason = "安全が取れたあと、生活の立て直しの確認を始めました";
   const triggerIds = [USER_RECOVERY_START_TRIGGER];
 
   const newPhase: RecoveryPhase = {

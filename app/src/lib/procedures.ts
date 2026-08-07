@@ -5,7 +5,7 @@ export const PROCEDURES: Record<string, ProcedureDetail> = {
   "evacuation-check": {
     id: "evacuation-check",
     title: "避難所・避難場所の確認",
-    summary: "安全な場所にいるか確認し、必要なら最寄りの避難所情報を調べます。",
+    summary: "安全な場所にいるか確認し、必要なときは最寄りの避難所情報を調べます。",
     documents: ["身分証明書（あれば）", "常備薬（あれば）", "スマートフォン"],
     submissionPlace: "お住まいの市町村の避難所案内、または防災アプリ",
     deadline: "被災直後、できるだけ早く",
@@ -31,7 +31,7 @@ export const PROCEDURES: Record<string, ProcedureDetail> = {
     deadline: "被災後、できるだけ早く（1〜2週間以内が目安）",
     notes: [
       "罹災証明は「被災証明」と呼ばれる場合もあります",
-      "窓口の混雑状況は事前に電話で確認するとスムーズです",
+      "窓口の混雑状況は、事前に電話で確認すると待ち時間が減りやすいです",
       "全壊・半壊・浸水等、損害の程度が記載されます",
     ],
     contact: "お住まいの市町村の窓口",
@@ -52,7 +52,7 @@ export const PROCEDURES: Record<string, ProcedureDetail> = {
     notes: [
       "契約内容によって補償の範囲が異なります",
       "公的支援との併用が複雑な場合は専門家への相談も検討してください",
-      "連絡前に保険証券の番号を確認しておくとスムーズです",
+      "連絡前に保険証券の番号を確認しておくと、話が進みやすいです",
     ],
     contact: "保険会社のカスタマーセンター",
     relatedActions: ["保険会社へ連絡", "火災保険の連絡"],

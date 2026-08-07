@@ -92,7 +92,7 @@ export function CaseAccessCard({
               className="rounded-md border bg-white p-2"
             />
             <p className="max-w-xs text-center text-xs leading-relaxed text-muted-foreground">
-              QRはケース番号への入口です。中身を見るにはログインと共有権限が必要です。
+              QRはケース番号への入り口です。中身を見るにはログインと共有の許可が必要です。
             </p>
           </div>
         )}

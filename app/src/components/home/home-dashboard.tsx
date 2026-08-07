@@ -224,7 +224,7 @@ export function HomeDashboard() {
                       安全が確保できましたか？
                     </p>
                     <p className="text-sm leading-relaxed text-emerald-900/90 dark:text-emerald-100/90">
-                      被害記録・支援制度・手続きの再建伴走を一緒に始められます。
+                      被害の記録や支援制度、手続きの確認を、一緒に始められます。
                     </p>
                     <Button
                       type="button"
@@ -232,7 +232,7 @@ export function HomeDashboard() {
                       className="w-full border-emerald-300 bg-background/80"
                       onClick={() => startRecoveryPhase()}
                     >
-                      再建伴走を開始する
+                      生活の立て直しを始める
                     </Button>
                   </CardContent>
                 </Card>

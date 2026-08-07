@@ -1,6 +1,6 @@
 /**
- * 相談の優先順位・電話カンペ・メール文面 — 表示専用
- * 連絡先の羅列ではなく、「誰に・何を準備して・何を言うか」を一緒に整える。
+ * 相談の優先順位・電話メモ・メール文面 — 表示専用
+ * 連絡先の並びだけでなく、「誰に・何を用意して・何を言うか」を分かりやすく示す。
  */
 
 import type { UserProfile } from "@/lib/types";
@@ -15,16 +15,16 @@ export interface ContactPlanStep {
   priority: number;
   title: string;
   channel: "phone" | "email" | "web" | "visit";
-  /** なぜこの順番か */
+  /** この順番にした理由（やさしい日本語） */
   whyFirst: string;
   phone?: string;
   email?: string;
   hours?: string;
   officialHref?: string;
   officialLabel?: string;
-  /** 電話前に手元へ */
+  /** 電話・メールの前に用意するもの */
   prepare: string[];
-  /** 話す順番（カンペ） */
+  /** 話すときの例 */
   sayScript: string[];
   /** 聞かれやすいこと */
   likelyAsked: string[];
@@ -64,8 +64,8 @@ const COMMON_PREPARE = [
 
 const COMMON_ASKED = [
   "被害の程度・いつから営業できていないか",
-  "従業員の有無・規模感",
-  "すでに相談した機関はあるか",
+  "従業員はいるか・何人くらいか",
+  "すでに相談した窓口はあるか",
   "事業用り災証明の有無（または住家の罹災証明）",
   "希望する支援（融資・相談・証明など）",
 ];
@@ -79,7 +79,7 @@ const COMMON_SAY = [
 
 function emailTemplate(municipalityName: string): EmailDraftGuide {
   return {
-    toLabel: "相談先のメールアドレス（下の優先窓口）",
+    toLabel: "相談先のメールアドレス（下の相談先）",
     subject: `【相談】令和8年熊本地震による店舗被害について（${municipalityName}）`,
     bodyTemplate: `お世話になっております。
 
@@ -165,9 +165,9 @@ export function getBusinessContactAssistPlan(
   if (isYatsushiro) {
     steps.push({
       priority: 1,
-      title: "まず：八代商工会議所（特別相談窓口）",
+      title: "まず連絡する：八代商工会議所（特別相談窓口）",
       channel: "phone",
-      whyFirst: "地元の特別相談窓口です。まずはここへ。",
+      whyFirst: "八代の事業者向けの相談窓口です。最初にここへ連絡してください。",
       phone: "0965-32-6191",
       hours: "平日 9:00〜17:00（土日祝除く）",
       officialHref: "https://8246cci.or.jp/hotnews/9126/",
@@ -179,9 +179,9 @@ export function getBusinessContactAssistPlan(
   } else if (isHikawa) {
     steps.push({
       priority: 1,
-      title: "まず：氷川町商工会",
+      title: "まず連絡する：氷川町商工会",
       channel: "email",
-      whyFirst: "地元の事業者向け相談です。まずはここへ。",
+      whyFirst: "氷川町の事業者向けの相談窓口です。最初にここへ連絡してください。",
       phone: "0965-62-2021",
       email: "hikawa@kumashoko.or.jp",
       hours: "商工会の案内に従ってください",
@@ -194,9 +194,9 @@ export function getBusinessContactAssistPlan(
   } else if (isKumamotoCity) {
     steps.push({
       priority: 1,
-      title: "まず：熊本市 商業金融課（金融・事業用り災証明）",
+      title: "まず連絡する：熊本市 商業金融課（融資・事業用り災証明）",
       channel: "phone",
-      whyFirst: "市の融資・事業用り災証明の窓口です。",
+      whyFirst: "市の融資や、事業用り災証明の相談窓口です。",
       phone: "096-328-2424",
       hours: "平日 8:30〜17:15（休日対応あり・最新は公式で確認）",
       officialHref: "https://www.city.kumamoto.jp/kiji00372112/index.html",
@@ -217,9 +217,9 @@ export function getBusinessContactAssistPlan(
     });
     steps.push({
       priority: 2,
-      title: "次：経営相談（XOSS POINT.）",
+      title: "次に連絡する：経営相談（XOSS POINT.）",
       channel: "phone",
-      whyFirst: "経営の立て直し・再開の相談。原則予約制です。",
+      whyFirst: "経営の立て直しや再開の相談です。原則、予約が必要です。",
       phone: "096-355-7402",
       hours: "原則予約制（電話またはメール）",
       prepare: COMMON_PREPARE,
@@ -232,9 +232,9 @@ export function getBusinessContactAssistPlan(
   } else {
     steps.push({
       priority: 1,
-      title: `まず：${name}の商工会・商工会議所`,
+      title: `まず連絡する：${name}の商工会・商工会議所`,
       channel: "web",
-      whyFirst: "地元の商工団体が相談の入口です。",
+      whyFirst: "お住まい（店舗）の地域の商工会・商工会議所が、最初の相談先です。",
       officialHref: municipality?.officialUrl,
       officialLabel: `${name}公式サイトで商工・事業者相談を探す`,
       prepare: COMMON_PREPARE,
@@ -245,9 +245,10 @@ export function getBusinessContactAssistPlan(
 
   steps.push({
     priority: steps.length + 1,
-    title: "必要なら：熊本県（県制度融資・経営）",
+    title: "町や市の相談のあと：熊本県（融資・経営の相談）",
     channel: "phone",
-    whyFirst: "県の融資や経営相談。地元のあとで使うとスムーズです。",
+    whyFirst:
+      "県の融資や経営の相談窓口です。町や市・商工会に相談したあとに連絡すると、話が分かりやすく進みます。",
     phone: "金融 096-333-2314 ／ 経営 096-333-2326",
     hours: "平日・土日祝 8:30〜17:15（年末年始除く）",
     officialHref:
@@ -257,16 +258,17 @@ export function getBusinessContactAssistPlan(
     sayScript: [
       "令和8年熊本地震で店舗が被災しました。",
       "地元の商工会（または市）には（相談済／これから）です。",
-      "県制度融資（または経営相談）について確認したいです。",
+      "県の融資（または経営相談）について確認したいです。",
     ],
     likelyAsked: COMMON_ASKED,
   });
 
   steps.push({
     priority: steps.length + 1,
-    title: "広げたいとき：よろず支援拠点",
+    title: "より詳しく聞きたいとき：よろず支援拠点",
     channel: "phone",
-    whyFirst: "制度の見取り図がほしいときの経営相談です。",
+    whyFirst:
+      "どんな制度があるか、まとめて詳しく聞きたいときの経営相談です。",
     phone: "096-286-3355",
     hours: "平日 9:00〜17:00",
     officialHref: "https://www.kmt-ti.or.jp/archives/23253",
