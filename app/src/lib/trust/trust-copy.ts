@@ -26,7 +26,7 @@ export const TRUST_WHY_BUILT = {
 export const TRUST_DEVELOPER = {
   heading: "このサービスを作っている人",
   /** 表示用のぼかした呼び方（本名は出さない） */
-  name: "熊本の一個人",
+  name: "熊本在住の一個人",
   nameReading: "",
   affiliation: "熊本で学びながら開発しています",
   body: [
@@ -83,7 +83,7 @@ export const SUPPORT_DONATION_TIERS = [
 ] as const;
 
 export const TRUST_FAQ_OPERATOR_ANSWER =
-  "熊本の一個人が、被災地でのボランティアなどを通じて感じた課題をもとに作っています。行政の公式サービスではありません。詳しくは「その他」→「このサービスについて」をご覧ください。";
+  "熊本在住の一個人が、被災地でのボランティアなどを通じて感じた課題をもとに作っています。行政の公式サービスではありません。詳しくは「その他」→「このサービスについて」をご覧ください。";
 
 /** Google Forms 等 — NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL（任意の外部フォーム） */
 export function getTrustFeedbackFormUrl(): string | undefined {
