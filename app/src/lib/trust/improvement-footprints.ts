@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-auth-email-cause",
+    date: "2026-08-07",
+    title: "登録メール失敗の原因案内をはっきりしました",
+    summary:
+      "「すでに登録済み」ではなく、メール送信側の失敗であることが多いと分かるようにしました。待ち時間・LINE・進捗が残ることも案内します。",
+  },
+  {
     id: "2026-08-07-intro-less-text",
     date: "2026-08-07",
     title: "はじめの画面の文字を減らしました",

@@ -22,6 +22,7 @@ import {
   signInWithLineOAuth,
   signOutVerifiedUser,
   subscribeToAuthChanges,
+  type AuthEmailResult,
 } from "@/lib/supabase/auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
@@ -33,10 +34,8 @@ interface AuthContextValue {
   sendEmailVerificationLink: (
     email: string,
     nextPath?: string
-  ) => Promise<{ ok: true } | { ok: false; message: string }>;
-  signInWithLine: (
-    nextPath?: string
-  ) => Promise<{ ok: true } | { ok: false; message: string }>;
+  ) => Promise<AuthEmailResult>;
+  signInWithLine: (nextPath?: string) => Promise<AuthEmailResult>;
   signOut: () => Promise<void>;
   refresh: () => Promise<void>;
 }

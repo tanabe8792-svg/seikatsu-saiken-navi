@@ -96,7 +96,7 @@ export function IdentityRegistrationPanel({
     const result = await sendEmailVerificationLink(email, next);
     setBusy(false);
     if (!result.ok) {
-      setError(explainAuthError(result.message));
+      setError(result.error);
       return;
     }
     setEmailSent(true);
@@ -120,7 +120,7 @@ export function IdentityRegistrationPanel({
     const result = await signInWithLine(next);
     setBusy(false);
     if (!result.ok) {
-      setError(explainAuthError(result.message));
+      setError(result.error);
     }
   }
 

@@ -3,7 +3,14 @@
 import type { User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "./browser";
 import { isSupabaseConfigured } from "./config";
-import { summarizeAuthError } from "@/lib/auth/auth-errors";
+import {
+  explainAuthError,
+  type UserFacingAuthError,
+} from "@/lib/auth/auth-errors";
+
+export type AuthEmailResult =
+  | { ok: true }
+  | { ok: false; error: UserFacingAuthError };
 
 export function getAuthCallbackUrl(nextPath = "/mypage"): string {
   if (typeof window === "undefined") {
@@ -23,25 +30,34 @@ export async function getAuthUser(): Promise<User | null> {
 export async function sendEmailVerificationLink(
   email: string,
   nextPath = "/mypage?verified=email"
-): Promise<{ ok: true } | { ok: false; message: string }> {
+): Promise<AuthEmailResult> {
   if (!isSupabaseConfigured()) {
     return {
       ok: false,
-      message:
-        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。",
+      error: explainAuthError(
+        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+      ),
     };
   }
 
   const supabase = getSupabaseBrowserClient();
   if (!supabase) {
-    return { ok: false, message: "認証クライアントを初期化できませんでした。" };
+    return {
+      ok: false,
+      error: explainAuthError("auth client init failed"),
+    };
   }
 
   const trimmed = email.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-    return { ok: false, message: "メールアドレスの形式を確認してください。" };
+    return {
+      ok: false,
+      error: explainAuthError("メールアドレスの形式を確認してください。"),
+    };
   }
 
+  // 新規も既存も同じ OTP／マジックリンク送信。
+  // 「すでに登録済み」でも通常はメールが送られる。送れない＝送信側の失敗が多い。
   const { error } = await supabase.auth.signInWithOtp({
     email: trimmed,
     options: {
@@ -51,7 +67,13 @@ export async function sendEmailVerificationLink(
   });
 
   if (error) {
-    return { ok: false, message: summarizeAuthError(error.message) };
+    return {
+      ok: false,
+      error: explainAuthError(error.message, {
+        status: error.status,
+        code: error.code,
+      }),
+    };
   }
 
   return { ok: true };
@@ -59,12 +81,13 @@ export async function sendEmailVerificationLink(
 
 export async function signInWithLineOAuth(
   nextPath = "/mypage?verified=line"
-): Promise<{ ok: true } | { ok: false; message: string }> {
+): Promise<AuthEmailResult> {
   if (!isSupabaseConfigured()) {
     return {
       ok: false,
-      message:
-        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。",
+      error: explainAuthError(
+        "ただいまログイン機能の準備中です。しばらくしてから、もう一度お試しください。"
+      ),
     };
   }
 
@@ -72,7 +95,7 @@ export async function signInWithLineOAuth(
   if (!supabase) {
     return {
       ok: false,
-      message: summarizeAuthError("auth client init failed"),
+      error: explainAuthError("auth client init failed"),
     };
   }
 
@@ -96,7 +119,10 @@ export async function signInWithLineOAuth(
   if (error) {
     return {
       ok: false,
-      message: summarizeAuthError(error.message),
+      error: explainAuthError(error.message, {
+        status: error.status,
+        code: error.code,
+      }),
     };
   }
 

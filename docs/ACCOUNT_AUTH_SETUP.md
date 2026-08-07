@@ -67,7 +67,20 @@ Supabase **SQL Editor** で `/database/supabase-schema.sql` を実行（未実�
 3. **Authentication → Email Templates** で「Magic Link」の文面を必要に応じて調整
 4. Vercel で **Redeploy**
 
-**動作確認:** アプリ → 設定 → マイページ登録 → メール入力 → 「登録用メールを送信」→ 届いたリンクをタップ
+### 「登録用メールを送れませんでした」と出るとき
+
+アプリの入力ミスではなく、**Supabase がメールを送れない**ときに多いです。
+
+| よくある原因 | 確認場所 |
+|--------------|----------|
+| 無料のメール送信上限 | Supabase → Authentication → Users / Logs |
+| Custom SMTP の設定ミス | Project Settings → Authentication → SMTP |
+| まだ SMTP を付けていない | 本番では Custom SMTP（Resend 等）推奨 |
+
+**すでに登録済み**でも、同じ「登録用メールを送信」でログイン用リンクが送られる仕組みです。  
+そのため「Error sending confirmation email」は、多くの場合「すでに登録済み」ではありません。
+
+**動作確認:** アプリ → マイページ → メール入力 → 「登録用メールを送信」→ 届いたリンクをタップ
 
 ---
 
