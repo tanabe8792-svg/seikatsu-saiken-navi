@@ -35,7 +35,7 @@ export function explainAuthError(
 
   // すでに案内済みの見出しが再入力された場合も、同じ内容を返す（二重変換対策）
   if (
-    /error sending confirmation (email|mail)|unable to send|smtp|mail\.send|email.*fail|failed to send|登録用メールを送れませんでした/i.test(
+    /error sending confirmation (email|mail)|unable to send|smtp|mail\.send|email.*fail|failed to send|登録用メールを送れませんでした|いまメールを送れませんでした/i.test(
       rawMessage
     ) ||
     msg.includes("confirmation email") ||
