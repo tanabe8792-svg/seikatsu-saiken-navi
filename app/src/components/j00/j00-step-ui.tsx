@@ -33,40 +33,58 @@ export function ChoiceList({
   title,
   subtitle,
   options,
+  groups,
   selected,
   onSelect,
 }: {
   title: string;
   subtitle?: string;
-  options: string[];
+  options?: string[];
+  /** あるときは options より優先（見出し付き） */
+  groups?: { label: string; names: string[] }[];
   selected?: string;
   onSelect: (value: string) => void;
 }) {
+  const sections =
+    groups ??
+    (options
+      ? [{ label: "", names: options }]
+      : []);
+
   return (
-    <section className="space-y-3">
+    <section className="space-y-4">
       <div>
         <h2 className="text-xl font-bold leading-snug">{title}</h2>
         {subtitle && (
           <p className="mt-1 text-base text-muted-foreground">{subtitle}</p>
         )}
       </div>
-      <div className="space-y-2">
-        {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => onSelect(option)}
-            className={cn(
-              "flex min-h-[56px] w-full items-center rounded-2xl border-2 px-5 py-4 text-left text-lg font-medium transition-colors active:scale-[0.98]",
-              selected === option
-                ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                : "border-border bg-card hover:border-brand-green/40 hover:bg-muted/50"
-            )}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
+      {sections.map((section) => (
+        <div key={section.label || "default"} className="space-y-2">
+          {section.label ? (
+            <p className="px-1 text-base font-semibold text-foreground">
+              {section.label}
+            </p>
+          ) : null}
+          <div className="space-y-2">
+            {section.names.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => onSelect(option)}
+                className={cn(
+                  "flex min-h-[56px] w-full items-center rounded-2xl border-2 px-5 py-4 text-left text-lg font-medium transition-colors active:scale-[0.98]",
+                  selected === option
+                    ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                    : "border-border bg-card hover:border-brand-green/40 hover:bg-muted/50"
+                )}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }

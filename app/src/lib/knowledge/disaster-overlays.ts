@@ -16,6 +16,55 @@ function unverified<T = string>(): SourcedValue<T> {
   return { value: "確認不可", sourceUrl: null, updatedAt: "確認不可" };
 }
 
+/** 毎日更新しない静的案内。公式サイトへ誘導する最小オーバーレイ */
+function minimalOverlay(params: {
+  municipalityCode: string;
+  intensity: string;
+  officialUrl: string;
+  damageNote: string;
+}): DisasterOverlay {
+  const { municipalityCode, intensity, officialUrl, damageNote } = params;
+  const at = "2026-08-07 12:00";
+  return {
+    disasterEventId: DISASTER_EVENT_R8_KUMAMOTO.id,
+    disasterName: DISASTER_EVENT_R8_KUMAMOTO.name,
+    municipalityCode,
+    intensity: verified(intensity, officialUrl, at),
+    damageSummary: verified(damageNote, officialUrl, at),
+    lifelineIssues: {
+      waterOutage: unverified(),
+      powerOutage: unverified(),
+      gasOutage: unverified(),
+      waterStationCount: unverified<number>(),
+      waterStationInfoUrl: verified(
+        "https://kumamoto-shien.jp/",
+        "https://kumamoto-shien.jp/",
+        at
+      ),
+    },
+    certificateInfo: {
+      summary: verified(
+        "罹災証明・被災証明の受付は、各市役所・役場の公式案内で確認してください。",
+        officialUrl,
+        at
+      ),
+      onlineAvailable: unverified<boolean>(),
+      onlineUrl: unverified(),
+      officeHours: unverified(),
+      dailyLimit: unverified<number | null>(),
+      ticketSystem: unverified<boolean>(),
+      requiredDocuments: unverified<string[]>(),
+      notes: verified(
+        "最新の窓口・申請方法は公式サイトをご覧ください。",
+        officialUrl,
+        at
+      ),
+    },
+    sourceUrl: officialUrl,
+    updatedAt: at,
+  };
+}
+
 export const DISASTER_OVERLAYS: DisasterOverlay[] = [
   {
     disasterEventId: DISASTER_EVENT_R8_KUMAMOTO.id,
@@ -331,9 +380,13 @@ export const DISASTER_OVERLAYS: DisasterOverlay[] = [
     disasterEventId: DISASTER_EVENT_R8_KUMAMOTO.id,
     disasterName: DISASTER_EVENT_R8_KUMAMOTO.name,
     municipalityCode: MUNICIPALITY_CODES.UTO_CITY,
-    intensity: unverified(),
+    intensity: verified(
+      "6強",
+      "https://www.city.uto.lg.jp/",
+      "2026-08-05 12:00"
+    ),
     damageSummary: verified(
-      "令和8年熊本地震の被災地域。詳細な被害集計は確認中。",
+      "令和8年熊本地震で震度6強を観測。罹災証明などの受付は市公式案内で確認。",
       "https://www.city.uto.lg.jp/",
       "2026-08-05 12:00"
     ),
@@ -365,6 +418,48 @@ export const DISASTER_OVERLAYS: DisasterOverlay[] = [
     sourceUrl: "https://www.city.uto.lg.jp/",
     updatedAt: "2026-08-05 12:00",
   },
+  minimalOverlay({
+    municipalityCode: MUNICIPALITY_CODES.MISATO_TOWN,
+    intensity: "6強",
+    officialUrl: "https://www.town.kumamoto-misato.lg.jp/",
+    damageNote:
+      "令和8年熊本地震で震度6強を観測。手続きは美里町役場の公式案内で確認してください。",
+  }),
+  minimalOverlay({
+    municipalityCode: MUNICIPALITY_CODES.MASHIKI_TOWN,
+    intensity: "6強",
+    officialUrl: "https://www.town.mashiki.lg.jp/",
+    damageNote:
+      "令和8年熊本地震で震度6強を観測。手続きは益城町役場の公式案内で確認してください。",
+  }),
+  minimalOverlay({
+    municipalityCode: MUNICIPALITY_CODES.KASHIMA_TOWN,
+    intensity: "6強",
+    officialUrl: "https://www.town.kashima.lg.jp/",
+    damageNote:
+      "令和8年熊本地震で震度6強を観測。手続きは嘉島町役場の公式案内で確認してください。",
+  }),
+  minimalOverlay({
+    municipalityCode: MUNICIPALITY_CODES.MINAMISHIMABARA_CITY,
+    intensity: "5強",
+    officialUrl: "https://www.city.minamishimabara.lg.jp/",
+    damageNote:
+      "熊本地震の揺れが長崎県南島原市でも観測されました。市役所の公式案内で確認してください。",
+  }),
+  minimalOverlay({
+    municipalityCode: MUNICIPALITY_CODES.SATSUMASENDAI_CITY,
+    intensity: "5強",
+    officialUrl: "https://www.city.satsumasendai.lg.jp/",
+    damageNote:
+      "熊本地震の揺れが鹿児島県薩摩川内市でも観測されました。市役所の公式案内で確認してください。",
+  }),
+  minimalOverlay({
+    municipalityCode: MUNICIPALITY_CODES.IZUMI_CITY,
+    intensity: "5弱",
+    officialUrl: "https://www.city.izumi.kagoshima.jp/",
+    damageNote:
+      "熊本地震の揺れが鹿児島県出水市でも観測されました。市役所の公式案内で確認してください。",
+  }),
 ];
 
 const OVERLAY_BY_KEY = new Map(

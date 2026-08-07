@@ -43,7 +43,8 @@ function isActive(
     pathname.startsWith("/updates") ||
     pathname.startsWith("/chat") ||
     pathname.startsWith("/invite") ||
-    pathname.startsWith("/support")
+    pathname.startsWith("/support") ||
+    pathname.startsWith("/info")
   );
 }
 

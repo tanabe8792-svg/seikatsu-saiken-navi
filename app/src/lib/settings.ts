@@ -23,6 +23,6 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  fontSize: "normal",
+  fontSize: "large",
   notifications: { ...DEFAULT_NOTIFICATION_PREFERENCES },
 };

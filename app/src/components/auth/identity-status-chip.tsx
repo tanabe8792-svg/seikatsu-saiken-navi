@@ -60,13 +60,15 @@ export function IdentityRegisterPrompt({ className }: { className?: string }) {
     <Link
       href="/mypage"
       className={cn(
-        "block rounded-xl border border-dashed border-border bg-card px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted/40",
+        "block rounded-2xl border-2 border-brand-green/30 bg-muted/40 px-5 py-4 transition-colors hover:bg-muted/70",
         className
       )}
     >
-      <span className="font-medium text-foreground">ログイン・登録（任意）</span>
-      <span className="mt-1 block leading-relaxed">
-        メールまたはLINEでログインすると、保存した内容をマイページで見返せます。登録しなくても、やることの確認は使えます。
+      <span className="text-lg font-bold text-foreground">
+        あとで見返したい人へ（任意）
+      </span>
+      <span className="mt-2 block text-base leading-relaxed text-muted-foreground">
+        メールまたはLINEで登録すると、別の日にも続きを開きやすくなります。登録しなくても案内は使えます。
       </span>
     </Link>
   );

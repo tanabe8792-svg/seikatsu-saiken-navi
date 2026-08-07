@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-readability-muni-home",
+    date: "2026-08-07",
+    title: "文字を大きくし、市役所の選択とホームを整えました",
+    summary:
+      "基準の文字を大きくしました。被害の大きい市町村と熊本県外の主な市を追加し、ホームは「いま確認すること」中心にすっきりさせました。気象やライフラインは別ページへ移しています。",
+  },
+  {
     id: "2026-08-07-offline-outbox",
     date: "2026-08-07",
     title: "オフラインでも入力を残せるようにしました",

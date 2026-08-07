@@ -23,9 +23,11 @@ import {
   isJ00StepComplete,
   J00_TOTAL_STEPS,
   LIFELINE_OPTIONS,
-  MUNICIPALITY_OPTIONS,
 } from "@/lib/j00-hearing";
-import { MUNICIPALITIES } from "@/lib/knowledge/municipalities";
+import {
+  MUNICIPALITIES,
+  MUNICIPALITY_CHOICE_GROUPS,
+} from "@/lib/knowledge/municipalities";
 import type { OnboardingTimingHint, UserProfile } from "@/lib/types";
 
 type Step = 1 | 2 | 3 | 4 | 5;
@@ -412,7 +414,8 @@ export default function J00HearingPage() {
           <>
             <ChoiceList
               title="お住まいの地域は？"
-              options={MUNICIPALITY_OPTIONS}
+              subtitle="被害の大きい地域と、熊本県以外の主な市から選べます。なければ「その他」を選んでください。"
+              groups={MUNICIPALITY_CHOICE_GROUPS}
               selected={profile.municipality}
               onSelect={(v) =>
                 goNext(3, { ...profile, municipality: v })

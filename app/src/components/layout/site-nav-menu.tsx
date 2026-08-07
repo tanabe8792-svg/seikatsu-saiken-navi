@@ -12,6 +12,7 @@ const MENU_LINKS = [
   { href: "/actions", label: "やることの一覧" },
   { href: "/records", label: "記録した写真" },
   { href: "/mypage", label: "マイページ" },
+  { href: "/info", label: "気象・ライフライン・相談" },
   { href: "/chat", label: "AIに質問する" },
   { href: "/settings", label: "設定（文字の大きさなど）" },
   { href: "/about", label: "このサービスについて" },
