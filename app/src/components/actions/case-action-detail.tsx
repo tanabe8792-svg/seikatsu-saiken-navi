@@ -59,7 +59,6 @@ import {
 import { SourceFreshnessNote } from "@/components/common/source-freshness-note";
 import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
 import { ProcedurePhaseRail, type ProcedurePhase } from "@/components/actions/procedure-phase-rail";
-import { PrepNextDestination } from "@/components/actions/prep-next-destination";
 import { WalkthroughStepRail } from "@/components/actions/walkthrough-step-rail";
 import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
@@ -179,8 +178,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
     } else if (isPhoto && !uiNow.hasEvidence) {
       targetId = "photo-evidence-capture";
     } else if (hasGuidance) {
-      targetId =
-        prepNow.length > 0 ? "prep-next-destination" : "procedure-guidance";
+      targetId = "procedure-guidance";
     } else {
       targetId = "procedure-complete";
     }
@@ -442,10 +440,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         id: "apply",
         label: "申請",
         status: applyStatus,
-        targetId:
-          prepItems.length > 0
-            ? "prep-next-destination"
-            : "procedure-guidance",
+      targetId: "procedure-guidance",
       });
     }
 
@@ -772,12 +767,130 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
         />
       )}
 
+      {actionId === "rw-j03-cert-prep" && (
+        <HomeMunicipalityPicker
+          profile={profile}
+          onChange={(municipality) => updateProfile({ municipality })}
+        />
+      )}
+
+      <Card id="walkthrough-steps" className="scroll-mt-4">
+        <CardContent className="space-y-3 p-4">
+          <h3 className="text-base font-semibold">
+            {isPhotoEvidenceAction ? "まず手順を確認する" : "1. 手順（読んで確認）"}
+          </h3>
+          {!isPhotoEvidenceAction && (
+            <p className="text-xs text-muted-foreground">
+              まず内容を読み、「確認した」を押してください。そのあと準備物、申請案内へ進みます。
+            </p>
+          )}
+          <WalkthroughStepRail
+            stepIds={guide.steps.map((s) => s.id)}
+            completedCount={stepProgress}
+            currentNumber={currentStepNumber}
+            onJumpToStep={(stepId) =>
+              scrollToElementId(walkthroughStepElementId(stepId))
+            }
+          />
+          {renderStepList(guide.steps, {
+            locked: isDone,
+            emphasize: isPhotoEvidenceAction,
+          })}
+        </CardContent>
+      </Card>
+
+      {isPhotoEvidenceAction && caseFile && (
+        <>
+          <div className="flex justify-center text-muted-foreground">
+            <ChevronDown className="h-6 w-6" aria-hidden />
+          </div>
+          {stepsDone || isDone ? (
+            <PhotoEvidenceCapture
+              caseId={caseFile.caseId}
+              actionId={actionId}
+              onSubmitEvidence={handlePhotoEvidence}
+              alreadyHasEvidence={ui.hasEvidence}
+              stepNumber={guide.steps.length + 1}
+            />
+          ) : (
+            <Card
+              id="photo-evidence-capture"
+              className="border border-dashed border-border bg-muted/20"
+            >
+              <CardContent className="space-y-2 p-5">
+                <h3 className="text-base font-semibold">カメラで撮って残す</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  上の手順にチェックを付けると、ここで撮影できます。先に手順を読んでから撮ってください。
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
+
+      {prepItems.length > 0 && (
+        <Card
+          id="prep-checklist"
+          className="scroll-mt-4 border-amber-200/70 dark:border-amber-900/40"
+        >
+          <CardContent className="space-y-3 p-5">
+            <h3 className="text-base font-semibold">2. 準備（持ち物の確認）</h3>
+            <p className="text-xs text-muted-foreground">
+              用意できたらチェックしてください。そろったら、下の「申請案内」から申請・連絡へ進めます。
+            </p>
+            <ul className="space-y-3">
+              {prepItems.map((item) => (
+                <li key={item.key}>
+                  <button
+                    type="button"
+                    disabled={isDone}
+                    onClick={() => togglePrep(item)}
+                    className={`w-full rounded-xl border px-4 py-3 text-left ${
+                      item.done
+                        ? "border-amber-300/80 bg-amber-50/40 dark:border-amber-800 dark:bg-amber-950/20"
+                        : "bg-card"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      {item.done ? (
+                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-400" />
+                      ) : (
+                        <Circle className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground/50" />
+                      )}
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <p className="text-sm font-semibold">
+                          {item.label}
+                          {item.optional ? (
+                            <span className="ml-1 text-xs font-normal text-muted-foreground">
+                              （任意）
+                            </span>
+                          ) : null}
+                        </p>
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                          {item.howTo}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
       {procedureGuidance && !isPhotoEvidenceAction && (
         <Card id="procedure-guidance" className="scroll-mt-4 border-border bg-card">
           <CardContent className="space-y-3 p-5">
             <h3 className="text-base font-semibold">
-              {procedureGuidance.title}
+              {prepItems.length > 0 ? "3. 申請案内" : "2. 申請案内"}
             </h3>
+            <p className="text-xs font-medium text-muted-foreground">
+              {prepItems.length > 0
+                ? "準備がそろったら、ここから公式ページ・窓口・電話へ進めます。"
+                : "手順を読んだら、ここから公式ページ・窓口・電話へ進めます。"}
+            </p>
+            <p className="text-sm font-semibold">{procedureGuidance.title}</p>
             <p className="text-xs leading-relaxed text-muted-foreground whitespace-pre-line">
               {procedureGuidance.intro}
             </p>
@@ -863,109 +976,6 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
               label="公式情報の内容時点"
               showOpenedToday
             />
-          </CardContent>
-        </Card>
-      )}
-
-      <Card id="walkthrough-steps" className="scroll-mt-4">
-        <CardContent className="space-y-3 p-4">
-          <h3 className="text-base font-semibold">
-            {isPhotoEvidenceAction ? "まず手順を確認する" : "手順（ひとつずつ）"}
-          </h3>
-          <WalkthroughStepRail
-            stepIds={guide.steps.map((s) => s.id)}
-            completedCount={stepProgress}
-            currentNumber={currentStepNumber}
-            onJumpToStep={(stepId) =>
-              scrollToElementId(walkthroughStepElementId(stepId))
-            }
-          />
-          {renderStepList(guide.steps, {
-            locked: isDone,
-            emphasize: isPhotoEvidenceAction,
-          })}
-        </CardContent>
-      </Card>
-
-      {isPhotoEvidenceAction && caseFile && (
-        <>
-          <div className="flex justify-center text-muted-foreground">
-            <ChevronDown className="h-6 w-6" aria-hidden />
-          </div>
-          {stepsDone || isDone ? (
-            <PhotoEvidenceCapture
-              caseId={caseFile.caseId}
-              actionId={actionId}
-              onSubmitEvidence={handlePhotoEvidence}
-              alreadyHasEvidence={ui.hasEvidence}
-              stepNumber={guide.steps.length + 1}
-            />
-          ) : (
-            <Card
-              id="photo-evidence-capture"
-              className="border border-dashed border-border bg-muted/20"
-            >
-              <CardContent className="space-y-2 p-5">
-                <h3 className="text-base font-semibold">カメラで撮って残す</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  上の手順にチェックを付けると、ここで撮影できます。先に手順を読んでから撮ってください。
-                </p>
-              </CardContent>
-            </Card>
-          )}
-        </>
-      )}
-
-      {prepItems.length > 0 && (
-        <Card
-          id="prep-checklist"
-          className="scroll-mt-4 border-amber-200/70 dark:border-amber-900/40"
-        >
-          <CardContent className="space-y-3 p-5">
-            <h3 className="text-base font-semibold">準備物</h3>
-            <p className="text-xs text-muted-foreground">
-              用意できたらチェック。そろったら下の「{guide.plainTitle}を完了する」を押せます。
-            </p>
-            <ul className="space-y-3">
-              {prepItems.map((item) => (
-                <li key={item.key}>
-                  <button
-                    type="button"
-                    disabled={isDone}
-                    onClick={() => togglePrep(item)}
-                    className={`w-full rounded-xl border px-4 py-3 text-left ${
-                      item.done
-                        ? "border-amber-300/80 bg-amber-50/40 dark:border-amber-800 dark:bg-amber-950/20"
-                        : "bg-card"
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      {item.done ? (
-                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-400" />
-                      ) : (
-                        <Circle className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground/50" />
-                      )}
-                      <div className="min-w-0 flex-1 space-y-1">
-                        <p className="text-sm font-semibold">
-                          {item.label}
-                          {item.optional ? (
-                            <span className="ml-1 text-xs font-normal text-muted-foreground">
-                              （任意）
-                            </span>
-                          ) : null}
-                        </p>
-                        <p className="text-sm leading-relaxed text-muted-foreground">
-                          {item.howTo}
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            {procedureGuidance && !isPhotoEvidenceAction && !isDone && (
-              <PrepNextDestination guidance={procedureGuidance} />
-            )}
           </CardContent>
         </Card>
       )}
