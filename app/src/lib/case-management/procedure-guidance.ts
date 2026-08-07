@@ -104,7 +104,13 @@ function fromCertificateHub(
     facts.push({ label: "受付時間", value: hub.officeHours });
   }
   if (hub.dailyLimit) {
-    facts.push({ label: "混雑目安", value: hub.dailyLimit });
+    facts.push({ label: "1日の受付の目安", value: hub.dailyLimit });
+  } else if (hub.municipalitySelected) {
+    facts.push({
+      label: "1日の受付の目安",
+      value:
+        "公式で公開されていない、またはこのナビでは未確認です。申請前に公式ページ・窓口で当日の受付状況を確認してください。",
+    });
   }
   if (hub.ticketSystem) {
     facts.push({ label: "整理券", value: hub.ticketSystem });
@@ -112,6 +118,11 @@ function fromCertificateHub(
   if (hub.notes) {
     facts.push({ label: "補足", value: hub.notes });
   }
+  facts.push({
+    label: "申請の流れ（目安）",
+    value:
+      "①市町村を確認 → ②持ち物を揃える → ③オンラインまたは窓口で申請 → ④調査・判定の連絡を待つ → ⑤証明書を受け取る。窓口の指示に従って進めてください。",
+  });
   facts.push({
     label: "交付までの目安",
     value:

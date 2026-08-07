@@ -205,7 +205,7 @@ export function getProcedureStatusPlainExplanation(
     case "submitted":
       return "申請済みとして記録しています。窓口の受付結果は、届いた案内を正としてください。";
     case "waiting_response":
-      return "結果の連絡を待っている記録です。";
+      return "申請あとの調査・判定の連絡を待っている記録です。催促せず、受付番号を控えて公式の案内を待ちましょう。待つあいだも、写真や保険の連絡など自分で進められる確認は続けて大丈夫です。";
     case "completed":
       return "このナビ上では手続き完了としています。";
     case "rejected":
@@ -372,8 +372,14 @@ export function syncProceduresOnActionComplete(
           findProcedureByProgramId(procedures, template.programId)?.id ===
             e.procedureId
       );
+      // 罹災証明など SELF_CONFIRM 完了＝申請した想定 → 証跡がなくても「結果待ち」
+      const nextStatus: ProcedureStatus = hasSubmitEvidence
+        ? "submitted"
+        : template.programId === "SP-DISASTER-CERTIFICATE"
+          ? "waiting_response"
+          : "preparing";
       procedures = updateProcedure(procedures, template.programId, {
-        status: hasSubmitEvidence ? "submitted" : "preparing",
+        status: nextStatus,
         relatedActionId: completedAction.id,
       });
     }

@@ -570,7 +570,8 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
 
             <SourceFreshnessNote
               updatedAt={procedureGuidance.sourceUpdatedAt}
-              label="この案内の情報時点"
+              label="公式情報の内容時点"
+              showOpenedToday
             />
           </CardContent>
         </Card>
@@ -669,6 +670,16 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                 {followUpProgress}/{followUpSteps.length}
               </span>
             </div>
+            {!isPhotoEvidenceAction && isDone && (
+              <div className="rounded-xl border border-sky-300/80 bg-sky-50 px-3 py-3 dark:border-sky-800 dark:bg-sky-950/30">
+                <p className="text-sm font-semibold text-sky-950 dark:text-sky-50">
+                  いまは「結果の連絡待ち」です
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-sky-900/90 dark:text-sky-100/90">
+                  申請は記録済みです。下で「調査の案内が届いたか」「まだ待ち中か」を残せます。窓口から指示があれば、その案内に従ってください。
+                </p>
+              </div>
+            )}
             <p className="text-xs text-muted-foreground">
               {isPhotoEvidenceAction
                 ? "雨のあとなど、あとから様子を見返すときのメモです。この項目の完了には必須ではありません。"

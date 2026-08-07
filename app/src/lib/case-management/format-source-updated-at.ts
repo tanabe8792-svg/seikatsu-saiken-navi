@@ -90,3 +90,19 @@ export function formatFetchedAt(
   const mm = String(date.getMinutes()).padStart(2, "0");
   return `${y}年${m}月${d}日 ${hh}:${mm} 時点`;
 }
+
+/** 端末の今日（日本時間）— サーバー再取得なしの「開いた日」表示用 */
+export function formatTodayJstDisplay(): string {
+  const parts = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+  const get = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+  return `${get("year")}年${get("month")}月${get("day")}日 ${get("hour")}:${get("minute")}`;
+}
