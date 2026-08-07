@@ -1,7 +1,7 @@
 {
   "name": "熊本 生活再建ナビ",
-  "short_name": "再建ナビ",
-  "description": "災害後の行動OS — 次に何をすればよいかを案内します",
+  "short_name": "熊本再建ナビ",
+  "description": "地震のあと、「この先どうすればいいか」を一緒に整理する無料のサービスです。",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

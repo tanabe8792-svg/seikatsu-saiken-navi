@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { APP_NAME } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
 const LOGO_SRC = "/brand/logo.png";
@@ -31,15 +32,20 @@ export function AppLogo({
     <>
       <Image
         src={LOGO_SRC}
-        alt="熊本 生活再建ナビ"
+        alt={APP_NAME}
         width={512}
         height={512}
         priority={priority}
         className={cn("shrink-0 rounded-full object-cover", dims.box)}
       />
       {showWordmark && (
-        <span className={cn("font-semibold tracking-tight text-foreground", dims.text)}>
-          生活再建ナビ
+        <span
+          className={cn(
+            "min-w-0 truncate font-semibold tracking-tight text-foreground",
+            dims.text
+          )}
+        >
+          {APP_NAME}
         </span>
       )}
     </>

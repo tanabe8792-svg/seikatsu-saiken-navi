@@ -2,6 +2,7 @@ import { AppLogo } from "@/components/brand/app-logo";
 import { IdentityStatusChip } from "@/components/auth/identity-status-chip";
 import { SiteNavMenu } from "@/components/layout/site-nav-menu";
 import { HeaderBackButton } from "@/components/layout/header-back-button";
+import { APP_NAME } from "@/lib/brand";
 
 interface SiteHeaderProps {
   title?: string;
@@ -14,7 +15,7 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({
-  title = "生活再建ナビ",
+  title = APP_NAME,
   showBack = false,
   backHref = "/",
   onBack,
@@ -39,7 +40,7 @@ export function SiteHeader({
           <SiteNavMenu />
         </div>
       </div>
-      {showBack && title !== "生活再建ナビ" && (
+      {showBack && title !== APP_NAME && (
         <div className="mx-auto max-w-lg px-4 pb-3">
           <h1 className="text-xl font-semibold">{title}</h1>
         </div>

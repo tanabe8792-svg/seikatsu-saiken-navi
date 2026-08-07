@@ -7,11 +7,12 @@ import { OfflineBanner } from "@/components/layout/offline-banner";
 import { SessionProvider } from "@/providers/session-provider";
 import { SettingsProvider } from "@/providers/settings-provider";
 import { ToastProvider } from "@/providers/toast-provider";
+import { APP_NAME, APP_SHARE_BLURB } from "@/lib/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "生活再建ナビ",
-  description: "災害後の行動OS — 次に何をすればよいかを案内します",
+  title: APP_NAME,
+  description: APP_SHARE_BLURB,
   manifest: "/manifest.json",
   icons: {
     icon: [{ url: "/brand/logo.png", type: "image/png" }],
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: "生活再建ナビ",
+    title: APP_NAME,
     statusBarStyle: "default",
   },
 };

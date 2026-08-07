@@ -65,7 +65,7 @@ export const DEFAULT_ONBOARDING_TIMING_HINT: OnboardingTimingHint = "weeks";
 export const ONBOARDING_UNIVERSAL_MESSAGE =
   "被害の記録・罹災証明・保険・支援など、いま必要な確認を一緒に整理します。";
 
-export const ONBOARDING_INTRO_LABEL = "令和8年熊本地震 — 生活再建ナビ";
+export const ONBOARDING_INTRO_LABEL = "令和8年熊本地震 — 熊本 生活再建ナビ";
 
 export const ONBOARDING_INTRO_LEAD =
   "短い質問にお答えいただくと、あなた向けの「やること」を案内いたします。";

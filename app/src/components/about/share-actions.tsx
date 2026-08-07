@@ -4,9 +4,8 @@ import { Check, Link2, MessageCircle, Share2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/providers/toast-provider";
+import { APP_NAME, APP_ORIGIN, APP_SHARE_BLURB } from "@/lib/brand";
 import { cn } from "@/lib/utils";
-
-const DEFAULT_SHARE_URL = "https://seikatsu-saiken-navi.vercel.app/";
 
 export type ShareKind = "service" | "donation";
 
@@ -20,16 +19,14 @@ interface ShareActionsProps {
 
 function buildSharePayload(kind: ShareKind, amountLabel?: string) {
   const url =
-    kind === "donation"
-      ? `${DEFAULT_SHARE_URL}about#support`
-      : DEFAULT_SHARE_URL;
+    kind === "donation" ? `${APP_ORIGIN}/about#support` : `${APP_ORIGIN}/`;
   const text =
     kind === "donation"
       ? amountLabel
-        ? `生活再建ナビの活動費を応援しました（${amountLabel}）。熊本地震のあとの確認を、順番に整理する無料の案内です。`
-        : `生活再建ナビの活動費を応援しました。熊本地震のあとの確認を、順番に整理する無料の案内です。`
-      : `生活再建ナビ — 熊本地震のあとの「この先どうすればいいか」を、順番に整理する無料の案内です。`;
-  return { url, text, title: "生活再建ナビ" };
+        ? `${APP_NAME}の活動費を応援しました（${amountLabel}）。${APP_SHARE_BLURB}`
+        : `${APP_NAME}の活動費を応援しました。${APP_SHARE_BLURB}`
+      : `${APP_NAME} — ${APP_SHARE_BLURB}`;
+  return { url, text, title: APP_NAME };
 }
 
 /**

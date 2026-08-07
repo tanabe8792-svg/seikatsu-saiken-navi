@@ -27,7 +27,7 @@ async function sendViaResend(params: {
 
   const from =
     process.env.RESEND_FROM_EMAIL?.trim() ||
-    "生活再建ナビ <onboarding@resend.dev>";
+    "熊本 生活再建ナビ <onboarding@resend.dev>";
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -142,13 +142,13 @@ export async function POST(request: Request) {
 
     const subject =
       kind === "support"
-        ? "【生活再建ナビ】応援・ご連絡"
-        : "【生活再建ナビ】改善のご意見";
+        ? "【熊本 生活再建ナビ】応援・ご連絡"
+        : "【熊本 生活再建ナビ】改善のご意見";
 
     const text = [
       kind === "support"
-        ? "生活再建ナビへの応援・ご連絡です。"
-        : "生活再建ナビへの改善のご意見です。",
+        ? "熊本 生活再建ナビへの応援・ご連絡です。"
+        : "熊本 生活再建ナビへの改善のご意見です。",
       "",
       kind === "support" ? "【メッセージ】" : "【気になったこと】",
       message,

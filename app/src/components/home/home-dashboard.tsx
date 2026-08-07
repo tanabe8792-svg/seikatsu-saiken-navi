@@ -576,7 +576,7 @@ export function HomeDashboard() {
 
       <Card className="border-border bg-card">
         <CardContent className="space-y-4 p-5">
-          <p className="text-base font-medium text-muted-foreground">生活再建ナビ</p>
+          <p className="text-base font-medium text-muted-foreground">熊本 生活再建ナビ</p>
           <h2 className="text-2xl font-bold leading-snug">
             このサービスでできること
           </h2>

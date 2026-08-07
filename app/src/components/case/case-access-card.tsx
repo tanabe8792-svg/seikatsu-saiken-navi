@@ -60,7 +60,7 @@ export function CaseAccessCard({
       <CardContent className="space-y-4 p-5">
         <div className="space-y-1">
           <p className="text-xs font-medium tracking-wide text-muted-foreground">
-            生活再建ナビ · ケースカード
+            熊本 生活再建ナビ · ケースカード
           </p>
           <p className="text-sm leading-relaxed text-muted-foreground">
             {J00_DISASTER_EVENT_LABEL}

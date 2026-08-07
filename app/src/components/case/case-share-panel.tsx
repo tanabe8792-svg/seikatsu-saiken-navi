@@ -131,7 +131,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
 
   function buildInviteMessage(code: string, url: string): string {
     return [
-      "生活再建ナビのケース共有のご案内です。",
+      "熊本 生活再建ナビのケース共有のご案内です。",
       "",
       "次のリンクを開くか、招待コードを入力してください。",
       `リンク: ${url}`,
@@ -145,7 +145,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
   function openMailShare(code: string, url: string) {
     const body = buildInviteMessage(code, url);
     const href = `mailto:?subject=${encodeURIComponent(
-      "【生活再建ナビ】ケース共有の招待"
+      "【熊本 生活再建ナビ】ケース共有の招待"
     )}&body=${encodeURIComponent(body)}`;
     window.location.href = href;
   }
@@ -161,7 +161,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: "生活再建ナビのケース招待",
+          title: "熊本 生活再建ナビのケース招待",
           text,
           url,
         });
