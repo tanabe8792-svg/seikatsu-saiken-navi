@@ -23,7 +23,7 @@ export function SupportDonationPanel() {
           {TRUST_CONTINUITY_SUPPORT.donationPending}
         </p>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          {TRUST_CONTINUITY_SUPPORT.paymentMethodsNote}
+          {TRUST_CONTINUITY_SUPPORT.paymentMethodsNotePending}
         </p>
       </div>
     );
@@ -42,7 +42,7 @@ export function SupportDonationPanel() {
           <PaymentChip label="PayPay" />
         </div>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          {TRUST_CONTINUITY_SUPPORT.paymentMethodsNote}
+          {TRUST_CONTINUITY_SUPPORT.paymentMethodsNoteReady}
         </p>
       </div>
 

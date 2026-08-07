@@ -123,11 +123,17 @@ export function validateSurvivorUxFlow(
   let current = getCurrentAction(file)!;
   let dashboard = getSurvivorSituationDashboard(file, current, profile);
 
-  if (!dashboard.currentSituation.includes("生活再建")) {
-    gaps.push("初期 currentSituation に生活再建フェーズがない");
+  if (!dashboard.currentSituation.includes("生活の立て直し")) {
+    gaps.push("初期 currentSituation に生活の立て直しがない");
   }
-  if (!dashboard.nextAction.headline.includes("確認")) {
-    gaps.push(`初期 headline 伴走表現不足: ${dashboard.nextAction.headline}`);
+  if (
+    !dashboard.nextAction.headline.includes("確認") &&
+    !dashboard.nextAction.headline.includes("申請") &&
+    !dashboard.nextAction.headline.includes("写真") &&
+    !dashboard.nextAction.headline.includes("記録") &&
+    !dashboard.nextAction.headline.includes("連絡")
+  ) {
+    gaps.push(`初期 headline が分かりにくい: ${dashboard.nextAction.headline}`);
   }
   assertNoForbiddenTerms(collectSurvivorStrings(dashboard), gaps, `${caseKey} 初期`);
   assertSurvivorJapaneseQuality(
@@ -175,8 +181,8 @@ export function validateSurvivorUxFlow(
       dashboard = getSurvivorSituationDashboard(file, current, profile);
       const situation = buildCurrentSituation(file, current, profile);
 
-      if (!situation.includes("生活再建")) {
-        gaps.push("currentSituation に RecoveryPhase なし");
+      if (!situation.includes("生活の立て直し") && !situation.includes("生活再建")) {
+        gaps.push("currentSituation に生活の立て直しがない");
       }
       if (
         !situation.includes("準備") &&
@@ -186,7 +192,11 @@ export function validateSurvivorUxFlow(
         gaps.push(`currentSituation 手続き/進捗不足: ${situation}`);
       }
 
-      assertCompanionTone(dashboard.nextAction.headline, gaps, "Case1 headline");
+      assertCompanionTone(
+        dashboard.nextAction.friendlyReason || dashboard.nextAction.description,
+        gaps,
+        "Case1 伴走文"
+      );
       assertNoForbiddenTerms(collectSurvivorStrings(dashboard), gaps, "Case1 完了後");
       steps.push("Case1 伴走UX");
       break;

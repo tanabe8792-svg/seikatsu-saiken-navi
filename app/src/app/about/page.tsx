@@ -16,10 +16,18 @@ import {
   TRUST_PAGE_TITLE,
   TRUST_WHY_BUILT,
   getTrustFeedbackFormUrl,
+  hasAnySupportDonationLink,
 } from "@/lib/trust/trust-copy";
 
 export default function AboutPage() {
   const feedbackFormUrl = getTrustFeedbackFormUrl();
+  const donationReady = hasAnySupportDonationLink();
+  const supportBody = [
+    ...TRUST_CONTINUITY_SUPPORT.body,
+    donationReady
+      ? TRUST_CONTINUITY_SUPPORT.bodyWhenReady
+      : TRUST_CONTINUITY_SUPPORT.bodyWhenPending,
+  ];
 
   return (
     <>
@@ -84,7 +92,7 @@ export default function AboutPage() {
           <FeedbackForm kind="improvement" />
           {feedbackFormUrl ? (
             <p className="text-xs text-muted-foreground">
-              別フォームでも送れます：
+              別の入力フォームでも送れます：
               <a
                 href={feedbackFormUrl}
                 target="_blank"
@@ -98,7 +106,7 @@ export default function AboutPage() {
         </TrustSection>
 
         <TrustSection heading={TRUST_CONTINUITY_SUPPORT.heading} id="support">
-          {TRUST_CONTINUITY_SUPPORT.body.map((p) => (
+          {supportBody.map((p) => (
             <p key={p}>{p}</p>
           ))}
           <SupportDonationPanel />
@@ -110,7 +118,7 @@ export default function AboutPage() {
 
         <TrustSection heading="改善の足跡" id="updates">
           <p>
-            最近直したこと・足したことを、新しい順に見られます（この端末だけで表示します）。
+            最近直したこと・足したことを、新しい順に見られます。
           </p>
           <Link
             href="/updates"

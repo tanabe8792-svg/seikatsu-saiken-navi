@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <>
       <SiteHeader />
-      <main className="px-4 py-6">
+      <main className="px-4 py-6 pb-28">
         <HomePageHeading />
         <HomeDashboard />
       </main>

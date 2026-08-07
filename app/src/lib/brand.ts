@@ -8,4 +8,4 @@ export const APP_ORIGIN = "https://seikatsu-saiken-navi.vercel.app";
 
 /** 一文説明（共有・メタ用） */
 export const APP_SHARE_BLURB =
-  "地震のあと、「この先どうすればいいか」を一緒に整理する無料のサービスです。";
+  "地震のあと、「この先どうすればいいか」を順番に確認できる無料のサービスです。";

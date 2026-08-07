@@ -24,7 +24,7 @@ const SAFETY_ACTION_IDS = new Set([
 export const USER_RECOVERY_START_TRIGGER = "TRIGGER-USER-RECOVERY-START";
 
 export function getRecoveryPhaseLabel(mode: RecoveryPhaseMode): string {
-  return mode === "acute" ? "発災直後フェーズ" : "再建フェーズ";
+  return mode === "acute" ? "いまは安全を優先" : "生活の立て直し";
 }
 
 function daysSinceDisaster(referenceDate: Date = new Date()): number {

@@ -99,6 +99,8 @@ function collectStaticCopyStrings(): Array<{ label: string; text: string }> {
     TRUST_FEEDBACK.note,
     TRUST_CONTINUITY_SUPPORT.heading,
     ...TRUST_CONTINUITY_SUPPORT.body,
+    TRUST_CONTINUITY_SUPPORT.bodyWhenPending,
+    TRUST_CONTINUITY_SUPPORT.bodyWhenReady,
     TRUST_FAQ_OPERATOR_ANSWER,
   ];
   trustStrings.forEach((text, i) => {

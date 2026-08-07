@@ -151,7 +151,7 @@ export function getActionCompletionUIState(
       canComplete: true,
       primaryButtonLabel: "完了する",
       showEvidenceButton: false,
-      evidenceHint: "記録が残せました。一緒に確認したうえで、次に進めます。",
+      evidenceHint: "記録が残せました。内容を確認したうえで、次に進めます。",
     };
   }
 

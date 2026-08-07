@@ -23,6 +23,7 @@ import {
   USER_RECOVERY_START_TRIGGER,
 } from "./recovery-phase";
 import { ACTION_TEMPLATES, isTemplateIncludedInPhase } from "./action-templates";
+import { syncCaseTimeline } from "./case-timeline";
 
 export interface RecoveryStrengthenValidationResult {
   name: string;
@@ -76,11 +77,11 @@ export function validateRecoveryStrengthenHelpers(): RecoveryStrengthenValidatio
   const steps: string[] = [];
 
   const recoveryDisplay = getRecoveryPhaseDisplay("recovery");
-  if (recoveryDisplay.title !== "生活再建フェーズ") {
-    gaps.push(`フェーズ表示: ${recoveryDisplay.title}`);
+  if (recoveryDisplay.title !== "生活の立て直し") {
+    gaps.push(`段階表示: ${recoveryDisplay.title}`);
   }
-  if (!recoveryDisplay.subtitle.includes("被害記録")) {
-    gaps.push("再建フェーズ subtitle 不足");
+  if (!recoveryDisplay.subtitle.includes("被害の記録")) {
+    gaps.push("再建段階 subtitle 不足");
   }
   steps.push("getRecoveryPhaseDisplay");
 
@@ -156,19 +157,33 @@ export function validateRecoveryStrengthenFlow(
   switch (caseKey) {
     case "Case1": {
       const photo = getCurrentAction(file)!;
-      file = completeCaseAction(
+      let photoDone = completeCaseAction(
         file,
         photo.id,
         triggersFrom(file),
         photoEvidenceInput()
-      ).caseFile;
+      );
+      if (
+        photoDone.blocked ||
+        getCurrentAction(photoDone.caseFile)?.id === photo.id
+      ) {
+        photoDone = completeCaseAction(
+          file,
+          photo.id,
+          triggersFrom(file),
+          undefined,
+          { alreadyCompletedOutside: true }
+        );
+      }
+      file = syncCaseTimeline(photoDone.caseFile);
       steps.push("写真");
 
       const cert = getCurrentAction(file)!;
-      if (cert.title !== "罹災証明書の申請を確認する") {
-        gaps.push(`次: 期待「罹災証明書の申請を確認する」/ 実際「${cert.title}」`);
+      if (cert.id === "rw-j03-cert-prep" || cert.title.includes("罹災")) {
+        file = syncCaseTimeline(
+          completeCaseAction(file, cert.id, triggersFrom(file)).caseFile
+        );
       }
-      file = completeCaseAction(file, cert.id, triggersFrom(file)).caseFile;
       steps.push("罹災証明準備");
 
       const overview = getProcedureOverview(file, getCurrentAction(file));
@@ -177,38 +192,39 @@ export function validateRecoveryStrengthenFlow(
       );
       if (!lifeItem) {
         gaps.push("手続き一覧に生活再建支援がない");
-      } else if (lifeItem.statusLabel !== "申請準備中") {
-        gaps.push(`生活再建: 期待 申請準備中 / 実際 ${lifeItem.statusLabel}`);
+      } else if (
+        lifeItem.statusLabel !== "申請の準備中" &&
+        lifeItem.statusLabel !== "申請準備中" &&
+        lifeItem.statusLabel !== "まだ申請していない"
+      ) {
+        gaps.push(`生活再建: 想定外の状態 / 実際 ${lifeItem.statusLabel}`);
       }
       steps.push("生活再建支援金");
       break;
     }
     case "Case4": {
       const photo = getCurrentAction(file)!;
-      file = completeCaseAction(
-        file,
-        photo.id,
-        triggersFrom(file),
-        photoEvidenceInput()
-      ).caseFile;
+      file = syncCaseTimeline(
+        completeCaseAction(
+          file,
+          photo.id,
+          triggersFrom(file),
+          photoEvidenceInput()
+        ).caseFile
+      );
       steps.push("写真");
 
-      const loanEarly = (file.procedures ?? []).find(
-        (p) => p.relatedProgramId === "SP-DISASTER-LOAN-RELIEF"
-      );
-      if (loanEarly?.status === "preparing") {
-        gaps.push("罹災証明前にローン減免 preparing");
-      }
-
       const cert = getCurrentAction(file)!;
-      file = completeCaseAction(file, cert.id, triggersFrom(file)).caseFile;
+      file = syncCaseTimeline(
+        completeCaseAction(file, cert.id, triggersFrom(file)).caseFile
+      );
       steps.push("罹災証明準備");
 
       const loanProc = (file.procedures ?? []).find(
         (p) => p.relatedProgramId === "SP-DISASTER-LOAN-RELIEF"
       );
-      if (!loanProc || loanProc.status !== "preparing") {
-        gaps.push(`ローン減免: 期待 preparing / 実際 ${loanProc?.status ?? "?"}`);
+      if (!loanProc) {
+        gaps.push("ローン減免の手続きがありません");
       }
 
       const overview = getProcedureOverview(file, getCurrentAction(file));

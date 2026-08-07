@@ -183,7 +183,7 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
         )}
       </Button>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        5文字以上書いてから送れます。送信が成功すると、「送信が完了しました」と表示されます。
+        5文字以上書いてから送れます。送れると、「送信が完了しました」と表示されます。
       </p>
     </form>
   );

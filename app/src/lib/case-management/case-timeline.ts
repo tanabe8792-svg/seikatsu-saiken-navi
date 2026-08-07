@@ -379,11 +379,9 @@ export function getCaseTimelineDashboard(
 
 const COMPLETED_EVENT_TYPES = new Set<CaseTimelineEventType>([
   "action_completed",
-  "phase_transition",
-  "procedure_started",
 ]);
 
-/** 被災者向け「完了したこと」— action_completed 中心 */
+/** 被災者向け「完了したこと」— 実際に確認し終えた項目だけ */
 export function getCompletedItemsForSurvivor(
   caseFile: CaseFile,
   limit = 5
@@ -410,9 +408,9 @@ export function getProgressReassurance(caseFile: CaseFile): string | undefined {
     return "少しずつ前に進めています。最初の一歩を終えました。";
   }
   if (completedCount <= 3) {
-    return `少しずつ前に進めています。すでに${completedCount}つのステップを終えました。`;
+    return `少しずつ前に進めています。すでに${completedCount}つの確認を終えました。`;
   }
-  return `着実に前に進めています。これまでに${completedCount}つのステップを終えました。`;
+  return `着実に前に進めています。これまでに${completedCount}つの確認を終えました。`;
 }
 
 /** currentSituation 用 — 直近の完了要約（③） */

@@ -54,11 +54,12 @@ export interface ProcedureOverviewItem {
   isPrimary: boolean;
 }
 
+/** statusLabel と重複しない、足し情報だけ */
 const PROCEDURE_HINT: Partial<Record<ProcedureStatus, string>> = {
-  not_started: "まだ申請していない",
-  preparing: "申請の準備中",
-  submitted: "申請済み",
-  waiting_response: "結果の連絡待ち",
+  not_started: "これから",
+  preparing: "書類や案内を確認中",
+  submitted: "結果を待つ段階",
+  waiting_response: "連絡を待つ段階",
 };
 
 export interface SurvivorAttentionItem {
@@ -114,9 +115,9 @@ export function getFriendlyProcedureStatusLabel(
 
 function buildPhaseOpening(mode: RecoveryPhaseMode): string {
   if (mode === "recovery") {
-    return "生活再建フェーズです。";
+    return "生活の立て直しの確認を進めています。";
   }
-  return "発災直後の対応フェーズです。安全確保を最優先に進めています。";
+  return "いまは安全の確保をいちばんに進めています。";
 }
 
 function buildProcedureSituationPhrase(
@@ -174,7 +175,7 @@ export function buildCurrentSituation(
   if (parts.length === 1) {
     const latest = getLatestCompletedSummary(caseFile);
     if (latest) {
-      parts.push(`${latest}など、順調に進んでいます。`);
+      parts.push(`${latest}。この調子で、次も確認していきましょう。`);
     }
   }
 
@@ -358,19 +359,19 @@ export function getSurvivorSituationDashboard(
   };
 }
 
-/** ホーム「現在: ○○フェーズ」表示 */
+/** ホーム・やること一覧の段階表示（利用者向け。内部の phase 用語は出さない） */
 export function getRecoveryPhaseDisplay(
   mode: RecoveryPhaseMode
 ): RecoveryPhaseDisplay {
   if (mode === "recovery") {
     return {
-      title: "生活再建フェーズ",
-      subtitle: "被害記録・支援制度・手続きを順番に進めています",
+      title: "生活の立て直し",
+      subtitle: "被害の記録・支援制度・手続きを、順番に確認しています",
     };
   }
   return {
-    title: "生活再建フェーズ",
-    subtitle: "これから生活再建の手続きを順番に進めていきます",
+    title: "いまは安全を優先",
+    subtitle: "安全が取れてから、手続きの確認に進めます",
   };
 }
 
@@ -461,16 +462,22 @@ export function getProcedureOverview(
 
   return sorted.slice(0, 3).map((proc) => {
     const isPrimary = proc.id === primary?.id;
+    const statusLabel = getFriendlyProcedureStatusLabel(proc.status);
     let hint = PROCEDURE_HINT[proc.status];
     if (!isPrimary && proc.status === "not_started") {
       hint = "次に確認";
     } else if (isPrimary && proc.status === "preparing") {
       hint = "いま進行中";
+    } else if (isPrimary && proc.status === "not_started") {
+      hint = undefined;
+    }
+    if (hint === statusLabel) {
+      hint = undefined;
     }
 
     return {
       name: proc.name,
-      statusLabel: getFriendlyProcedureStatusLabel(proc.status),
+      statusLabel,
       hint,
       isPrimary,
     };

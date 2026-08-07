@@ -331,7 +331,7 @@ export default function J00HearingPage() {
       title="はじめに"
       showBack
       onBack={handleHeaderBack}
-      backLabel="← 前へ"
+      backLabel="← 戻る"
     />
   );
 

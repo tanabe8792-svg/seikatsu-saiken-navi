@@ -124,7 +124,7 @@ export function validatePostJ00Welcome(): OnboardingValidationResult {
         `firstStepHeadline が first Action と連動していない: ${welcome.firstStepHeadline}`
       );
     }
-    if (welcome.timingNote !== "続けている手続きや、まだの整理を一緒に進めます") {
+    if (welcome.timingNote !== "続けている手続きや、まだの確認を進めます") {
       gaps.push(`timingNote months: ${welcome.timingNote}`);
     }
   }

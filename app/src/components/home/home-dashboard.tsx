@@ -224,7 +224,7 @@ export function HomeDashboard() {
                       安全が確保できましたか？
                     </p>
                     <p className="text-sm leading-relaxed text-emerald-900/90 dark:text-emerald-100/90">
-                      被害の記録や支援制度、手続きの確認を、一緒に始められます。
+                      被害の記録や支援制度、手続きの確認を、ここから始められます。
                     </p>
                     <Button
                       type="button"
@@ -241,7 +241,7 @@ export function HomeDashboard() {
               <Card className="overflow-hidden border border-border bg-card shadow-sm">
                 <CardContent className="space-y-4 p-5">
                   <p className="text-sm font-medium text-muted-foreground">
-                    次に一緒に確認すること
+                    次に確認すること
                   </p>
                   <p className="text-xl font-bold leading-snug">
                     {continuity.nextAction.headline}
@@ -538,14 +538,14 @@ export function HomeDashboard() {
         <Card className="border-border bg-card">
           <CardContent className="space-y-4 p-6">
             <p className="text-sm font-medium text-muted-foreground">
-              次に一緒に確認すること
+              次に確認すること
             </p>
             <p className="text-2xl font-bold leading-snug">{nextAction.title}</p>
             <p className="text-base text-muted-foreground">
               {nextAction.description}
             </p>
             <Button asChild size="lg" className="h-14 w-full text-lg">
-              <Link href={getActionDetailPath(nextAction)}>一緒に確認する</Link>
+              <Link href={getActionDetailPath(nextAction)}>詳しく確認する</Link>
             </Button>
           </CardContent>
         </Card>
@@ -582,7 +582,7 @@ export function HomeDashboard() {
           </h2>
           <ul className="space-y-3">
             <li className="text-base leading-relaxed">
-              · いまの状況を一緒に整理し、次に確認することを順番に案内します
+            · いまの状況を整理し、次に確認することを順番に案内します
             </li>
             <li className="text-base leading-relaxed">
               · 公式情報をもとに案内します（推測では決めません）
@@ -608,7 +608,7 @@ export function HomeDashboard() {
             令和8年（2026年）7月28日 · 熊本地震
           </p>
           <p className="text-base leading-relaxed text-foreground">
-            再建の道のりは人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で一緒に整理いたします。
+            再建の進み方は人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で案内します。
           </p>
           <Button asChild size="lg" className="h-16 w-full text-xl">
             <Link href="/start">質問をはじめる</Link>

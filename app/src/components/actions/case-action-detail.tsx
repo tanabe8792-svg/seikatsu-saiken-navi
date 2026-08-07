@@ -665,7 +665,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
     : Math.min(stepProgress + 1, guide.steps.length);
 
   return (
-    <div className={`space-y-4 ${isDone ? "pb-8" : "pb-28"}`}>
+    <div className={`space-y-4 ${isDone ? "pb-8" : "pb-40"}`}>
       <Card className="border-border bg-card">
         <CardContent className="space-y-3 p-4">
           <p className="text-sm font-medium text-muted-foreground">
@@ -758,13 +758,6 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           onChange={(businessMunicipality) =>
             updateProfile({ businessMunicipality })
           }
-        />
-      )}
-
-      {actionId === "rw-j03-cert-prep" && (
-        <HomeMunicipalityPicker
-          profile={profile}
-          onChange={(municipality) => updateProfile({ municipality })}
         />
       )}
 

@@ -73,7 +73,7 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 {progress.completed === 0
-                  ? "これから一緒に進めましょう"
+                  ? "これから、上から順に確認できます"
                   : `${progress.completed}件確認できました（${percent}%）`}
               </p>
             </div>

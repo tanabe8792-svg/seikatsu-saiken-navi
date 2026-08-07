@@ -172,7 +172,7 @@ export const ACTION_TEMPLATES: ActionTemplate[] = [
     title: "罹災証明書の申請を確認する",
     description:
       "罹災証明書の申請に必要な身分証・写真を準備し、窓口またはオンライン申請を確認してください。",
-    reason: "支援制度・保険請求の入口となる重要書類です。",
+    reason: "支援制度や保険の手続きで必要になる、大切な書類です。",
     priority: "high",
     required: true,
     evidenceRequired: false,
@@ -196,7 +196,7 @@ export const ACTION_TEMPLATES: ActionTemplate[] = [
     title: "保険会社へ被害連絡する",
     description:
       "火災保険・地震保険等に加入している場合、加入保険会社へ被害報告を行ってください。",
-    reason: "保険請求の入口となる重要な連絡です。契約内容・報告期限は保険会社案内を確認してください。",
+    reason: "保険の請求を進める前に欠かせない連絡です。契約内容・報告期限は保険会社の案内を確認しましょう。",
     priority: "high",
     required: false,
     evidenceRequired: false,

@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-ux-plain-japanese",
+    date: "2026-08-07",
+    title: "操作のしやすさと読みやすさを整えました",
+    summary:
+      "下のメニューにボタンが隠れにくいようにし、市町村選択の二重表示や重複する文言を直しました。「フェーズ」など分かりにくい言い方も、やさしい日本語に直しています。",
+  },
+  {
     id: "2026-08-07-privacy-handling",
     date: "2026-08-07",
     title: "個人情報の扱いをはっきり書きました",

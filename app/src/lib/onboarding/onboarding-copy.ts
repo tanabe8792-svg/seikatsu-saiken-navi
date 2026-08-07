@@ -13,7 +13,7 @@ import type { CaseFile } from "@/lib/case-management/types";
 import type { OnboardingTimingHint, UserProfile } from "@/lib/types";
 
 export const ONBOARDING_SERVICE_FEATURES = [
-  "いまの状況を一緒に整理し、次に確認することを順番に案内します",
+  "いまの状況を整理し、次に確認することを順番に案内します",
   "公式情報をもとに案内します（推測では決めません）",
   "登録不要・無料です。わからない項目はそのままで進められます",
 ] as const;
@@ -46,29 +46,29 @@ export const ONBOARDING_TIMING_OPTIONS: {
   {
     id: "months",
     label: "数か月経った",
-    note: "続けている手続きや、まだの整理を一緒に進めます",
+    note: "続けている手続きや、まだの確認を進めます",
   },
   {
     id: "partial",
     label: "一部手続き済み",
-    note: "済んでいることも一緒に確認できます",
+    note: "済んでいることも確認できます",
   },
   {
     id: "acute",
     label: "被災直後",
-    note: "安全確保が最も優先の段階です",
+    note: "安全の確保がいちばん優先の段階です",
   },
 ];
 
 export const DEFAULT_ONBOARDING_TIMING_HINT: OnboardingTimingHint = "weeks";
 
 export const ONBOARDING_UNIVERSAL_MESSAGE =
-  "被害の記録・罹災証明・保険・支援など、いま必要な確認を一緒に整理します。";
+  "被害の記録・罹災証明・保険・支援など、いま必要な確認を順番に案内します。";
 
 export const ONBOARDING_INTRO_LABEL = "令和8年熊本地震 — 熊本 生活再建ナビ";
 
 export const ONBOARDING_INTRO_LEAD =
-  "短い質問にお答えいただくと、あなた向けの「やること」を案内いたします。";
+  "短い質問に答えると、あなた向けの「やること」を案内します。";
 
 export interface PostJ00WelcomeMessage {
   title: string;

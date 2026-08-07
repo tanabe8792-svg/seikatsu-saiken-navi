@@ -310,7 +310,7 @@ export function getProcedureGuidanceForAction(
     case "rw-j04-insurance-report":
       return staticGuidance(
         "保険の連絡・申請案内",
-        "契約会社ごとの入口は異なります。まずは損保の災害案内と、証券に載っている連絡先へ直接進めてください。",
+        "契約会社ごとの案内ページは異なります。まずは損保の災害案内と、証券に載っている連絡先へ直接進めてください。",
         "火災保険・地震保険は、まず「事故報告・相談」から始めます。証券番号が分からなくても、会社名が分かれば総合窓口で案内してもらえます。",
         [
           {
@@ -345,7 +345,7 @@ export function getProcedureGuidanceForAction(
         "被災ローン減免などの枠組みは、金融機関ごとに手続きが違います。まずは借入先に「災害のローン相談」と伝え、公的案内で流れを確認します。",
         [
           {
-            label: "相談の入口",
+            label: "相談の公式ページ",
             value: "返済口座のある銀行・金庫など借入先の相談窓口",
           },
         ],
@@ -357,7 +357,7 @@ export function getProcedureGuidanceForAction(
             primary: true,
           },
           {
-            label: "金融庁トップ（関連案内の入口）",
+            label: "金融庁トップ（関連案内）",
             href: "https://www.fsa.go.jp/",
             kind: "guide",
           },
@@ -394,7 +394,7 @@ export function getProcedureGuidanceForAction(
             kind: "guide",
           },
           {
-            label: "熊本県被災者支援ナビ（申請の入口）",
+            label: "熊本県被災者支援ナビ（申請案内）",
             href: SHIEN_PORTAL,
             kind: "guide",
             primary: true,
