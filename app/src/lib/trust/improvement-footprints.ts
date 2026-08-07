@@ -13,11 +13,18 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-photo-ask-album",
+    date: "2026-08-07",
+    title: "写真アプリへの保存は確認してから",
+    summary:
+      "撮ったあとに勝手に写真アプリを開かず、「残しますか？」と聞いてから開くようにしました。くるくるが止まらない不具合も直しています。",
+  },
+  {
     id: "2026-08-07-photo-dual-save",
     date: "2026-08-07",
-    title: "写真をサイトと写真アプリの両方に残せるように",
+    title: "写真をナビと写真アプリの両方に残せるように",
     summary:
-      "撮るとサイトにすぐ残し、続けて写真アプリにも同じ写真を残す画面を開きます。キャンセルしてもボタンからやり直せます。",
+      "撮るとナビにすぐ残り、必要な人は写真アプリにも同じ写真を残せます。",
   },
   {
     id: "2026-08-07-photo-no-auto-album",

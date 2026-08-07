@@ -283,7 +283,7 @@ export async function offerBlobToDeviceAlbum(
   }
 }
 
-/** 複数枚を一度に写真アプリ／端末へ渡す（可能なら1回の共有シート） */
+/** 複数枚を一度に写真アプリ／端末へ渡す（可能なら1回の共有シート）。ハング防止のタイムアウト付き。 */
 export async function offerSavedPhotosToDeviceAlbum(
   photoIds: string[]
 ): Promise<{
@@ -307,6 +307,8 @@ export async function offerSavedPhotosToDeviceAlbum(
     return { ok: 0, failed: photoIds.length, cancelled: false, mode: "none" };
   }
 
+  const SHARE_TIMEOUT_MS = 12_000;
+
   try {
     if (
       typeof navigator !== "undefined" &&
@@ -314,16 +316,25 @@ export async function offerSavedPhotosToDeviceAlbum(
       typeof navigator.canShare === "function" &&
       navigator.canShare({ files })
     ) {
-      await navigator.share({
+      const sharePromise = navigator.share({
         files,
         title: "被害の記録写真",
       });
-      return {
-        ok: files.length,
-        failed: 0,
-        cancelled: false,
-        mode: "shared",
-      };
+      const raced = await Promise.race([
+        sharePromise.then(() => "shared" as const),
+        new Promise<"timeout">((resolve) =>
+          window.setTimeout(() => resolve("timeout"), SHARE_TIMEOUT_MS)
+        ),
+      ]);
+      if (raced === "shared") {
+        return {
+          ok: files.length,
+          failed: 0,
+          cancelled: false,
+          mode: "shared",
+        };
+      }
+      // タイムアウト時はダウンロードに切り替え（くるくる放置を防ぐ）
     }
   } catch (error) {
     if (
@@ -341,7 +352,7 @@ export async function offerSavedPhotosToDeviceAlbum(
     if (result === "failed") failed += 1;
     else if (result === "cancelled") {
       /* skip */
-    } else ok += 1;
+    } else if (result === "shared" || result === "downloaded") ok += 1;
   }
 
   return {

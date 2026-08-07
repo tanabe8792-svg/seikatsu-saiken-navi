@@ -40,7 +40,6 @@ export function PhotoEvidenceCapture({
   const [copyingAlbum, setCopyingAlbum] = useState(false);
   const [pendingAlbumIds, setPendingAlbumIds] = useState<string[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(true);
-  const sourceRef = useRef<"camera" | "album">("camera");
 
   useEffect(() => {
     let cancelled = false;
@@ -61,34 +60,22 @@ export function PhotoEvidenceCapture({
   }, [caseId, actionId]);
 
   async function copyToPhotoApp(photoIds: string[]) {
-    if (photoIds.length === 0) return;
+    if (photoIds.length === 0 || copyingAlbum) return;
     setCopyingAlbum(true);
     try {
       const album = await offerSavedPhotosToDeviceAlbum(photoIds);
       if (album.cancelled) {
-        showToast(
-          "キャンセルされました。下のボタンから、もう一度写真アプリに残せます"
-        );
-        setPendingAlbumIds(photoIds);
-        return;
-      }
-      if (album.ok > 0 && album.mode === "shared") {
-        showToast(
-          "共有画面で「画像を保存」を選ぶと、写真アプリに同じ写真が残ります"
-        );
-        setPendingAlbumIds([]);
+        showToast("やめました。また残したくなったら、下のボタンからどうぞ");
         return;
       }
       if (album.ok > 0) {
-        showToast("端末へのコピーを開始しました（ダウンロード／ファイルを確認）");
+        showToast("写真アプリへの保存を案内しました");
         setPendingAlbumIds([]);
         return;
       }
-      showToast("写真アプリへの保存ができませんでした。下のボタンから再試行できます");
-      setPendingAlbumIds(photoIds);
+      showToast("うまくいきませんでした。もう一度お試しください");
     } catch {
-      showToast("写真アプリへの保存に失敗しました。下のボタンから再試行できます");
-      setPendingAlbumIds(photoIds);
+      showToast("うまくいきませんでした。もう一度お試しください");
     } finally {
       setCopyingAlbum(false);
     }
@@ -104,7 +91,6 @@ export function PhotoEvidenceCapture({
       return;
     }
 
-    const fromCamera = sourceRef.current === "camera";
     setSaving(true);
     try {
       const metas = await savePhotosFromFiles({
@@ -127,25 +113,16 @@ export function PhotoEvidenceCapture({
       };
       onSubmitEvidence(actionId, evidence);
 
-      const ids = metas.map((m) => m.id);
-      setPendingAlbumIds(fromCamera ? ids : []);
+      setPendingAlbumIds(metas.map((m) => m.id));
       showToast(
         alreadyHasEvidence || refreshed.length > metas.length
-          ? `${metas.length}枚をこのサイトに追加しました`
-          : `${metas.length}枚をこのサイトに残しました`
+          ? `${metas.length}枚を追加しました`
+          : `${metas.length}枚を残しました`
       );
-      // くるくるはここで止める。写真アプリへのコピーは別処理（待たせない）
-      setSaving(false);
-
-      if (fromCamera) {
-        showToast(
-          "続けて、同じ写真を写真アプリにも残す画面を開きます"
-        );
-        await copyToPhotoApp(ids);
-      }
     } catch (error) {
       console.error(error);
       showToast("写真の保存に失敗しました。もう一度お試しください");
+    } finally {
       setSaving(false);
     }
   }
@@ -162,7 +139,7 @@ export function PhotoEvidenceCapture({
           </p>
           <h3 className="mt-1 text-base font-semibold">カメラで撮って残す</h3>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            撮ると、まずこのサイトに残ります。続けて写真アプリ（アルバム）にも同じ写真を残せる画面が開きます。
+            撮ると、このナビにすぐ残ります。何度でも追加できます。
           </p>
         </div>
 
@@ -196,29 +173,23 @@ export function PhotoEvidenceCapture({
             type="button"
             size="lg"
             className="h-14 w-full text-base"
-            onClick={() => {
-              sourceRef.current = "camera";
-              cameraRef.current?.click();
-            }}
-            disabled={saving || copyingAlbum}
+            onClick={() => cameraRef.current?.click()}
+            disabled={saving}
           >
             {saving ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               <Camera className="h-5 w-5" />
             )}
-            {saving ? "サイトに残しています…" : "カメラで撮る"}
+            {saving ? "残しています…" : "カメラで撮る"}
           </Button>
           <Button
             type="button"
             size="lg"
             variant="outline"
             className="h-14 w-full text-base"
-            onClick={() => {
-              sourceRef.current = "album";
-              albumRef.current?.click();
-            }}
-            disabled={saving || copyingAlbum}
+            onClick={() => albumRef.current?.click()}
+            disabled={saving}
           >
             <ImagePlus className="h-5 w-5" />
             アルバムから選ぶ
@@ -226,33 +197,41 @@ export function PhotoEvidenceCapture({
         </div>
 
         {pendingAlbumIds.length > 0 ? (
-          <Button
-            type="button"
-            size="lg"
-            variant="secondary"
-            className="h-12 w-full text-base"
-            disabled={copyingAlbum}
-            onClick={() => void copyToPhotoApp(pendingAlbumIds)}
-          >
-            {copyingAlbum ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <ImagePlus className="h-5 w-5" />
-            )}
-            {copyingAlbum
-              ? "写真アプリを開いています…"
-              : "写真アプリにも同じ写真を残す"}
-          </Button>
+          <div className="space-y-2 rounded-xl border border-border bg-muted/30 px-3 py-3">
+            <p className="text-sm font-medium">
+              写真アプリにも、同じ写真を残しますか？
+            </p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <Button
+                type="button"
+                size="lg"
+                className="h-12 w-full"
+                disabled={copyingAlbum}
+                onClick={() => void copyToPhotoApp(pendingAlbumIds)}
+              >
+                {copyingAlbum ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : null}
+                {copyingAlbum ? "開いています…" : "はい、残す"}
+              </Button>
+              <Button
+                type="button"
+                size="lg"
+                variant="outline"
+                className="h-12 w-full"
+                disabled={copyingAlbum}
+                onClick={() => setPendingAlbumIds([])}
+              >
+                いまはしない
+              </Button>
+            </div>
+          </div>
         ) : null}
-
-        <div className="rounded-lg border bg-background/70 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
-          写真はサーバーには送りません。サイト側の保存はすぐ終わります。写真アプリへ残すときは、開いた画面で「画像を保存」を選んでください（ブラウザの仕組み上、この一手が必要です）。
-        </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-medium">
-              このサイトに残した写真
+              残した写真
               {!loadingSaved && saved.length > 0 ? `（${saved.length}枚）` : ""}
             </p>
             <Link
@@ -270,7 +249,7 @@ export function PhotoEvidenceCapture({
             </p>
           ) : (
             <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100">
-              {saved.length}枚がこのサイトに残っています。写真アプリにも残したいときは上のボタンから。
+              {saved.length}枚残っています。追加で撮っても大丈夫です。
             </p>
           )}
         </div>
