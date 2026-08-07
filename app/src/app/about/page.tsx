@@ -53,9 +53,6 @@ export default function AboutPage() {
         <TrustSection heading={TRUST_DEVELOPER.heading}>
           <div className="rounded-xl border bg-background/80 px-4 py-4">
             <p className="text-lg font-semibold">{TRUST_DEVELOPER.name}</p>
-            <p className="text-sm text-muted-foreground">
-              {TRUST_DEVELOPER.nameReading}
-            </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {TRUST_DEVELOPER.affiliation}
             </p>
@@ -114,7 +111,10 @@ export default function AboutPage() {
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
             <li>メール：リンク付きメールを受け取り、リンクをタップ</li>
-            <li>LINE：あなたのLINEアカウントでログイン</li>
+            <li>LINE：ログイン用（メッセージ通知ではありません）</li>
+            <li>
+              重要なお知らせのメール受け取りは「設定」から希望できます
+            </li>
             <li>登録しなくても、やることの確認はすべて利用できます</li>
           </ul>
         </TrustSection>

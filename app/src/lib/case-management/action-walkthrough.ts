@@ -936,6 +936,11 @@ function storageKey(caseId: string, actionId: string): string {
   return `${caseId}::${actionId}`;
 }
 
+/** caseId が変わっても、同じ手順のチェックが消えないようにする */
+function legacyActionKey(actionId: string): string {
+  return `action::${actionId}`;
+}
+
 function readStore(): WalkthroughStore {
   if (typeof window === "undefined") return {};
   try {
@@ -970,11 +975,23 @@ function writeMemoStore(store: WalkthroughMemoStore): void {
   localStorage.setItem(WALKTHROUGH_MEMO_KEY, JSON.stringify(store));
 }
 
+function mergeStepIds(...lists: Array<string[] | undefined>): string[] {
+  const set = new Set<string>();
+  for (const list of lists) {
+    for (const id of list ?? []) set.add(id);
+  }
+  return [...set];
+}
+
 export function getCompletedWalkthroughSteps(
   caseId: string,
   actionId: string
 ): string[] {
-  return readStore()[storageKey(caseId, actionId)] ?? [];
+  const store = readStore();
+  return mergeStepIds(
+    store[storageKey(caseId, actionId)],
+    store[legacyActionKey(actionId)]
+  );
 }
 
 export function setWalkthroughStepComplete(
@@ -984,12 +1001,16 @@ export function setWalkthroughStepComplete(
   completed: boolean
 ): string[] {
   const store = readStore();
-  const key = storageKey(caseId, actionId);
-  const current = new Set(store[key] ?? []);
+  const caseKey = storageKey(caseId, actionId);
+  const actionKey = legacyActionKey(actionId);
+  const current = new Set(
+    mergeStepIds(store[caseKey], store[actionKey])
+  );
   if (completed) current.add(stepId);
   else current.delete(stepId);
   const next = [...current];
-  store[key] = next;
+  store[caseKey] = next;
+  store[actionKey] = next;
   writeStore(store);
   return next;
 }
@@ -999,7 +1020,12 @@ export function getWalkthroughStepMemo(
   actionId: string,
   stepId: string
 ): string {
-  return readMemoStore()[storageKey(caseId, actionId)]?.[stepId] ?? "";
+  const store = readMemoStore();
+  const merged = {
+    ...(store[legacyActionKey(actionId)] ?? {}),
+    ...(store[storageKey(caseId, actionId)] ?? {}),
+  };
+  return merged[stepId] ?? "";
 }
 
 export function setWalkthroughStepMemo(
@@ -1009,8 +1035,15 @@ export function setWalkthroughStepMemo(
   memo: string
 ): void {
   const store = readMemoStore();
-  const key = storageKey(caseId, actionId);
-  store[key] = { ...(store[key] ?? {}), [stepId]: memo };
+  const caseKey = storageKey(caseId, actionId);
+  const actionKey = legacyActionKey(actionId);
+  const nextForKey = {
+    ...(store[caseKey] ?? {}),
+    ...(store[actionKey] ?? {}),
+    [stepId]: memo,
+  };
+  store[caseKey] = nextForKey;
+  store[actionKey] = nextForKey;
   writeMemoStore(store);
 }
 
@@ -1021,7 +1054,20 @@ export function appendWalkthroughMemoChoice(
   choice: string
 ): string {
   const current = getWalkthroughStepMemo(caseId, actionId, stepId);
-  if (current.includes(choice)) return current;
+  // 同じ選択肢をもう一度押したら外す（チェックの付け外し）
+  if (current === choice) {
+    setWalkthroughStepMemo(caseId, actionId, stepId, "");
+    return "";
+  }
+  if (current.includes(choice)) {
+    const parts = current
+      .split("／")
+      .map((p) => p.trim())
+      .filter((p) => p && p !== choice);
+    const next = parts.join("／");
+    setWalkthroughStepMemo(caseId, actionId, stepId, next);
+    return next;
+  }
   const next = current.trim() ? `${current.trim()}／${choice}` : choice;
   setWalkthroughStepMemo(caseId, actionId, stepId, next);
   return next;

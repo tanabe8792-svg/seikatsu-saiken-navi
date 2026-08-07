@@ -273,17 +273,27 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                   </p>
                   {step.memoChoices && step.memoChoices.length > 0 && (
                     <div className="flex flex-wrap gap-2">
-                      {step.memoChoices.map((choice) => (
-                        <button
-                          key={choice}
-                          type="button"
-                          disabled={locked}
-                          onClick={() => addMemoChoice(step.id, choice)}
-                          className="rounded-full border bg-background px-3 py-1.5 text-xs hover:bg-accent/50 disabled:opacity-50"
-                        >
-                          {choice}
-                        </button>
-                      ))}
+                      {step.memoChoices.map((choice) => {
+                        const selected = (memos[step.id] ?? "")
+                          .split("／")
+                          .map((p) => p.trim())
+                          .includes(choice);
+                        return (
+                          <button
+                            key={choice}
+                            type="button"
+                            disabled={locked}
+                            onClick={() => addMemoChoice(step.id, choice)}
+                            className={`rounded-full border px-3 py-1.5 text-xs disabled:opacity-50 ${
+                              selected
+                                ? "border-brand-green/60 bg-emerald-50 text-brand-green dark:bg-emerald-950/40"
+                                : "border-border bg-background hover:bg-accent/50"
+                            }`}
+                          >
+                            {selected ? `✓ ${choice}` : choice}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                   <Textarea
@@ -394,7 +404,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             </div>
           )}
           <p className="text-xs leading-relaxed text-muted-foreground">
-            全体の進み具合（上のバー）と、下の手順チェックは別物です。チェックは「このページで確認したメモ」、バーは生活再建全体の続きです。
+            読んだ手順はタップしてチェックしてください。色が変わった印は、この端末に残ります。ページを戻っても消えません（データを消したときや「はじめから」を選んだとき以外）。
           </p>
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">

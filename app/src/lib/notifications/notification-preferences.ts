@@ -1,14 +1,16 @@
 /**
  * お知らせの受け取り方 — 表示・設定専用
- * ① アプリを開いたとき（常時） + ② メール / LINE（任意）
+ * ① アプリを開いたとき（常時） + ② メール（任意）
+ * LINEログインは本人確認用。LINEメッセージ通知とは別です。
  */
 
-export type NotificationExtraChannel = "none" | "email" | "line";
+export type NotificationExtraChannel = "none" | "email";
 
 export interface NotificationPreferences {
   /** ② 追加チャネル（①は常に有効） */
   extraChannel: NotificationExtraChannel;
   email: string;
+  /** 互換のため残す（未使用） */
   lineId: string;
   updatedAt?: string;
 }
@@ -27,23 +29,16 @@ export const NOTIFICATION_CHANNEL_OPTIONS: {
 }[] = [
   {
     id: "none",
-    label: "登録しない（通知なし）",
+    label: "いまは登録しない",
     description:
-      "連絡先は不要です。サイトを開いたときに、最新の案内と続きの「いま」を確認できます。",
+      "連絡先は不要です。サイトを開いたときに、最新の案内を確認できます。",
     requiresContact: false,
   },
   {
     id: "email",
-    label: "メールで最新情報をすぐ受け取る",
+    label: "メールで重要なお知らせを受け取る",
     description:
-      "新しい支援案内など、すぐ知りたい方向け。サイトを開いていなくてもメールでお知らせします（任意・配信開始後）。",
-    requiresContact: true,
-  },
-  {
-    id: "line",
-    label: "LINEで最新情報をすぐ受け取る",
-    description:
-      "LINEアカウントでログインして本人確認します（任意）。",
+      "支援制度など、大切な案内が更新されたときにメールでお知らせします（任意）。配信の準備ができ次第、この設定に従います。",
     requiresContact: true,
   },
 ];
@@ -54,11 +49,11 @@ export function normalizeNotificationPreferences(
   if (!raw || typeof raw !== "object") {
     return { ...DEFAULT_NOTIFICATION_PREFERENCES };
   }
-  const p = raw as Partial<NotificationPreferences>;
-  const extraChannel =
-    p.extraChannel === "email" || p.extraChannel === "line"
-      ? p.extraChannel
-      : "none";
+  const p = raw as Partial<NotificationPreferences> & {
+    extraChannel?: string;
+  };
+  // 旧「LINE通知」設定は、ログイン用と紛らわしいためメール希望なしに戻す
+  const extraChannel = p.extraChannel === "email" ? "email" : "none";
   return {
     extraChannel,
     email: typeof p.email === "string" ? p.email.trim() : "",
@@ -72,13 +67,10 @@ export function getNotificationPreferenceSummary(
 ): string {
   if (prefs.extraChannel === "email") {
     return prefs.email
-      ? `マイページ + メール（${maskEmail(prefs.email)}）`
-      : "マイページ + メール（未入力）";
+      ? `メールでお知らせ（${maskEmail(prefs.email)}）`
+      : "メールでお知らせ（未入力）";
   }
-  if (prefs.extraChannel === "line") {
-    return "マイページ + LINE（公式アカウント）";
-  }
-  return "アプリを開いたとき";
+  return "サイトを開いたときに確認";
 }
 
 function maskEmail(email: string): string {
@@ -86,11 +78,6 @@ function maskEmail(email: string): string {
   if (!local || !domain) return "登録済み";
   const head = local.slice(0, 2);
   return `${head}***@${domain}`;
-}
-
-function maskLineId(lineId: string): string {
-  if (lineId.length <= 4) return lineId;
-  return `${lineId.slice(0, 2)}…${lineId.slice(-2)}`;
 }
 
 export function validateNotificationPreferences(
@@ -103,9 +90,6 @@ export function validateNotificationPreferences(
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(prefs.email)) {
       return { valid: false, message: "メールアドレスの形式を確認してください" };
     }
-  }
-  if (prefs.extraChannel === "line") {
-    return { valid: true };
   }
   return { valid: true };
 }
