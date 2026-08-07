@@ -272,7 +272,7 @@ export default function MyPage() {
             note={
               identity
                 ? identityLabel ?? "ログイン中"
-                : "メールまたはLINE（かんたん）"
+                : "LINEでかんたん"
             }
           />
           <MenuLink

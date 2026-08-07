@@ -68,7 +68,7 @@ export function IdentityRegisterPrompt({ className }: { className?: string }) {
         あとで見返したい人へ（任意）
       </span>
       <span className="mt-2 block text-base leading-relaxed text-muted-foreground">
-        メールまたはLINEで登録すると、別の日にも続きを開きやすくなります。登録しなくても案内は使えます。
+        LINEで登録すると、別の日にも続きを開きやすくなります。登録しなくても案内は使えます。
       </span>
     </Link>
   );

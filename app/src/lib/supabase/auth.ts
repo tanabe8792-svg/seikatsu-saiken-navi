@@ -1,6 +1,6 @@
 "use client";
 
-import type { User } from "@supabase/supabase-js";
+import type { Provider, User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "./browser";
 import { isSupabaseConfigured } from "./config";
 import {
@@ -18,6 +18,27 @@ export function getAuthCallbackUrl(nextPath = "/mypage"): string {
   }
   const origin = window.location.origin;
   return `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
+}
+
+/** LINE OAuth の provider id。環境変数があれば優先。なければ line → custom:line の順で試す。 */
+export function getLineProviderCandidates(): Provider[] {
+  const fromEnv = process.env.NEXT_PUBLIC_SUPABASE_LINE_PROVIDER?.trim();
+  const candidates: string[] = [];
+  if (fromEnv) candidates.push(fromEnv);
+  candidates.push("line", "custom:line");
+  return [...new Set(candidates)] as Provider[];
+}
+
+function isProviderConfigError(message: string, code?: string): boolean {
+  const m = message.toLowerCase();
+  const c = (code ?? "").toLowerCase();
+  return (
+    /unsupported.?provider|provider.*(disabled|not.?enabled|not.?found)|invalid.?provider|validation_failed/i.test(
+      m
+    ) ||
+    c.includes("validation") ||
+    c.includes("provider")
+  );
 }
 
 export async function getAuthUser(): Promise<User | null> {
@@ -57,7 +78,6 @@ export async function sendEmailVerificationLink(
   }
 
   // 新規も既存も同じ OTP／マジックリンク送信。
-  // 「すでに登録済み」でも通常はメールが送られる。送れない＝送信側の失敗が多い。
   const { error } = await supabase.auth.signInWithOtp({
     email: trimmed,
     options: {
@@ -99,34 +119,62 @@ export async function signInWithLineOAuth(
     };
   }
 
-  // Supabase には組み込み LINE が無いため、カスタムプロバイダー custom:line を使う
-  const lineProvider =
-    (process.env.NEXT_PUBLIC_SUPABASE_LINE_PROVIDER as string | undefined) ??
-    "custom:line";
+  const redirectTo = getAuthCallbackUrl(nextPath);
+  const candidates = getLineProviderCandidates();
+  let lastError: { message: string; status?: number; code?: string } | null =
+    null;
 
-  const { error } = await supabase.auth.signInWithOAuth({
-    // @ts-expect-error custom OAuth provider id (e.g. custom:line)
-    provider: lineProvider,
-    options: {
-      redirectTo: getAuthCallbackUrl(nextPath),
-      scopes: "profile openid",
-      queryParams: {
-        bot_prompt: "normal",
+  for (const provider of candidates) {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo,
+        // LINE Login: ログイン用のみ（友だち追加の bot_prompt は付けない）
+        scopes: "openid profile",
+        skipBrowserRedirect: true,
       },
-    },
-  });
+    });
 
-  if (error) {
-    return {
-      ok: false,
-      error: explainAuthError(error.message, {
+    if (error) {
+      lastError = {
+        message: error.message,
         status: error.status,
         code: error.code,
+      };
+      if (isProviderConfigError(error.message, error.code)) {
+        continue;
+      }
+      return {
+        ok: false,
+        error: explainAuthError(error.message, {
+          status: error.status,
+          code: error.code,
+        }),
+      };
+    }
+
+    if (data?.url) {
+      window.location.assign(data.url);
+      return { ok: true };
+    }
+  }
+
+  if (lastError) {
+    return {
+      ok: false,
+      error: explainAuthError(lastError.message, {
+        status: lastError.status,
+        code: lastError.code,
       }),
     };
   }
 
-  return { ok: true };
+  return {
+    ok: false,
+    error: explainAuthError(
+      "LINEでの登録を開始できませんでした。運営側のLINE設定を確認してください。"
+    ),
+  };
 }
 
 export async function signOutVerifiedUser(): Promise<void> {

@@ -96,7 +96,7 @@ function InviteAcceptInner() {
         <CardContent className="space-y-4 p-5">
           <h1 className="text-lg font-bold">家族からの招待</h1>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            家族などから渡された、生活再建の案内の続きに参加します。相手のログイン情報は不要です。あなた自身のメールまたはLINEでログインしてから参加してください。
+            家族などから渡された、生活再建の案内の続きに参加します。相手のログイン情報は不要です。あなた自身のLINEでログインしてから参加してください。
           </p>
 
           <label className="block space-y-2 text-sm font-medium">

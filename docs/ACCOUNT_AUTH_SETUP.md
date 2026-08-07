@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |------|------|
-| 目的 | マイページ登録（ユーザーのメール / ユーザーのLINEアカウント） |
+| 目的 | マイページ登録（本線: LINE / 予備: メール） |
 | 配信 | メッセージ配信は行いません |
 
 ---
@@ -23,13 +23,15 @@ Vercel に次の2つが入っていないと、送信できません。
 
 ```
 ユーザー
-  ├ あなたのメール → 登録用リンク → マイページ登録済み
   └ あなたのLINE   → LINEログイン → マイページ登録済み
+  （予備）メール → 登録用リンク → マイページ登録済み
                 ↓
          Supabase Auth（サーバー）
                 ↓
          進捗データをクラウドに保存（端末をまたいで引き継ぎ）
 ```
+
+くわしい LINE の直し方は **`docs/LINE登録を直す手順.md`** を見てください。
 
 ---
 
@@ -60,55 +62,26 @@ Supabase **SQL Editor** で `/database/supabase-schema.sql` を実行（未実�
 
 ---
 
-## ステップ3 — メール登録（エラーを止める）
+## ステップ3 — LINE 登録（本線）
 
-くわしい手順は **`docs/登録メールエラーを止める手順.md`** を見てください（ゆうさん向け・番号つき）。
+くわしい手順は **`docs/LINE登録を直す手順.md`** を見てください。
 
 要点だけ：
 
-1. Resend で API Key と送り元ドメインを用意する  
-2. Supabase → Project Settings → Authentication → **SMTP Settings** に Resend を入れる  
-3. Authentication → Providers → Email を ON  
-4. Site URL / Redirect URL を本番に合わせる  
-5. マイページからテスト送信する  
-
-メールが使えるまでのあいだは、利用者に **LINE 登録** を案内してください。
+1. LINE Developers で **LINE Login** チャネルを作る  
+2. Callback URL に Supabase の `/auth/v1/callback` を入れる  
+3. Supabase → Authentication → Providers → **LINE** を ON（Channel ID / Secret）  
+4. **メールがなくても登録できる** を ON  
+5. Site URL / Redirect URL を本番に合わせる  
+6. マイページから「LINEでログイン・登録」を試す  
 
 ---
 
-## ステップ4 — LINE 登録（任意）
+## ステップ4 — メール登録（予備）
 
-> **LINE Login** チャネルを作成します（ユーザー自身のアカウントでログインする仕組みです）。
+くわしい手順は **`docs/登録メールエラーを止める手順.md`** を見てください。
 
-### 4-1. LINE Developers Console
-
-1. https://developers.line.biz/console/ にログイン
-2. プロバイダーを選択（なければ作成）
-3. **Create a new channel** → **LINE Login**
-4. チャネル名例: `生活再建ナビ ログイン`
-5. **App types**: Web app にチェック
-6. 作成後、**Basic settings** タブでメモ:
-   - **Channel ID**
-   - **Channel secret**
-
-### 4-2. Callback URL（LINE側）
-
-**LINE Login → Channel → LINE Login settings** で **Callback URL** に追加:
-
-```
-https://<your-supabase-project-ref>.supabase.co/auth/v1/callback
-```
-
-（Supabase ダッシュボード → Authentication → Providers → LINE に表示される Callback URL をそのままコピー）
-
-### 4-3. Supabase 側
-
-1. **Authentication → Providers → LINE** を **ON**
-2. Channel ID / Channel Secret を貼り付け
-3. Save
-4. Vercel を Redeploy
-
-**動作確認:** アプリ → 設定 → マイページ登録 → LINEで登録する
+メールはドメイン認証などが必要なため、**本線は LINE** です。
 
 ---
 
@@ -117,6 +90,7 @@ https://<your-supabase-project-ref>.supabase.co/auth/v1/callback
 - [ ] Supabase プロジェクト URL を Vercel に設定した
 - [ ] Supabase anon key を Vercel に設定した
 - [ ] Redirect URL を Supabase に登録した
-- [ ] Email provider を ON にした
+- [ ] LINE Login チャネルを作成し Supabase に接続した
+- [ ] メールなしユーザーを許可した
 - [ ] Vercel を Redeploy した
-- [ ] （任意）LINE Login チャネルを作成し Supabase に接続した
+- [ ] （予備）Email / SMTP を設定した

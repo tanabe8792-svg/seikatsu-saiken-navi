@@ -88,7 +88,7 @@ export default function DeleteAccountPage() {
               <li>この端末に保存した状況・進捗・写真</li>
               <li>記録番号や家族招待の参加状態（この端末分）</li>
               {identity ? (
-                <li>マイページのログイン情報（メール／LINE）</li>
+                <li>マイページのログイン情報（LINEなど）</li>
               ) : (
                 <li>
                   いまはログインしていません。端末内のデータだけが消えます

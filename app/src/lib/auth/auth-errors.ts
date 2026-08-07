@@ -109,14 +109,47 @@ export function explainAuthError(
     };
   }
 
+  if (
+    /access_denied|user.?denied|user.?cancel|キャンセル|denied_by_user/i.test(
+      rawMessage
+    )
+  ) {
+    return {
+      title: "LINEでのログインをキャンセルしました",
+      cause: "LINEの画面で許可しなかったか、途中で戻った可能性があります。",
+      actions: [
+        "もう一度「LINEでログイン・登録」を押してください。",
+        "やることの進捗は、この端末に残っています。",
+      ],
+    };
+  }
+
+  if (
+    /unsupported.?provider|provider.*(disabled|not.?enabled)|invalid.?provider|line.*(fail|error)|oauth.*error|custom:line/i.test(
+      rawMessage
+    ) ||
+    code.includes("provider")
+  ) {
+    return {
+      title: "いまLINEでログインできませんでした",
+      cause:
+        "LINEログインの準備がまだ整っていないか、一時的につながらない状態です。",
+      actions: [
+        "1〜2分待ってから、もう一度お試しください。",
+        "直らないときは、改善の声からお知らせください。",
+        "やることの進捗は、この端末に残っています。",
+      ],
+    };
+  }
+
   if (/redirect|redirect_uri|callback|site url|allow.?list/.test(msg)) {
     return {
       title: "ログインの戻り先設定に問題があります",
       cause:
-        "登録メールのリンク先が、サイト設定と合っていない可能性があります（運営側の設定）。",
+        "LINEやメールから戻る先が、サイト設定と合っていない可能性があります（運営側の設定）。",
       actions: [
         "時間をおいてもう一度試してください。",
-        "直らないときは LINE での登録を試すか、改善の声からお知らせください。",
+        "直らないときは、改善の声からお知らせください。",
       ],
     };
   }

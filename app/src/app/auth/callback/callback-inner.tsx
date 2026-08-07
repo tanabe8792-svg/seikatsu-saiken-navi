@@ -39,13 +39,26 @@ export default function AuthCallbackInner() {
 
       const next = searchParams.get("next") ?? "/mypage";
       const code = searchParams.get("code");
+      const oauthError =
+        searchParams.get("error_description") || searchParams.get("error");
+
+      if (oauthError) {
+        const explained = explainAuthError(decodeURIComponent(oauthError));
+        setErrorTitle(explained.title);
+        setErrorCause(explained.cause);
+        setErrorActions(explained.actions);
+        return;
+      }
 
       try {
         if (code) {
           const { error: exchangeError } =
             await supabase.auth.exchangeCodeForSession(code);
           if (exchangeError) {
-            const explained = explainAuthError(exchangeError.message);
+            const explained = explainAuthError(exchangeError.message, {
+              status: exchangeError.status,
+              code: exchangeError.code,
+            });
             setErrorTitle(explained.title);
             setErrorCause(explained.cause);
             setErrorActions(explained.actions);
@@ -61,9 +74,8 @@ export default function AuthCallbackInner() {
           setErrorTitle(explained.title);
           setErrorCause(explained.cause);
           setErrorActions([
-            "もう一度マイページから登録用メールを送ってください。",
-            "届いたメールの新しいリンクを開いてください。",
-            "LINEでの登録も試せます。",
+            "マイページに戻り、「LINEでログイン・登録」をもう一度押してください。",
+            "やることの進捗は、この端末に残っています。",
           ]);
           return;
         }
@@ -115,6 +127,9 @@ export default function AuthCallbackInner() {
                 ))}
               </ul>
             )}
+            <Button asChild className="h-12 w-full">
+              <a href="/mypage#mypage-register">LINEでやり直す</a>
+            </Button>
             <Button asChild variant="outline" className="h-12 w-full">
               <a href="/mypage">マイページに戻る</a>
             </Button>

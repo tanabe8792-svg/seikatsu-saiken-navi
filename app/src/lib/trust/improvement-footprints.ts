@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-line-first-auth",
+    date: "2026-08-07",
+    title: "マイページ登録をLINE中心にしました",
+    summary:
+      "ログイン・登録の本線をLINEに切り替えました。メールは予備です。LINEで始められないときの案内も分かりやすくしています。",
+  },
+  {
     id: "2026-08-07-auth-email-warning",
     date: "2026-08-07",
     title: "メール登録の注意とエラー案内を整えました",

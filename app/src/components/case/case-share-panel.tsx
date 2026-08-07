@@ -64,7 +64,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
         <CardContent className="space-y-2 p-5 text-sm leading-relaxed text-muted-foreground">
           <p className="font-medium text-foreground">家族に代わりに操作してもらう</p>
           <p>
-            家族が代わりに確認を進めるときは、先にメールまたはLINEでログインしてください。
+            家族が代わりに確認を進めるときは、先にLINEでログインしてください。
             ログイン用の番号やパスワードを教え合う必要はありません。この記録への招待だけを送ります。
           </p>
         </CardContent>
@@ -140,7 +140,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
       `リンク: ${url}`,
       `招待コード: ${code}`,
       "",
-      "あなた自身のメールまたはLINEでログインして参加できます。",
+      "あなた自身のLINEでログインして参加できます。",
       "相手のログイン情報を教え合う必要はありません。",
       "無理のない範囲で大丈夫です。",
     ].join("\n");

@@ -12,7 +12,7 @@ import { isSupabaseConfigured } from "./config";
 
 function mapRpcError(message: string): string {
   if (/LOGIN_REQUIRED/i.test(message)) {
-    return "ログインが必要です。メールまたはLINEでログインしてください。";
+    return "ログインが必要です。LINEでログインしてください。";
   }
   if (/OWNER_ONLY/i.test(message)) {
     return "案内の続きを家族に渡せるのは、はじめに記録を始めた人だけです。";

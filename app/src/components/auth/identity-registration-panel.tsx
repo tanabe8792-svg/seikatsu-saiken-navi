@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
+  ChevronDown,
   Loader2,
-  LogIn,
   LogOut,
   Mail,
   MessageCircle,
@@ -16,28 +16,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/auth-provider";
-import { cn } from "@/lib/utils";
 import {
   explainAuthError,
   type UserFacingAuthError,
 } from "@/lib/auth/auth-errors";
 
-type AuthMode = "login" | "register";
-type ContactMethod = "email" | "line";
-
 interface IdentityRegistrationPanelProps {
-  /** 見出し（省略時はモードに応じて切替） */
+  /** 見出し（省略時は「ログイン・登録」） */
   title?: string;
-  /** 初期モード */
-  defaultMode?: AuthMode;
+  /** 互換のため残す（表示には使わない） */
+  defaultMode?: "login" | "register";
   /** ログイン成功後の案内リンク */
   afterLoginHref?: string;
   afterLoginLabel?: string;
 }
 
 export function IdentityRegistrationPanel({
-  title,
-  defaultMode = "login",
+  title = "ログイン・登録",
   afterLoginHref = "/mypage",
   afterLoginLabel = "マイページを見る",
 }: IdentityRegistrationPanelProps) {
@@ -53,9 +48,8 @@ export function IdentityRegistrationPanel({
   } = useAuth();
 
   const searchParams = useSearchParams();
-  const [mode, setMode] = useState<AuthMode>(defaultMode);
-  const [method, setMethod] = useState<ContactMethod>("email");
   const [email, setEmail] = useState("");
+  const [showEmail, setShowEmail] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<UserFacingAuthError | null>(null);
   const [emailSent, setEmailSent] = useState(false);
@@ -68,6 +62,11 @@ export function IdentityRegistrationPanel({
     if (searchParams.get("verified")) {
       setVerifiedBanner(true);
       void refresh();
+    }
+    const oauthError =
+      searchParams.get("error_description") || searchParams.get("error");
+    if (oauthError) {
+      setError(explainAuthError(decodeURIComponent(oauthError)));
     }
   }, [searchParams, refresh]);
 
@@ -141,21 +140,18 @@ export function IdentityRegistrationPanel({
     );
   }
 
-  const heading =
-    title ?? (mode === "login" ? "ログイン" : "マイページ登録");
-
   return (
     <Card id="mypage-register" className="border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <UserRound className="h-5 w-5 text-brand-green" />
-          {heading}
+          {title}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
         {verifiedBanner && identity && (
           <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
-            {mode === "login" ? "ログインできました。" : "マイページ登録が完了しました。"}
+            ログインできました。
             {identityLabel ? ` ${identityLabel}` : ""}
           </p>
         )}
@@ -185,147 +181,100 @@ export function IdentityRegistrationPanel({
           </div>
         ) : (
           <>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              メールまたはLINEで、かんたんにログイン・登録できます。登録すると、保存した内容をマイページで見返せます。LINEはログインのためだけに使います（メッセージのお知らせではありません）。
+            <p className="text-base leading-relaxed text-muted-foreground">
+              LINEでかんたんにログイン・登録できます。登録すると、保存した内容をマイページで見返せます。LINEはログインのためだけに使います（メッセージのお知らせではありません）。
             </p>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
+              <p className="text-base leading-relaxed text-muted-foreground">
+                はじめての人も、以前登録した人も、同じボタンから進めます。ボタンを押すとLINEの画面が開きます。
+              </p>
               <Button
                 type="button"
-                variant={mode === "login" ? "default" : "outline"}
-                className="h-12"
-                onClick={() => {
-                  setMode("login");
-                  setEmailSent(false);
-                  setError(null);
-                }}
+                className="h-14 w-full text-base"
+                disabled={busy}
+                onClick={() => void handleLineLogin()}
               >
-                <LogIn className="h-4 w-4" />
-                ログイン
-              </Button>
-              <Button
-                type="button"
-                variant={mode === "register" ? "default" : "outline"}
-                className="h-12"
-                onClick={() => {
-                  setMode("register");
-                  setEmailSent(false);
-                  setError(null);
-                }}
-              >
-                はじめて登録する
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setMethod("email")}
-                className={cn(
-                  "rounded-xl border px-3 py-3 text-sm font-medium",
-                  method === "email"
-                    ? "border-brand-green bg-muted/50 ring-1 ring-brand-green/20"
-                    : "border-border"
-                )}
-              >
-                <Mail className="mx-auto mb-1 h-5 w-5" />
-                メール
-              </button>
-              <button
-                type="button"
-                onClick={() => setMethod("line")}
-                className={cn(
-                  "rounded-xl border px-3 py-3 text-sm font-medium",
-                  method === "line"
-                    ? "border-brand-green bg-muted/50 ring-1 ring-brand-green/20"
-                    : "border-border"
-                )}
-              >
-                <MessageCircle className="mx-auto mb-1 h-5 w-5" />
-                LINE
-              </button>
-            </div>
-
-            {method === "email" && (
-              <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
-                <label htmlFor="auth-email" className="text-base font-medium">
-                  メールアドレス
-                </label>
-                <Input
-                  id="auth-email"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  placeholder="example@email.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setEmailSent(false);
-                    setError(null);
-                  }}
-                  className="h-12 text-base"
-                />
-                <p className="rounded-lg border border-amber-200/80 bg-amber-50/80 px-3 py-3 text-base leading-relaxed text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-50">
-                  同じメールで以前登録した人・別の端末から続ける人へ：届いたメールのリンクを開いてください。この端末に残った進捗は消えません。
-                </p>
-                {emailSent ? (
-                  <div
-                    className="space-y-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30"
-                    role="status"
-                  >
-                    <p className="text-base font-semibold text-amber-950 dark:text-amber-50">
-                      メールを送りました。届いたリンクを開いてください
-                    </p>
-                    <p className="text-base leading-relaxed text-amber-900 dark:text-amber-100">
-                      迷惑メールフォルダに入ることがあります。
-                    </p>
-                  </div>
+                {busy ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <p className="text-base leading-relaxed text-muted-foreground">
-                    下のボタンを押すと、リンク付きのメールが届きます。
-                  </p>
+                  <>
+                    <MessageCircle className="h-5 w-5" />
+                    LINEでログイン・登録
+                  </>
                 )}
-                <Button
-                  type="button"
-                  className="h-12 w-full text-base"
-                  disabled={!canSendEmail}
-                  onClick={() => void handleSendEmail()}
-                >
-                  {busy ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : mode === "login" ? (
-                    "ログイン用メールを送信"
-                  ) : (
-                    "登録用メールを送信"
-                  )}
-                </Button>
-              </div>
-            )}
+              </Button>
+            </div>
 
-            {method === "line" && (
-              <div className="space-y-3 rounded-xl border border-border bg-card px-4 py-4">
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  LINEアカウントで
-                  {mode === "login" ? "ログイン" : "登録"}
-                  できます。ボタンを押すとLINEの画面が開きます。LINEはログイン用で、メッセージ通知ではありません。
-                </p>
-                <Button
-                  type="button"
-                  className="h-12 w-full"
-                  disabled={busy}
-                  onClick={() => void handleLineLogin()}
-                >
-                  {busy ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <>
-                      <MessageCircle className="h-5 w-5" />
-                      LINEで{mode === "login" ? "ログイン" : "登録する"}
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
+            <div className="rounded-xl border border-border">
+              <button
+                type="button"
+                className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left text-base font-medium"
+                onClick={() => {
+                  setShowEmail((v) => !v);
+                  setError(null);
+                }}
+                aria-expanded={showEmail}
+              >
+                <span className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  メールで続ける（予備）
+                </span>
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 transition-transform ${showEmail ? "rotate-180" : ""}`}
+                />
+              </button>
+              {showEmail && (
+                <div className="space-y-3 border-t border-border px-4 py-4">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    メール登録は準備の都合で届かないことがあります。うまくいかないときは、上のLINEをお使いください。
+                  </p>
+                  <label htmlFor="auth-email" className="text-base font-medium">
+                    メールアドレス
+                  </label>
+                  <Input
+                    id="auth-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="example@email.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailSent(false);
+                      setError(null);
+                    }}
+                    className="h-12 text-base"
+                  />
+                  {emailSent ? (
+                    <div
+                      className="space-y-2 rounded-xl border-2 border-amber-300 bg-amber-50 px-4 py-3 dark:border-amber-700 dark:bg-amber-950/30"
+                      role="status"
+                    >
+                      <p className="text-base font-semibold text-amber-950 dark:text-amber-50">
+                        メールを送りました。届いたリンクを開いてください
+                      </p>
+                      <p className="text-base leading-relaxed text-amber-900 dark:text-amber-100">
+                        迷惑メールフォルダに入ることがあります。届かないときはLINEをお使いください。
+                      </p>
+                    </div>
+                  ) : null}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-12 w-full text-base"
+                    disabled={!canSendEmail}
+                    onClick={() => void handleSendEmail()}
+                  >
+                    {busy ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      "ログイン用メールを送信"
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
           </>
         )}
 
@@ -354,21 +303,18 @@ export function IdentityRegistrationPanel({
                 ))}
               </ul>
             </div>
-            {method === "email" && (
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 w-full"
-                disabled={busy}
-                onClick={() => {
-                  setMethod("line");
-                  setError(null);
-                }}
-              >
-                <MessageCircle className="h-4 w-4" />
-                LINEで登録・ログインを試す
-              </Button>
-            )}
+            <Button
+              type="button"
+              className="h-11 w-full"
+              disabled={busy}
+              onClick={() => {
+                setError(null);
+                void handleLineLogin();
+              }}
+            >
+              <MessageCircle className="h-4 w-4" />
+              もう一度LINEで試す
+            </Button>
           </div>
         )}
       </CardContent>

@@ -137,11 +137,11 @@ export default function AboutPage() {
 
         <TrustSection heading="マイページ登録" id="account-setup">
           <p>
-            メールまたはLINEで、かんたんに登録・ログインできます。登録すると、保存した内容をマイページで見返せます。
+            LINEで、かんたんに登録・ログインできます。登録すると、保存した内容をマイページで見返せます。
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-            <li>メール：リンク付きメールを受け取り、リンクをタップ</li>
             <li>LINE：ログインのためだけに使います（メッセージのお知らせではありません）</li>
+            <li>メール登録は予備です（届かないことがあります）</li>
             <li>
               重要なお知らせのメール受け取りは「設定」から希望できます
             </li>
