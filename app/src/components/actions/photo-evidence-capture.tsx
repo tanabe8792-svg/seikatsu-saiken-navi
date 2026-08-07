@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { EvidenceInput } from "@/lib/case-management/evidence";
 import {
   listPhotosForAction,
+  offerSavedPhotosToDeviceAlbum,
   savePhotosFromFiles,
   type StoredPhotoMeta,
 } from "@/lib/case-management/photo-store";
@@ -87,11 +88,23 @@ export function PhotoEvidenceCapture({
         },
       };
       onSubmitEvidence(actionId, evidence);
-      showToast(
-        alreadyHasEvidence || refreshed.length > metas.length
-          ? `${metas.length}枚を端末に追加しました`
-          : `${metas.length}枚を端末に残しました`
-      );
+
+      const album = await offerSavedPhotosToDeviceAlbum(metas.map((m) => m.id));
+      if (album.ok > 0 && album.mode === "shared") {
+        showToast(
+          `${metas.length}枚をサイトに残し、アルバム保存の画面を開きました（「画像を保存」を選んでください）`
+        );
+      } else if (album.ok > 0) {
+        showToast(
+          `${metas.length}枚をサイトに残し、端末への保存も開始しました（ダウンロード／ファイルを確認）`
+        );
+      } else {
+        showToast(
+          alreadyHasEvidence || refreshed.length > metas.length
+            ? `${metas.length}枚をサイトに追加しました。下の「見返す」からアルバムにも保存できます`
+            : `${metas.length}枚をサイトに残しました。下の「見返す」からアルバムにも保存できます`
+        );
+      }
     } catch (error) {
       console.error(error);
       showToast("写真の保存に失敗しました。もう一度お試しください");
@@ -170,7 +183,7 @@ export function PhotoEvidenceCapture({
         </div>
 
         <div className="rounded-lg border bg-background/70 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
-          写真はサーバーには送りません。この端末の中だけに残ります。機種変更の前に、必要ならアルバムにもコピーしてください。
+          写真はサーバーには送りません。このサイト（この端末の中）に残します。あわせて、アルバムやファイルへ保存する画面も開きます。機種によっては「画像を保存」を選ぶ必要があります。
         </div>
 
         <div className="space-y-2">

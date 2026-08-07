@@ -37,6 +37,7 @@ export function BottomNav() {
                 pathname.startsWith("/about") ||
                 pathname.startsWith("/settings") ||
                 pathname.startsWith("/faq") ||
+                pathname.startsWith("/updates") ||
                 pathname.startsWith("/chat") ||
                 pathname.startsWith("/start")));
 

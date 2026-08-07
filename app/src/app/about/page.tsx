@@ -53,6 +53,9 @@ export default function AboutPage() {
         <TrustSection heading={TRUST_DEVELOPER.heading}>
           <div className="rounded-xl border bg-background/80 px-4 py-4">
             <p className="text-lg font-semibold">{TRUST_DEVELOPER.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {TRUST_DEVELOPER.nameReading}
+            </p>
             <p className="mt-1 text-sm text-muted-foreground">
               {TRUST_DEVELOPER.affiliation}
             </p>
@@ -96,6 +99,18 @@ export default function AboutPage() {
             {TRUST_CONTINUITY_SUPPORT.formLead}
           </p>
           <FeedbackForm kind="support" />
+        </TrustSection>
+
+        <TrustSection heading="改善の足跡" id="updates">
+          <p>
+            最近直したこと・足したことを、新しい順に見られます（この端末だけで表示します）。
+          </p>
+          <Link
+            href="/updates"
+            className="inline-flex text-sm font-medium text-primary underline-offset-2 hover:underline"
+          >
+            改善の足跡を見る
+          </Link>
         </TrustSection>
 
         <TrustSection heading="この案内を広める" id="share">

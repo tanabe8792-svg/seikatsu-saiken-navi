@@ -25,12 +25,11 @@ export const TRUST_WHY_BUILT = {
 
 export const TRUST_DEVELOPER = {
   heading: "このサービスを作っている人",
-  /** 表示用のぼかした呼び方（本名は出さない） */
-  name: "熊本在住の一個人",
-  nameReading: "",
-  affiliation: "熊本で学びながら開発しています",
+  name: "田辺 優",
+  nameReading: "たなべ ゆう",
+  affiliation: "熊本学園大学大学院 会計専門職研究科",
   body: [
-    "被災地でのボランティアなどを通じて感じた課題をもとに、個人で作っています。行政の公式サービスではありません。",
+    "熊本で学びながら、被災地でのボランティアなどにも関わっています。行政の公式サービスではありません。",
   ],
 } as const;
 
@@ -83,7 +82,7 @@ export const SUPPORT_DONATION_TIERS = [
 ] as const;
 
 export const TRUST_FAQ_OPERATOR_ANSWER =
-  "熊本在住の一個人が、被災地でのボランティアなどを通じて感じた課題をもとに作っています。行政の公式サービスではありません。詳しくは「その他」→「このサービスについて」をご覧ください。";
+  "田辺 優（たなべ ゆう／熊本学園大学大学院 会計専門職研究科）が、被災地でのボランティアなどを通じて感じた課題をもとに作っています。詳しくは「その他」→「このサービスについて」をご覧ください。";
 
 /** Google Forms 等 — NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL（任意の外部フォーム） */
 export function getTrustFeedbackFormUrl(): string | undefined {

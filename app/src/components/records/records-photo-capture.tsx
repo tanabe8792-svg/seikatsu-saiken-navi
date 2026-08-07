@@ -3,7 +3,7 @@
 import { useId, useRef, useState } from "react";
 import { Camera, ImagePlus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { savePhotosFromFiles } from "@/lib/case-management/photo-store";
+import { savePhotosFromFiles, offerSavedPhotosToDeviceAlbum } from "@/lib/case-management/photo-store";
 import { useToast } from "@/providers/toast-provider";
 
 /** 被害写真ページ用：端末内にだけ残す簡易撮影 */
@@ -32,12 +32,23 @@ export function RecordsPhotoCapture({
     }
     setSaving(true);
     try {
-      await savePhotosFromFiles({
+      const metas = await savePhotosFromFiles({
         caseId,
         actionId: "rw-j03-photo",
         files,
       });
-      showToast(`${files.length}枚を端末に残しました`);
+      const album = await offerSavedPhotosToDeviceAlbum(metas.map((m) => m.id));
+      if (album.ok > 0 && album.mode === "shared") {
+        showToast(
+          `${files.length}枚をサイトに残し、アルバム保存の画面を開きました`
+        );
+      } else if (album.ok > 0) {
+        showToast(`${files.length}枚をサイトに残し、端末への保存も開始しました`);
+      } else {
+        showToast(
+          `${files.length}枚をサイトに残しました。下からアルバムにも保存できます`
+        );
+      }
       onSaved();
     } catch {
       showToast("保存できませんでした（端末の制限の可能性があります）");
@@ -96,7 +107,7 @@ export function RecordsPhotoCapture({
         </Button>
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        写真はサーバーに送らず、この端末の中だけに残します。容量や端末の負担が気になるときは、撮影をスキップして大丈夫です。
+        写真はサーバーに送らず、このサイトと端末に残します。撮影後、アルバムやファイルへの保存画面が出ることがあります。
       </p>
     </div>
   );

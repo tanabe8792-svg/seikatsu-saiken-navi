@@ -7,6 +7,7 @@ import {
   Camera,
   ChevronRight,
   HelpCircle,
+  History,
   Info,
   ListRestart,
   Loader2,
@@ -233,6 +234,12 @@ export default function MyPage() {
             icon={Info}
             label="このサービスについて"
             note="誰が作っているか、情報の扱い方"
+          />
+          <MenuLink
+            href="/updates"
+            icon={History}
+            label="改善の足跡"
+            note="最近直したこと・足したこと"
           />
           <MenuLink
             href="/faq"

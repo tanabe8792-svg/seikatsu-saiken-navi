@@ -225,15 +225,94 @@ export async function downloadPhotoToDevice(
 ): Promise<boolean> {
   const blob = await getPhotoBlob(photoId);
   if (!blob) return false;
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename ?? `記録写真-${photoId}.jpg`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-  return true;
+  return offerBlobToDeviceAlbum(
+    blob,
+    filename ?? `記録写真-${photoId}.jpg`
+  );
+}
+
+/**
+ * アルバム／ダウンロードへ残す（サーバー不要）。
+ * iOS などでは共有シートから「画像を保存」が確実なことが多い。
+ */
+export async function offerBlobToDeviceAlbum(
+  blob: Blob,
+  filename: string
+): Promise<"shared" | "downloaded" | "failed"> {
+  const mime = blob.type || "image/jpeg";
+  const file = new File([blob], filename, { type: mime });
+
+  try {
+    if (
+      typeof navigator !== "undefined" &&
+      typeof navigator.share === "function" &&
+      typeof navigator.canShare === "function" &&
+      navigator.canShare({ files: [file] })
+    ) {
+      await navigator.share({
+        files: [file],
+        title: "被害の記録写真",
+      });
+      return "shared";
+    }
+  } catch (error) {
+    // ユーザーが共有をキャンセルした場合は失敗扱いにしない（ダウンロードへ）
+    if (
+      error instanceof DOMException &&
+      (error.name === "AbortError" || error.name === "NotAllowedError")
+    ) {
+      // fall through to download
+    } else {
+      console.warn("[photos] share failed, fallback to download", error);
+    }
+  }
+
+  try {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    return "downloaded";
+  } catch {
+    return "failed";
+  }
+}
+
+/** 撮影直後に、サイト内保存に加えて端末側へも残す */
+export async function offerSavedPhotosToDeviceAlbum(
+  photoIds: string[]
+): Promise<{ ok: number; failed: number; mode: "shared" | "downloaded" | "mixed" | "none" }> {
+  let ok = 0;
+  let failed = 0;
+  const modes = new Set<"shared" | "downloaded">();
+
+  for (const id of photoIds) {
+    const blob = await getPhotoBlob(id);
+    if (!blob) {
+      failed += 1;
+      continue;
+    }
+    const result = await offerBlobToDeviceAlbum(
+      blob,
+      `生活再建ナビ-記録-${id.slice(-8)}.jpg`
+    );
+    if (result === "failed") failed += 1;
+    else {
+      ok += 1;
+      modes.add(result);
+    }
+  }
+
+  let mode: "shared" | "downloaded" | "mixed" | "none" = "none";
+  if (modes.size === 1) mode = [...modes][0]!;
+  else if (modes.size > 1) mode = "mixed";
+
+  return { ok, failed, mode };
 }
 
 export async function clearAllPhotos(): Promise<void> {
