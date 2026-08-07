@@ -33,16 +33,23 @@ https://sxhpjkhxzjwhjpbdltqx.supabase.co/auth/v1/callback
 
 ---
 
-## 手順2 — Supabase の LINE
+## 手順2 — Supabase の LINE（このナビは Custom OAuth）
+
+黒い画面に  
+`Unsupported provider: Provider line could not be found`  
+と出るときは、**組み込みの「line」ではなく `custom:line`** を使います。
 
 1. https://supabase.com/dashboard/project/sxhpjkhxzjwhjpbdltqx を開く  
 2. **Authentication** → **Sign In / Providers**  
-3. **LINE** を探す（または Custom providers の `line`）  
+3. **Custom providers**（または OAuth / OIDC）で名前が `line` のものを開く  
+   - アプリ側の ID は `custom:line` になります  
 4. **Enable** を ON  
 5. LINE の **Channel ID** / **Channel secret** を貼る  
 6. **メールがなくても登録できる**（Allow users without an email など）を **ON**  
    ※ LINE はメールを持たない人が多いです  
 7. Save  
+
+※ 組み込みの「LINE」プロバイダーがメニューにあっても、このプロジェクトでは使っていません。
 
 ---
 

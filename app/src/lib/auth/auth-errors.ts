@@ -125,17 +125,18 @@ export function explainAuthError(
   }
 
   if (
-    /unsupported.?provider|provider.*(disabled|not.?enabled)|invalid.?provider|line.*(fail|error)|oauth.*error|custom:line/i.test(
+    /unsupported.?provider|provider.*(disabled|not.?enabled)|could not be found|invalid.?provider|line.*(fail|error)|oauth.*error|custom:line|validation_failed/i.test(
       rawMessage
     ) ||
-    code.includes("provider")
+    code.includes("provider") ||
+    code.includes("validation_failed")
   ) {
     return {
       title: "いまLINEでログインできませんでした",
       cause:
-        "LINEログインの準備がまだ整っていないか、一時的につながらない状態です。",
+        "LINEログインのつながり設定が足りないか、一時的につながらない状態です。",
       actions: [
-        "1〜2分待ってから、もう一度お試しください。",
+        "もう一度「LINEでログイン・登録」を押してください。",
         "直らないときは、改善の声からお知らせください。",
         "やることの進捗は、この端末に残っています。",
       ],

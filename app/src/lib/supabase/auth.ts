@@ -20,13 +20,45 @@ export function getAuthCallbackUrl(nextPath = "/mypage"): string {
   return `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
 }
 
-/** LINE OAuth の provider id。環境変数があれば優先。なければ line → custom:line の順で試す。 */
+/**
+ * LINE OAuth の provider id。
+ * このプロジェクトは Custom OAuth の `custom:line` を使う。
+ * 組み込み `line` は未設定だと
+ * 「Unsupported provider: Provider line could not be found」になるため、先に試さない。
+ */
 export function getLineProviderCandidates(): Provider[] {
   const fromEnv = process.env.NEXT_PUBLIC_SUPABASE_LINE_PROVIDER?.trim();
-  const candidates: string[] = [];
-  if (fromEnv) candidates.push(fromEnv);
-  candidates.push("line", "custom:line");
-  return [...new Set(candidates)] as Provider[];
+  if (fromEnv) return [fromEnv as Provider];
+  return ["custom:line" as Provider];
+}
+
+/** authorize URL が未対応プロバイダーの JSON エラーでないか確認する */
+async function isOAuthAuthorizeUrlReady(url: string): Promise<boolean> {
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      redirect: "manual",
+      credentials: "omit",
+    });
+    // LINE へ飛ぶリダイレクトなら成功
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get("location") ?? "";
+      return /line\.me|access\.line/i.test(location) || location.length > 0;
+    }
+    const contentType = res.headers.get("content-type") ?? "";
+    if (contentType.includes("application/json") || res.status === 400) {
+      const text = await res.text();
+      if (
+        /unsupported provider|could not be found|validation_failed/i.test(text)
+      ) {
+        return false;
+      }
+    }
+    return res.ok;
+  } catch {
+    // CORS 等で確認できないときは、遷移して結果を見る
+    return true;
+  }
 }
 
 function isProviderConfigError(message: string, code?: string): boolean {
@@ -154,6 +186,15 @@ export async function signInWithLineOAuth(
     }
 
     if (data?.url) {
+      const ready = await isOAuthAuthorizeUrlReady(data.url);
+      if (!ready) {
+        lastError = {
+          message: `Unsupported provider: Provider ${provider} could not be found`,
+          status: 400,
+          code: "validation_failed",
+        };
+        continue;
+      }
       window.location.assign(data.url);
       return { ok: true };
     }
