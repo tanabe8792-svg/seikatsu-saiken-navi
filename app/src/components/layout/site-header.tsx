@@ -21,6 +21,8 @@ export function SiteHeader({
   onBack,
   backLabel = "← 戻る",
 }: SiteHeaderProps) {
+  const showPageTitle = Boolean(title && title !== APP_NAME);
+
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
       <div className="mx-auto flex h-14 max-w-lg items-center justify-between px-4">
@@ -40,7 +42,7 @@ export function SiteHeader({
           <SiteNavMenu />
         </div>
       </div>
-      {showBack && title !== APP_NAME && (
+      {showPageTitle && (
         <div className="mx-auto max-w-lg px-4 pb-3">
           <h1 className="text-xl font-semibold">{title}</h1>
         </div>

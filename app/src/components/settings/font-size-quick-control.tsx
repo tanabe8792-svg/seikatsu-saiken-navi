@@ -54,7 +54,7 @@ export function FontSizeQuickControl({
           prominent ? "text-sm" : "text-xs"
         )}
       >
-        見づらいときは「大きい」「特大」をタップしてください。
+        見えにくいときは「大きい」か「もっと大きい」を押してください。
       </p>
       <div className="mt-3 grid grid-cols-3 gap-2">
         {FONT_OPTIONS.map((size) => {
@@ -65,22 +65,14 @@ export function FontSizeQuickControl({
               type="button"
               variant={active ? "default" : "outline"}
               className={cn(
-                "h-auto min-h-[3rem] flex-col gap-0.5 py-2.5",
+                "h-auto min-h-[3rem] py-2.5",
+                prominent && "text-base",
                 prominent && size === "large" && !active && "border-brand-green/40"
               )}
               aria-pressed={active}
               onClick={() => setFontSize(size)}
             >
-              <span className={cn("font-semibold", prominent && "text-base")}>
-                {FONT_SIZE_LABELS[size]}
-              </span>
-              {prominent && (
-                <span className="text-[10px] font-normal opacity-80">
-                  {size === "normal" && "16px"}
-                  {size === "large" && "18px"}
-                  {size === "xlarge" && "20px"}
-                </span>
-              )}
+              <span className="font-semibold">{FONT_SIZE_LABELS[size]}</span>
             </Button>
           );
         })}

@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const MENU_LINKS = [
-  { href: "/", label: "ホーム" },
-  { href: "/actions", label: "やること一覧" },
+  { href: "/", label: "ホーム（いまの案内）" },
+  { href: "/actions", label: "やることの一覧" },
   { href: "/records", label: "記録した写真" },
   { href: "/mypage", label: "マイページ" },
-  { href: "/chat", label: "AI相談" },
-  { href: "/settings", label: "設定" },
+  { href: "/chat", label: "AIに質問する" },
+  { href: "/settings", label: "設定（文字の大きさなど）" },
   { href: "/about", label: "このサービスについて" },
   { href: "/faq", label: "よくある質問" },
 ] as const;

@@ -684,7 +684,7 @@ const GUIDES: Record<string, ActionWalkthrough> = {
   },
   "rw-j04-business-recovery": {
     actionId: "rw-j04-business-recovery",
-    plainTitle: "店舗・事業の再建支援を確認する",
+    plainTitle: "お店・仕事場の再建を確認する",
     explanation:
       "店舗・事業所が被災した場合、住家の手続きとは別に、中小企業・個人事業向けの相談窓口・融資・事業用り災証明があります。このページの「申請案内」から、県・市・商工会議所・公庫などの公式ページへ直接進めます。自分で検索しなくても大丈夫です。",
     whyNow:

@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-persona-ux-clarity",
+    date: "2026-08-07",
+    title: "見つけやすさと次の一手を整えました",
+    summary:
+      "下のメニューに「ホーム」を戻し、「その他」を「マイページ」に変えました。画面の見出しを出し、「いま確認する」からすぐ進めるようにしました。文字の大きさもホーム・やることから変えられます。",
+  },
+  {
     id: "2026-08-07-now-badge-visibility",
     date: "2026-08-07",
     title: "「いま確認する」の目印を大きくしました",

@@ -30,7 +30,7 @@ function mapRpcError(message: string): string {
     return "あなたがはじめに記録を始めた人です。";
   }
   if (/EDIT_FORBIDDEN/i.test(message)) {
-    return "この記録の書きかえは許可されていません。「見るだけ」の招待の場合は、家族に「書きかえもできる」招待を送ってもらってください。";
+    return "この記録の変更は許可されていません。「見るだけ」の招待の場合は、家族に「チェックやメモもできる」招待を送ってもらってください。";
   }
   if (/schema cache|does not exist|function .* not found/i.test(message)) {
     return "ただいま家族への共有機能の準備中です。しばらくしてから、もう一度お試しください。";

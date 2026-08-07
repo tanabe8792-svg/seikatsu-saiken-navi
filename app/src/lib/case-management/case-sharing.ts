@@ -27,7 +27,7 @@ export const OPERATIONAL_CASE_STATUS_LABELS: Record<
 
 export const CASE_ACCESS_LEVEL_LABELS: Record<CaseAccessLevel, string> = {
   view: "見るだけ",
-  edit: "書きかえもできる",
+  edit: "チェックやメモもできる",
 };
 
 /** 将来ロールを access_level に落とすときの既定 */

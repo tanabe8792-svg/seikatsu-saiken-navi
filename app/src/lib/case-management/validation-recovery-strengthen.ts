@@ -77,7 +77,7 @@ export function validateRecoveryStrengthenHelpers(): RecoveryStrengthenValidatio
   const steps: string[] = [];
 
   const recoveryDisplay = getRecoveryPhaseDisplay("recovery");
-  if (recoveryDisplay.title !== "生活の立て直し") {
+  if (recoveryDisplay.title !== "被害の記録と手続きの確認") {
     gaps.push(`段階表示: ${recoveryDisplay.title}`);
   }
   if (!recoveryDisplay.subtitle.includes("被害の記録")) {

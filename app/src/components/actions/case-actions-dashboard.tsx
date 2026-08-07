@@ -116,7 +116,7 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
             <p className="text-xs text-muted-foreground">どれでも開けます</p>
           </div>
           <p className="px-1 text-sm leading-relaxed text-muted-foreground">
-            オレンジ色の「いま確認する」が、次に進める項目です。スクロールして全体を見てから、「詳しく確認する」を押してください。順番は目安です。
+            オレンジ色の「いま確認する」が、次に進める項目です。スクロールして全体を見てから、「ここから進む」を押してください。順番は目安です。
           </p>
           <ul className="space-y-3">
             {pending.map((action, index) => (
@@ -138,13 +138,13 @@ export function CaseActionsDashboard({ caseFile }: CaseActionsDashboardProps) {
             <div className="flex flex-wrap items-center gap-2">
               <NowBadge size="lg" />
               <p className="text-base font-semibold text-foreground">
-                迷ったらここから（任意）
+                迷ったら、この項目から
               </p>
             </div>
             <ActionPreview action={current} />
             <Button asChild size="lg" className="h-12 w-full text-base">
               <Link href={getCaseActionDetailPath(current.id)}>
-                この項目を詳しく確認する
+                ここから進む
                 <ChevronRight className="h-5 w-5" />
               </Link>
             </Button>
@@ -264,7 +264,7 @@ function ActionRow({
                     : "text-muted-foreground"
                 }`}
               >
-                詳しく確認する
+                ここから進む
               </p>
             )}
           </div>

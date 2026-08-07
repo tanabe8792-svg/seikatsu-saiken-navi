@@ -126,7 +126,7 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
               value={steps}
               onChange={(e) => setSteps(e.target.value)}
               rows={3}
-              placeholder="例: やること一覧で → 「詳しく確認する」を押したら → 画面が開かなかった"
+              placeholder="例: やること一覧で → 「ここから進む」を押したら → 画面が開かなかった"
               className="text-base"
             />
           </div>

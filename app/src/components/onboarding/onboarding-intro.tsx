@@ -54,7 +54,7 @@ export function OnboardingIntro({
       </Card>
 
       <Button size="lg" className="h-14 w-full text-lg" onClick={onStart}>
-        質問をはじめる
+        状況を選んで案内を作る
       </Button>
       <p className="text-center text-sm text-muted-foreground">
         登録不要 · 無料 · 約2分です

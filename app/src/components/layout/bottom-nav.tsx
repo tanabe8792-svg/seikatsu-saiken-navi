@@ -2,15 +2,50 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CircleCheck, MoreHorizontal } from "lucide-react";
+import { CircleCheck, Home, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
-/** 2タブにしてスクロール領域を確保。ホームはヘッダー／メニューから。 */
+/** 3タブ：いまの案内・一覧・マイページをすぐ見つけられるようにする */
 const navItems = [
-  { href: "/actions", label: "やること", icon: CircleCheck },
-  { href: "/mypage", label: "その他", icon: MoreHorizontal },
+  { href: "/", label: "ホーム", icon: Home, match: "home" as const },
+  {
+    href: "/actions",
+    label: "やること",
+    icon: CircleCheck,
+    match: "actions" as const,
+  },
+  {
+    href: "/mypage",
+    label: "マイページ",
+    icon: UserRound,
+    match: "mypage" as const,
+  },
 ] as const;
+
+function isActive(
+  match: (typeof navItems)[number]["match"],
+  pathname: string
+): boolean {
+  if (match === "home") return pathname === "/";
+  if (match === "actions") {
+    return (
+      pathname.startsWith("/actions") ||
+      pathname.startsWith("/records") ||
+      pathname.startsWith("/deadlines")
+    );
+  }
+  return (
+    pathname.startsWith("/mypage") ||
+    pathname.startsWith("/about") ||
+    pathname.startsWith("/settings") ||
+    pathname.startsWith("/faq") ||
+    pathname.startsWith("/updates") ||
+    pathname.startsWith("/chat") ||
+    pathname.startsWith("/invite") ||
+    pathname.startsWith("/support")
+  );
+}
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -25,21 +60,9 @@ export function BottomNav() {
         minHeight: navHeightPx,
       }}
     >
-      <div className="mx-auto flex max-w-lg items-stretch justify-around px-2 py-1.5">
-        {navItems.map(({ href, label, icon: Icon }) => {
-          const active =
-            (href === "/actions" &&
-              (pathname === "/" ||
-                pathname.startsWith("/actions") ||
-                pathname.startsWith("/records"))) ||
-            (href === "/mypage" &&
-              (pathname.startsWith("/mypage") ||
-                pathname.startsWith("/about") ||
-                pathname.startsWith("/settings") ||
-                pathname.startsWith("/faq") ||
-                pathname.startsWith("/updates") ||
-                pathname.startsWith("/chat") ||
-                pathname.startsWith("/start")));
+      <div className="mx-auto flex max-w-lg items-stretch justify-around px-1 py-1.5">
+        {navItems.map(({ href, label, icon: Icon, match }) => {
+          const active = isActive(match, pathname);
 
           return (
             <Link
@@ -47,13 +70,13 @@ export function BottomNav() {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-w-[100px] flex-1 flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
+                "flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-lg px-2 py-1.5 text-sm font-semibold transition-colors",
                 active
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-6 w-6" aria-hidden />
               <span>{label}</span>
             </Link>
           );

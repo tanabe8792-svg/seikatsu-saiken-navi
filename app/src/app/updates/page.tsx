@@ -8,7 +8,7 @@ import {
 export default function UpdatesPage() {
   return (
     <>
-      <SiteHeader title="改善の足跡" showBack backHref="/mypage" />
+      <SiteHeader title="最近直したこと" showBack backHref="/mypage" />
       <main className="space-y-4 px-4 py-4 pb-28">
         <Card className="border-border bg-card">
           <CardContent className="space-y-2 p-5">

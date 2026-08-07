@@ -101,7 +101,7 @@ export const SUPPORT_DONATION_TIERS = [
 ] as const;
 
 export const TRUST_FAQ_OPERATOR_ANSWER =
-  "田辺 優（たなべ ゆう／熊本学園大学大学院 会計専門職研究科）が、被災地でのボランティアなどを通じて感じた課題をもとに作っています。詳しくは「その他」→「このサービスについて」をご覧ください。";
+  "田辺 優（たなべ ゆう／熊本学園大学大学院 会計専門職研究科）が、被災地でのボランティアなどを通じて感じた課題をもとに作っています。詳しくは「マイページ」→「このサービスについて」をご覧ください。";
 
 /** Google Forms 等 — NEXT_PUBLIC_TRUST_FEEDBACK_FORM_URL（任意の外部フォーム） */
 export function getTrustFeedbackFormUrl(): string | undefined {

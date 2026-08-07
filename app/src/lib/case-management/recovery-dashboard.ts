@@ -365,12 +365,12 @@ export function getRecoveryPhaseDisplay(
 ): RecoveryPhaseDisplay {
   if (mode === "recovery") {
     return {
-      title: "生活の立て直し",
+      title: "被害の記録と手続きの確認",
       subtitle: "被害の記録・支援制度・手続きを、順番に確認しています",
     };
   }
   return {
-    title: "いまは安全を優先",
+    title: "いまは安全の確認を優先",
     subtitle: "安全が取れてから、手続きの確認に進めます",
   };
 }

@@ -131,6 +131,7 @@ export function HomeDashboard() {
       return (
         <div className="space-y-4">
           <AreaWeatherCard municipalityName={profile.municipality} />
+          <FontSizeQuickControl className="mx-0" />
 
           {postJ00Welcome ? (
             <>
@@ -170,8 +171,9 @@ export function HomeDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="border-border bg-card">
+              <Card className="border-2 border-[hsl(24_90%_40%)] bg-accent/50">
                 <CardContent className="space-y-4 p-6">
+                  <NowBadge size="lg" />
                   <p className="text-sm font-medium text-muted-foreground">
                     {postJ00Welcome.firstStepLead}
                   </p>
@@ -184,14 +186,16 @@ export function HomeDashboard() {
                   <Button
                     size="lg"
                     className="h-14 w-full text-lg"
-                    onClick={() => router.push("/actions")}
+                    onClick={() =>
+                      router.push(getCaseActionDetailPath(current.id))
+                    }
                   >
                     <CheckCircle2 className="h-5 w-5" />
-                    やること一覧を見る
+                    ここから進む
                   </Button>
-                  <p className="text-center text-xs text-muted-foreground">
-                    一覧を見てから、確認したい項目を選べます
-                  </p>
+                  <Button asChild variant="outline" size="lg" className="h-12 w-full">
+                    <Link href="/actions">やることの一覧を見る</Link>
+                  </Button>
                 </CardContent>
               </Card>
 
@@ -233,7 +237,7 @@ export function HomeDashboard() {
                       className="w-full border-emerald-300 bg-background/80"
                       onClick={() => startRecoveryPhase()}
                     >
-                      生活の立て直しを始める
+                      安全のあとに、手続きの確認を始める
                     </Button>
                   </CardContent>
                 </Card>
@@ -243,9 +247,6 @@ export function HomeDashboard() {
                 <CardContent className="space-y-4 p-5">
                   <div className="flex flex-wrap items-center gap-2">
                     <NowBadge size="lg" />
-                    <p className="text-base font-semibold text-foreground">
-                      次に確認すること
-                    </p>
                   </div>
                   <p className="text-xl font-bold leading-snug">
                     {continuity.nextAction.headline}
@@ -268,12 +269,12 @@ export function HomeDashboard() {
                     {ui.showEvidenceButton && !ui.hasEvidence ? (
                       <>
                         <Camera className="h-5 w-5" />
-                        記録から確認する
+                        記録から進む
                       </>
                     ) : (
                       <>
                         <CheckCircle2 className="h-5 w-5" />
-                        詳しく確認する
+                        ここから進む
                       </>
                     )}
                   </Button>
@@ -470,7 +471,7 @@ export function HomeDashboard() {
                   <Button asChild variant="outline" className="h-12 w-full">
                     <Link href="/chat">
                       <MessageCircle className="h-4 w-4" />
-                      AI相談（任意）
+                      AIに質問する（任意）
                     </Link>
                   </Button>
                 </div>
@@ -484,6 +485,7 @@ export function HomeDashboard() {
     return (
       <div className="space-y-4">
         <AreaWeatherCard municipalityName={profile.municipality} />
+        <FontSizeQuickControl className="mx-0" />
 
         <Card className="border-border bg-card">
           <CardContent className="space-y-4 p-6">
@@ -495,12 +497,12 @@ export function HomeDashboard() {
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground">
               {progress.total > 0 && progress.completed >= progress.total
-                ? "いま優先して確認する項目は一通り終えています。やること一覧で見返せます。"
-                : "次に確認することは、やること一覧にまとめています。上から順に進めましょう。"}
+                ? "いま確認する項目は一通り終えています。やることの一覧で見返せます。"
+                : "次に進める項目は、やることの一覧にまとめています。"}
             </p>
             <Button asChild size="lg" className="h-14 w-full text-lg">
               <Link href="/actions">
-                やること一覧を見る
+                やることの一覧を見る
                 <ChevronRight className="h-5 w-5" />
               </Link>
             </Button>
@@ -527,7 +529,7 @@ export function HomeDashboard() {
             <Button asChild variant="outline" className="h-12 w-full">
               <Link href="/chat">
                 <MessageCircle className="h-4 w-4" />
-                AI相談（任意）
+                AIに質問する（任意）
               </Link>
             </Button>
           </div>
@@ -541,18 +543,13 @@ export function HomeDashboard() {
       <div className="space-y-4">
         <Card className="border-2 border-[hsl(24_90%_40%)] bg-accent/50">
           <CardContent className="space-y-4 p-6">
-            <div className="flex flex-wrap items-center gap-2">
-              <NowBadge size="lg" />
-              <p className="text-base font-semibold text-foreground">
-                次に確認すること
-              </p>
-            </div>
+            <NowBadge size="lg" />
             <p className="text-2xl font-bold leading-snug">{nextAction.title}</p>
             <p className="text-base text-muted-foreground">
               {nextAction.description}
             </p>
             <Button asChild size="lg" className="h-14 w-full text-lg">
-              <Link href={getActionDetailPath(nextAction)}>詳しく確認する</Link>
+              <Link href={getActionDetailPath(nextAction)}>ここから進む</Link>
             </Button>
           </CardContent>
         </Card>
@@ -618,7 +615,7 @@ export function HomeDashboard() {
             再建の進み方は人それぞれです。「次に何を確認すればよいか」が分からなくなったときのために、無料で案内します。
           </p>
           <Button asChild size="lg" className="h-16 w-full text-xl">
-            <Link href="/start">質問をはじめる</Link>
+            <Link href="/start">状況を選んで案内を作る</Link>
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             登録不要 · 無料 · 約2分です

@@ -84,10 +84,10 @@ export default function MyPage() {
         </Suspense>
 
         {shareState && !shareState.isOwner && (
-          <p className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm leading-relaxed">
-            家族から渡された案内に参加中です（
+          <p className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-base leading-relaxed">
+            家族の代わりに操作中です（
             {CASE_ACCESS_LEVEL_LABELS[shareState.accessLevel]}
-            ）。ログイン情報の共有ではなく、この記録だけが渡されています。
+            までできます）。ログイン情報の共有ではなく、この記録だけが渡されています。
           </p>
         )}
 
@@ -189,7 +189,7 @@ export default function MyPage() {
 
                 <div className="flex flex-col gap-2 pt-1">
                   <Button asChild size="lg" className="h-12 w-full">
-                    <Link href="/actions">やること一覧を見る</Link>
+                    <Link href="/actions">やることの一覧を見る</Link>
                   </Button>
                 </div>
               </CardContent>
@@ -204,18 +204,18 @@ export default function MyPage() {
           <Card className="border-border bg-card">
             <CardContent className="space-y-3 p-5">
               <p className="text-sm leading-relaxed text-muted-foreground">
-                まだ状況の入力が完了していません。質問をはじめると、ここに内容が残ります。
+                まだ状況の入力が完了していません。状況を選ぶと、ここに内容が残ります。
               </p>
               <Button asChild variant="outline" className="h-12 w-full">
-                <Link href="/start">質問をはじめる</Link>
+                <Link href="/start">状況を選んで案内を作る</Link>
               </Button>
             </CardContent>
           </Card>
         )}
 
         <section className="space-y-2">
-          <p className="px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            記録
+          <p className="px-1 text-sm font-semibold text-muted-foreground">
+            写真の記録
           </p>
           <MenuLink
             href="/records"
@@ -226,8 +226,8 @@ export default function MyPage() {
         </section>
 
         <section className="space-y-2">
-          <p className="px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            サービス
+          <p className="px-1 text-sm font-semibold text-muted-foreground">
+            使い方・説明
           </p>
           <MenuLink
             href="/about"
@@ -238,8 +238,8 @@ export default function MyPage() {
           <MenuLink
             href="/updates"
             icon={History}
-            label="改善の足跡"
-            note="最近直したこと・足したこと"
+            label="最近直したこと"
+            note="改善の履歴"
           />
           <MenuLink
             href="/faq"
@@ -250,20 +250,20 @@ export default function MyPage() {
         </section>
 
         <section className="space-y-2">
-          <p className="px-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            設定
+          <p className="px-1 text-sm font-semibold text-muted-foreground">
+            見やすさ・ログイン・家族
           </p>
           <MenuLink
             href="/settings"
             icon={Settings}
             label="設定"
-            note="文字サイズなど"
+            note="文字の大きさ（見やすくする）"
           />
           <MenuLink
             href="/invite"
             icon={LogIn}
-            label="招待コードで参加"
-            note="家族から渡された案内へ"
+            label="家族から渡された案内で参加"
+            note="招待コードを使う"
           />
           <MenuLink
             href="/settings#mypage-register"
@@ -284,8 +284,8 @@ export default function MyPage() {
           <MenuLink
             href="/chat"
             icon={MessageCircle}
-            label="AI相談"
-            note="通信が安定しているとき"
+            label="AIに質問する"
+            note="通信が必要なとき"
           />
         </section>
 

@@ -108,7 +108,7 @@ export function buildPostJ00WelcomeMessage(
   return {
     title: "あなたの状況を整理しました",
     situationSummary,
-    firstStepLead: "次は、やること一覧の1件目から進めます：",
+    firstStepLead: "次は、この項目から進めます：",
     firstStepHeadline: headline,
     timingNote,
   };
@@ -167,7 +167,7 @@ export function collectOnboardingIntroStrings(): string[] {
     "いまの段階に合わせて（任意）",
     ...ONBOARDING_TIMING_OPTIONS.flatMap((o) => [o.label, o.note]),
     ONBOARDING_UNIVERSAL_MESSAGE,
-    "質問をはじめる",
+    "状況を選んで案内を作る",
     "登録不要 · 無料 · 約2分",
     "当てはまるものがあればタップ。最初はどれも選ばなくて大丈夫です。",
   ];

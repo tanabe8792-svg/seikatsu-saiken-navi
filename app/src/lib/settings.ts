@@ -4,9 +4,9 @@ import { DEFAULT_NOTIFICATION_PREFERENCES } from "@/lib/notifications/notificati
 export type FontSize = "normal" | "large" | "xlarge";
 
 export const FONT_SIZE_LABELS: Record<FontSize, string> = {
-  normal: "標準",
+  normal: "ふつう",
   large: "大きい",
-  xlarge: "特大",
+  xlarge: "もっと大きい",
 };
 
 export const FONT_SIZE_CLASSES: Record<FontSize, string> = {

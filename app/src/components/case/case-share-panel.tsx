@@ -62,7 +62,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
     return (
       <Card className="border-border">
         <CardContent className="space-y-2 p-5 text-sm leading-relaxed text-muted-foreground">
-          <p className="font-medium text-foreground">家族に続きを渡す</p>
+          <p className="font-medium text-foreground">家族に代わりに操作してもらう</p>
           <p>
             家族が代わりに確認を進めるときは、先にメールまたはLINEでログインしてください。
             ログイン用の番号やパスワードを教え合う必要はありません。この記録への招待だけを送ります。
@@ -184,7 +184,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Share2 className="h-5 w-5 text-brand-green" />
-          家族に続きを渡す
+          家族に代わりに操作してもらう
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -228,7 +228,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
               }
               onClick={() => setAccessLevel("edit")}
             >
-              書きかえもできる
+              チェックやメモもできる
             </button>
           </div>
         </div>

@@ -6,9 +6,14 @@ import { Loader2 } from "lucide-react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { IdentityRegisterPrompt } from "@/components/auth/identity-status-chip";
 import { CaseActionsDashboard } from "@/components/actions/case-actions-dashboard";
+import { FontSizeQuickControl } from "@/components/settings/font-size-quick-control";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatCaseSituation } from "@/lib/case-management/action-queue";
+import {
+  formatCaseSituation,
+  getCurrentAction,
+} from "@/lib/case-management/action-queue";
+import { getCaseActionDetailPath } from "@/lib/navigation";
 import { useUserSession } from "@/hooks/use-user-session";
 
 export default function ActionsPage() {
@@ -44,11 +49,11 @@ export default function ActionsPage() {
           <div className="space-y-2 rounded-2xl border bg-card px-5 py-6">
             <p className="text-lg font-bold">まだ一覧がありません</p>
             <p className="text-base leading-relaxed text-muted-foreground">
-              最初に、お住まいの地域や被害の状況をお聞きします。そのあと、確認することを順番に案内します。
+              まず、お住まいの地域と被害の状況をお聞きします（約2分）。そのあと、確認することを順番に案内します。
             </p>
           </div>
           <Button asChild size="lg" className="h-14 w-full text-lg">
-            <Link href="/start">はじめる</Link>
+            <Link href="/start">状況を選んで案内を作る</Link>
           </Button>
         </main>
       </>
@@ -56,14 +61,16 @@ export default function ActionsPage() {
   }
 
   const situation = formatCaseSituation(caseFile);
+  const current = getCurrentAction(caseFile);
 
   return (
     <>
       <SiteHeader title="やること" />
       <main className="space-y-4 px-4 py-4">
+        <FontSizeQuickControl className="mx-0" />
         {showWelcome && (
           <Card className="border-emerald-300/60 bg-emerald-50/50 dark:border-emerald-900/40 dark:bg-emerald-950/20">
-            <CardContent className="space-y-2 p-5">
+            <CardContent className="space-y-3 p-5">
               <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
                 状況を整理しました
               </p>
@@ -71,8 +78,15 @@ export default function ActionsPage() {
                 <p className="text-base font-semibold">{situation}</p>
               )}
               <p className="text-sm leading-relaxed text-muted-foreground">
-                下の一覧を一度眺めてから、確認したい項目の「詳しく確認する」を押してください。最初の項目は自動では開きません。
+                オレンジ色の「いま確認する」から進めてください。一覧を先に見ても大丈夫です。
               </p>
+              {current && (
+                <Button asChild size="lg" className="h-12 w-full">
+                  <Link href={getCaseActionDetailPath(current.id)}>
+                    ここから進む
+                  </Link>
+                </Button>
+              )}
             </CardContent>
           </Card>
         )}
