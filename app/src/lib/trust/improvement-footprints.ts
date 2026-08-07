@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-share-auth-plain",
+    date: "2026-08-07",
+    title: "家族への共有とログインの言い方を整えました",
+    summary:
+      "「ケース」「権限」など分かりにくい言葉を減らし、家族に続きを渡すとき・ログインするときの案内を、やさしい日本語に直しました。相手の負担にならない言い方にもしています。",
+  },
+  {
     id: "2026-08-07-ux-plain-japanese",
     date: "2026-08-07",
     title: "操作のしやすさと読みやすさを整えました",

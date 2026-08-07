@@ -155,7 +155,7 @@ export async function POST(request: Request) {
       "",
       ...(kind === "improvement"
         ? [
-            "【再現のしかた】",
+            "【どの画面で・何をしたか】",
             steps || "（未記入）",
             "",
             "【端末・ブラウザ】",

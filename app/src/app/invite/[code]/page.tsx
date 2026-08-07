@@ -94,9 +94,9 @@ function InviteAcceptInner() {
     <main className="space-y-5 px-4 py-6 pb-28">
       <Card>
         <CardContent className="space-y-4 p-5">
-          <h1 className="text-lg font-bold">ケースへの招待</h1>
+          <h1 className="text-lg font-bold">家族からの招待</h1>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            家族などから共有された生活再建ケースに参加します。相手のログイン情報は不要です。あなた自身のメールまたはLINEでログインしてから参加してください。
+            家族などから渡された、生活再建の案内の続きに参加します。相手のログイン情報は不要です。あなた自身のメールまたはLINEでログインしてから参加してください。
           </p>
 
           <label className="block space-y-2 text-sm font-medium">
@@ -128,9 +128,9 @@ function InviteAcceptInner() {
       ) : done ? (
         <Card>
           <CardContent className="space-y-4 p-5">
-            <p className="font-medium text-brand-green">ケースに参加できました</p>
+            <p className="font-medium text-brand-green">参加できました</p>
             <p className="text-sm text-muted-foreground">
-              ケース番号 {done.publicCaseId} ／{" "}
+              記録番号 {done.publicCaseId} ／{" "}
               {CASE_ACCESS_LEVEL_LABELS[done.accessLevel]}
             </p>
             <Button
@@ -154,7 +154,7 @@ function InviteAcceptInner() {
             {busy ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
-              "このケースに参加する"
+              "この案内に参加する"
             )}
           </Button>
           {error && (

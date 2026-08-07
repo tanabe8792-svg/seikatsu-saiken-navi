@@ -15,25 +15,25 @@ function mapRpcError(message: string): string {
     return "ログインが必要です。メールまたはLINEでログインしてください。";
   }
   if (/OWNER_ONLY/i.test(message)) {
-    return "招待を作成できるのは、ケースの所有者だけです。";
+    return "案内の続きを家族に渡せるのは、はじめに記録を始めた人だけです。";
   }
   if (/CASE_OWNED_BY_OTHER/i.test(message)) {
-    return "このケースは別の方が所有者として登録済みです。";
+    return "この記録は、すでに別の方がはじめたものです。";
   }
   if (/INVITE_NOT_FOUND/i.test(message)) {
     return "招待コードが見つかりません。コードを確認してください。";
   }
   if (/INVITE_EXPIRED|INVITE_REVOKED|INVITE_EXHAUSTED/i.test(message)) {
-    return "この招待は使えなくなっています。所有者に新しい招待を依頼してください。";
+    return "この招待は使えなくなっています。家族に新しい招待を送ってもらってください。";
   }
   if (/ALREADY_OWNER/i.test(message)) {
-    return "あなたはこのケースの所有者です。";
+    return "あなたがはじめに記録を始めた人です。";
   }
   if (/EDIT_FORBIDDEN/i.test(message)) {
-    return "このケースを編集する権限がありません。";
+    return "この記録の書きかえは許可されていません。「見るだけ」の招待の場合は、家族に「書きかえもできる」招待を送ってもらってください。";
   }
   if (/schema cache|does not exist|function .* not found/i.test(message)) {
-    return "ケース共有の準備がまだ完了していません。管理者にデータベース設定をご確認ください。";
+    return "ただいま家族への共有機能の準備中です。しばらくしてから、もう一度お試しください。";
   }
   return "操作に失敗しました。時間をおいて、もう一度お試しください。";
 }

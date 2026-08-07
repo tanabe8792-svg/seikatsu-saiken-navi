@@ -176,7 +176,7 @@ export function IdentityRegistrationPanel({
         ) : (
           <>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              メールまたはLINEで、かんたんにログイン・登録できます。登録すると、保存した内容をマイページで見返せます。LINEはログイン用です（メッセージ通知ではありません）。
+              メールまたはLINEで、かんたんにログイン・登録できます。登録すると、保存した内容をマイページで見返せます。LINEはログインのためだけに使います（メッセージのお知らせではありません）。
             </p>
 
             <div className="grid grid-cols-2 gap-2">

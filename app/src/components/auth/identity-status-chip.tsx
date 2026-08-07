@@ -66,7 +66,7 @@ export function IdentityRegisterPrompt({ className }: { className?: string }) {
     >
       <span className="font-medium text-foreground">ログイン・登録（任意）</span>
       <span className="mt-1 block leading-relaxed">
-        メールまたはLINEでログインすると、保存した内容をマイページで見返せます。
+        メールまたはLINEでログインすると、保存した内容をマイページで見返せます。登録しなくても、やることの確認は使えます。
       </span>
     </Link>
   );

@@ -14,7 +14,7 @@ export default function CaseCardPrintPage() {
   if (loading) {
     return (
       <>
-        <SiteHeader title="ケースカード" showBack backHref="/mypage" />
+        <SiteHeader title="記録カード" showBack backHref="/mypage" />
         <div className="flex min-h-[40vh] items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -25,10 +25,10 @@ export default function CaseCardPrintPage() {
   if (!caseFile) {
     return (
       <>
-        <SiteHeader title="ケースカード" showBack backHref="/mypage" />
+        <SiteHeader title="記録カード" showBack backHref="/mypage" />
         <main className="space-y-4 px-4 py-6 pb-28">
           <p className="text-sm leading-relaxed text-muted-foreground">
-            まだケースがありません。質問を進めると、ケース番号付きのカードを作れます。
+            まだ記録がありません。質問を進めると、記録番号付きのカードを作れます。
           </p>
           <Button asChild className="h-12 w-full">
             <Link href="/start">質問をはじめる</Link>
@@ -40,7 +40,7 @@ export default function CaseCardPrintPage() {
 
   return (
     <>
-      <SiteHeader title="ケースカード" showBack backHref="/mypage" />
+      <SiteHeader title="記録カード" showBack backHref="/mypage" />
       <main className="mx-auto max-w-md space-y-4 px-4 py-6 pb-28 print:max-w-none print:p-0">
         <p className="text-sm leading-relaxed text-muted-foreground print:hidden">
           印刷して紙で保管できます。高齢の方や、スマホが苦手な方の窓口提示用です。

@@ -85,9 +85,9 @@ export default function MyPage() {
 
         {shareState && !shareState.isOwner && (
           <p className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm leading-relaxed">
-            共有ケースに参加中です（
+            家族から渡された案内に参加中です（
             {CASE_ACCESS_LEVEL_LABELS[shareState.accessLevel]}
-            ）。アカウントの共有ではなく、このケースだけが共有されています。
+            ）。ログイン情報の共有ではなく、この記録だけが渡されています。
           </p>
         )}
 
@@ -263,7 +263,7 @@ export default function MyPage() {
             href="/invite"
             icon={LogIn}
             label="招待コードで参加"
-            note="家族から共有されたケースへ"
+            note="家族から渡された案内へ"
           />
           <MenuLink
             href="/settings#mypage-register"

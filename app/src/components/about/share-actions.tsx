@@ -84,8 +84,8 @@ export function ShareActions({
       {!compact ? (
         <p className="text-sm leading-relaxed text-muted-foreground">
           {kind === "donation"
-            ? "応援したことをSNSやLINEで伝えると、ほかの方にもこの案内が届きやすくなります（任意です）。"
-            : "この案内を家族や知人に伝えると、必要な方に届きやすくなります（任意です）。"}
+            ? "応援したことを伝えると、同じ案内を必要としている方に届きやすくなります。強制ではありません。文面はあとで変えられます。"
+            : "この案内を家族や知人に伝えると、必要な方に届きやすくなります。強制ではありません。相手の負担にならないよう、必要なときだけ送ってください。"}
         </p>
       ) : null}
       <div className="grid gap-2 sm:grid-cols-3">

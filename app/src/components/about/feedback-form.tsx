@@ -78,7 +78,7 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
             <p className="text-sm leading-relaxed text-emerald-900 dark:text-emerald-100">
               {isSupport
                 ? "メッセージを受け取りました。内容を確認します。返信先を書いていただいた場合は、必要に応じてご連絡します。"
-                : "改善の声を受け取りました。内容を確認し、サービス改善に活かします。"}
+                : "改善の声を受け取りました。内容を確認し、分かりやすさの改善に役立てます。"}
             </p>
           </div>
         </div>
@@ -119,14 +119,14 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
         <>
           <div className="space-y-2">
             <label htmlFor="feedback-steps" className="text-sm font-medium">
-              再現のしかた（任意）
+              どの画面で・何をしたら・どうなったか（任意）
             </label>
             <Textarea
               id="feedback-steps"
               value={steps}
               onChange={(e) => setSteps(e.target.value)}
               rows={3}
-              placeholder="どの画面で → 何をしたら → どうなったか"
+              placeholder="例: やること一覧で → 「詳しく確認する」を押したら → 画面が開かなかった"
               className="text-base"
             />
           </div>
@@ -183,7 +183,7 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
         )}
       </Button>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        5文字以上書いてから送れます。送れると、「送信が完了しました」と表示されます。
+        5文字以上書いてから送れます。送ると、「送信が完了しました」と表示されます。
       </p>
     </form>
   );

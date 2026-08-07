@@ -49,7 +49,7 @@ function ThanksInner() {
         <CardContent className="space-y-4 p-5">
           <h2 className="text-lg font-bold">応援したことを伝える（任意）</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            SNSやLINEで共有すると、同じ案内を必要としている方に届きやすくなります。金額の強制表示はしません。文面は端末の共有画面で変えられます。
+            SNSやLINEで共有すると、同じ案内を必要としている方に届きやすくなります。金額を必ず書く必要はありません。文面は送る前に変えられます。
           </p>
           <ShareActions kind="donation" amountLabel={amountLabel} />
         </CardContent>

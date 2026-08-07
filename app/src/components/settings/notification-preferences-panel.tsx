@@ -73,7 +73,7 @@ export function NotificationPreferencesPanel() {
           支援制度など、大切な案内が変わったときに知らせてほしい方へ。サイトを開くだけでも最新は確認できます。
         </p>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          LINEログインは「本人確認」用です。LINEのメッセージでお知らせする機能ではありません。
+          LINEはログインのためだけに使います。LINEのメッセージでお知らせする機能ではありません。
         </p>
 
         <div className="space-y-2">

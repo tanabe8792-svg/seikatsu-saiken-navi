@@ -16,13 +16,13 @@ export default function AuthCallbackInner() {
   useEffect(() => {
     async function completeAuth() {
       if (!isSupabaseConfigured()) {
-        setError("認証の設定が完了していません。");
+        setError("ただいまログイン機能の準備中です。しばらくしてからお試しください。");
         return;
       }
 
       const supabase = getSupabaseBrowserClient();
       if (!supabase) {
-        setError("認証クライアントを初期化できませんでした。");
+        setError("接続できませんでした。通信環境を確認して、もう一度お試しください。");
         return;
       }
 
@@ -65,7 +65,7 @@ export default function AuthCallbackInner() {
           <>
             <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
             <p className="text-center text-sm text-muted-foreground" role="status">
-              マイページ登録を完了しています…
+              ログインを完了しています…
             </p>
           </>
         ) : (

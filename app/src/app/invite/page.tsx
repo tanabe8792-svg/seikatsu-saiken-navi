@@ -33,7 +33,7 @@ export default function InviteIndexPage() {
         <Card>
           <CardContent className="space-y-4 p-5">
             <p className="text-sm leading-relaxed text-muted-foreground">
-              家族などから受け取った招待コードを入力すると、そのケースに参加できます。
+              家族などから受け取った招待コードを入力すると、その案内の続きに参加できます。
             </p>
             <Input
               value={code}

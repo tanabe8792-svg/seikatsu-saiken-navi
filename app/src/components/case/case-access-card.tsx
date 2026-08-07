@@ -60,7 +60,7 @@ export function CaseAccessCard({
       <CardContent className="space-y-4 p-5">
         <div className="space-y-1">
           <p className="text-xs font-medium tracking-wide text-muted-foreground">
-            熊本 生活再建ナビ · ケースカード
+            熊本 生活再建ナビ · 記録カード
           </p>
           <p className="text-sm leading-relaxed text-muted-foreground">
             {J00_DISASTER_EVENT_LABEL}
@@ -68,7 +68,7 @@ export function CaseAccessCard({
         </div>
 
         <div className="rounded-xl border bg-background px-4 py-4 text-center">
-          <p className="text-xs text-muted-foreground">ケース番号</p>
+          <p className="text-xs text-muted-foreground">記録番号</p>
           <p className="mt-1 font-mono text-2xl font-bold tracking-wider">
             {publicId}
           </p>
@@ -86,13 +86,13 @@ export function CaseAccessCard({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={qrDataUrl}
-              alt={`ケース ${publicId} のQRコード`}
+              alt={`記録 ${publicId} のQRコード`}
               width={180}
               height={180}
               className="rounded-md border bg-white p-2"
             />
             <p className="max-w-xs text-center text-xs leading-relaxed text-muted-foreground">
-              QRはケース番号への入り口です。中身を見るにはログインと共有の許可が必要です。
+              QRは記録番号を開くためのものです。中身を見るにはログインと、家族からの招待が必要です。
             </p>
           </div>
         )}
@@ -102,8 +102,8 @@ export function CaseAccessCard({
           <li>
             ・「データをリセット」やブラウザのデータを消すと、番号も新しくなります（最初からになります）。
           </li>
-          <li>・紙に印刷して保管してください。番号やコードを他人に見せすぎないでください。</li>
-          <li>・なくした場合は、印刷した紙や、家族への招待共有をご利用ください。</li>
+          <li>・紙に印刷して保管してください。番号やコードを、必要のない人に見せすぎないでください。</li>
+          <li>・なくした場合は、印刷した紙を使うか、家族に招待を送ってもらってください。</li>
         </ul>
 
         {!printMode && (

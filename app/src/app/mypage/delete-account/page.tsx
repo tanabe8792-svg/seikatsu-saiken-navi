@@ -86,7 +86,7 @@ export default function DeleteAccountPage() {
             </div>
             <ul className="list-disc space-y-2 pl-5 text-sm leading-relaxed">
               <li>この端末に保存した状況・進捗・写真</li>
-              <li>ケース番号や家族招待の参加状態（この端末分）</li>
+              <li>記録番号や家族招待の参加状態（この端末分）</li>
               {identity ? (
                 <li>マイページのログイン情報（メール／LINE）</li>
               ) : (

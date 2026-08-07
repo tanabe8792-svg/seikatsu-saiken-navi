@@ -38,7 +38,7 @@ export const NOTIFICATION_CHANNEL_OPTIONS: {
     id: "email",
     label: "メールで重要なお知らせを受け取る",
     description:
-      "支援制度など、大切な案内が更新されたときにメールでお知らせします（任意）。配信の準備ができ次第、この設定に従います。",
+      "支援制度など、大切な案内が更新されたときにメールでお知らせします（任意）。お知らせの準備ができ次第、この設定に従います。",
     requiresContact: true,
   },
 ];

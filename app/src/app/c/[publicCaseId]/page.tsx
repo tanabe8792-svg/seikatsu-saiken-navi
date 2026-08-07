@@ -26,8 +26,8 @@ import { useUserSession } from "@/hooks/use-user-session";
 import { Suspense } from "react";
 
 /**
- * P2 入口: QR / ケース番号は「入口」のみ。
- * 閲覧にはログイン + ケース権限が必須。
+ * QR / 記録番号は案内の入り口のみ。
+ * 内容を見るにはログインと、家族からの招待が必要。
  */
 export default function PublicCasePage() {
   const params = useParams();
@@ -91,16 +91,16 @@ export default function PublicCasePage() {
 
   return (
     <>
-      <SiteHeader title="ケース案内" showBack backHref="/" />
+      <SiteHeader title="記録の案内" showBack backHref="/" />
       <main className="space-y-4 px-4 py-6 pb-28">
         <Card>
           <CardContent className="space-y-3 p-5">
-            <p className="text-sm text-muted-foreground">ケース番号</p>
+            <p className="text-sm text-muted-foreground">記録番号</p>
             <p className="font-mono text-xl font-bold tracking-wider">
               {valid ? publicId : "形式が正しくありません"}
             </p>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              QRコードやケース番号だけでは内容は表示されません。ログインし、共有権限がある場合のみ開けます。
+              QRコードや記録番号だけでは、中身は表示されません。ログインし、家族から招待されているときだけ開けます。
             </p>
           </CardContent>
         </Card>
@@ -121,15 +121,15 @@ export default function PublicCasePage() {
               defaultMode="login"
               title="続けるにはログイン"
               afterLoginHref={`/c/${encodeURIComponent(publicId)}`}
-              afterLoginLabel="ログイン後、ケースを開く"
+              afterLoginLabel="ログイン後、記録を開く"
             />
           </Suspense>
         ) : opened ? (
           <Card>
             <CardContent className="space-y-3 p-5">
-              <p className="font-medium text-brand-green">ケースを開けました</p>
+              <p className="font-medium text-brand-green">記録を開けました</p>
               <p className="text-sm text-muted-foreground">
-                権限: {CASE_ACCESS_LEVEL_LABELS[opened.accessLevel]}
+                できること: {CASE_ACCESS_LEVEL_LABELS[opened.accessLevel]}
                 {opened.caseStatus &&
                 opened.caseStatus in OPERATIONAL_CASE_STATUS_LABELS
                   ? ` · ${OPERATIONAL_CASE_STATUS_LABELS[opened.caseStatus as OperationalCaseStatus]}`
@@ -147,7 +147,7 @@ export default function PublicCasePage() {
           <Card>
             <CardContent className="space-y-3 p-5">
               <p className="text-sm leading-relaxed">
-                この端末に、同じケース番号の記録があります（クラウド共有の権限はまだ確認できませんでした）。
+                この端末に、同じ記録番号の内容があります。家族からの共有としての許可は、まだ確認できませんでした。
               </p>
               <Button asChild className="h-12 w-full">
                 <Link href="/mypage">マイページで内容を見る</Link>
@@ -158,7 +158,7 @@ export default function PublicCasePage() {
           <Card>
             <CardContent className="space-y-3 p-5">
               <p className="text-sm leading-relaxed text-muted-foreground">
-                ログイン中ですが、このケースを開く権限がありません。所有者から招待リンクまたは招待コードをもらって参加してください。
+                ログイン中ですが、この記録を開く許可がありません。はじめに記録を始めた家族から、招待リンクまたは招待コードをもらって参加してください。
               </p>
               <Button asChild variant="outline" className="h-12 w-full">
                 <Link href="/invite">招待コードで参加</Link>

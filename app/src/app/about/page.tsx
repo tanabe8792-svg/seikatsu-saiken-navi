@@ -130,18 +130,18 @@ export default function AboutPage() {
 
         <TrustSection heading="この案内を広める" id="share">
           <p>
-            家族や知人にこのナビを伝えると、必要な方に届きやすくなります。LINEやSNSで共有できます（任意です）。
+            家族や知人にこのナビを伝えると、必要な方に届きやすくなります。相手の負担にならないよう、必要なときだけLINEやSNSで共有できます（任意です）。
           </p>
           <ShareActions kind="service" />
         </TrustSection>
 
         <TrustSection heading="マイページ登録" id="account-setup">
           <p>
-            メールまたはLINEで、かんたんに登録・ログインできます。登録すると各ページに登録済みと表示され、保存した内容をマイページで見返せます。
+            メールまたはLINEで、かんたんに登録・ログインできます。登録すると、保存した内容をマイページで見返せます。
           </p>
           <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
             <li>メール：リンク付きメールを受け取り、リンクをタップ</li>
-            <li>LINE：ログイン用（メッセージ通知ではありません）</li>
+            <li>LINE：ログインのためだけに使います（メッセージのお知らせではありません）</li>
             <li>
               重要なお知らせのメール受け取りは「設定」から希望できます
             </li>

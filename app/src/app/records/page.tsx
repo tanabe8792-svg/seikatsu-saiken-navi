@@ -120,7 +120,7 @@ export default function RecordsPage() {
           <CardContent className="space-y-3 p-5">
             <p className="text-base font-semibold">端末に残した写真</p>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              住まいの様子など、あとで窓口や保険の相談に使える写真を、この端末の中だけに残せます。サーバーには送りません。家族とケースを共有しても、写真は自動では相手に届きません（共有相手からも見られる保存は今後追加予定）。
+              住まいの様子など、あとで窓口や保険の相談に使える写真を、この端末の中だけに残せます。サーバーには送りません。家族に案内の続きを渡しても、写真は自動では相手に届きません（相手からも見られる保存は、今後追加予定です）。
             </p>
             {caseId && (
               <RecordsPhotoCapture

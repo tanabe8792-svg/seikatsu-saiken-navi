@@ -47,7 +47,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
     );
     if (mine && mine.role !== "owner") {
       setMembershipNote(
-        `共有ケースに「${CASE_ACCESS_LEVEL_LABELS[mine.accessLevel]}」で参加中です（${mine.publicCaseId}）。`
+        `家族から渡された案内に、「${CASE_ACCESS_LEVEL_LABELS[mine.accessLevel]}」で参加しています（番号 ${mine.publicCaseId}）。`
       );
     }
   }, [identity, caseFile.publicCaseId]);
@@ -62,10 +62,10 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
     return (
       <Card className="border-border">
         <CardContent className="space-y-2 p-5 text-sm leading-relaxed text-muted-foreground">
-          <p className="font-medium text-foreground">家族にケースを共有する</p>
+          <p className="font-medium text-foreground">家族に続きを渡す</p>
           <p>
-            家族などが代わりに進めるには、先にメールまたはLINEでログインしてください。
-            アカウントを共有するのではなく、このケースへの招待を送ります。
+            家族が代わりに確認を進めるときは、先にメールまたはLINEでログインしてください。
+            ログイン用の番号やパスワードを教え合う必要はありません。この記録への招待だけを送ります。
           </p>
         </CardContent>
       </Card>
@@ -74,7 +74,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
 
   async function handleCreateInvite() {
     if (!caseFile.publicCaseId) {
-      setError("ケース番号の準備ができていません。画面を再読み込みしてください。");
+      setError("記録番号の準備ができていません。画面を再読み込みしてください。");
       return;
     }
     setBusy(true);
@@ -131,21 +131,25 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
 
   function buildInviteMessage(code: string, url: string): string {
     return [
-      "熊本 生活再建ナビのケース共有のご案内です。",
+      "熊本 生活再建ナビです。",
       "",
-      "次のリンクを開くか、招待コードを入力してください。",
+      "地震のあと、やることの確認を進めています。",
+      "家族にも続きを見てもらえるよう、招待をお送りします。",
+      "",
+      "下のリンクを開くか、招待コードを入力してください。",
       `リンク: ${url}`,
       `招待コード: ${code}`,
       "",
       "あなた自身のメールまたはLINEでログインして参加できます。",
       "相手のログイン情報を教え合う必要はありません。",
+      "無理のない範囲で大丈夫です。",
     ].join("\n");
   }
 
   function openMailShare(code: string, url: string) {
     const body = buildInviteMessage(code, url);
     const href = `mailto:?subject=${encodeURIComponent(
-      "【熊本 生活再建ナビ】ケース共有の招待"
+      "【熊本 生活再建ナビ】家族への招待"
     )}&body=${encodeURIComponent(body)}`;
     window.location.href = href;
   }
@@ -161,7 +165,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: "熊本 生活再建ナビのケース招待",
+          title: "熊本 生活再建ナビ（家族への招待）",
           text,
           url,
         });
@@ -180,12 +184,12 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Share2 className="h-5 w-5 text-brand-green" />
-          家族・代理人を招待
+          家族に続きを渡す
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm leading-relaxed text-muted-foreground">
-          ログイン用のIDやパスワードを教え合う必要はありません。招待リンクまたは招待コードで、このケースだけを共有できます。
+          ログイン用の番号やパスワードを教え合う必要はありません。招待リンクか招待コードで、この記録だけを渡せます。相手の負担にならないよう、必要なときだけ送ってください。
         </p>
 
         {membershipNote && (
@@ -197,12 +201,12 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
         {existing?.isOwner && (
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
             <Users className="h-3.5 w-3.5" />
-            共有の準備済み（ケース {existing.publicCaseId}）
+            共有の準備済み（番号 {existing.publicCaseId}）
           </p>
         )}
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">相手に許可する内容</p>
+          <p className="text-sm font-medium">相手にできること</p>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -213,7 +217,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
               }
               onClick={() => setAccessLevel("view")}
             >
-              閲覧のみ
+              見るだけ
             </button>
             <button
               type="button"
@@ -224,7 +228,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
               }
               onClick={() => setAccessLevel("edit")}
             >
-              編集可
+              書きかえもできる
             </button>
           </div>
         </div>
@@ -240,7 +244,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
           ) : (
             <>
               <Link2 className="h-4 w-4" />
-              招待リンク・コードを作成
+              招待リンク・コードを作る
             </>
           )}
         </Button>
@@ -307,7 +311,7 @@ export function CaseSharePanel({ caseFile }: CaseSharePanelProps) {
             </div>
 
             <p className="text-xs leading-relaxed text-muted-foreground">
-              権限: {CASE_ACCESS_LEVEL_LABELS[accessLevel]}
+              相手にできること: {CASE_ACCESS_LEVEL_LABELS[accessLevel]}
               {expiresAt
                 ? ` · 有効期限 ${new Date(expiresAt).toLocaleDateString("ja-JP")}`
                 : ""}

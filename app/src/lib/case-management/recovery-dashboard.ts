@@ -285,7 +285,7 @@ function buildNeedsAttention(
     const name = simplifyProcedureName(primary.name);
     items.push({
       kind: "waiting",
-      message: `${name}の結果をお待ちしています。届き次第、次のステップを一緒に確認しましょう。`,
+      message: `${name}の結果をお待ちしています。届いたら、次の確認に進めます。`,
       href: getCaseActionDetailPath(currentAction.id),
     });
   }
