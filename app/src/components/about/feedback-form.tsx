@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/providers/toast-provider";
+import { isBrowserOnline } from "@/lib/offline/network";
+import { enqueueFeedback } from "@/lib/offline/outbox";
 
 export type FeedbackFormKind = "improvement" | "support";
 
@@ -21,24 +23,43 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
   const [contact, setContact] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [queuedOffline, setQueuedOffline] = useState(false);
 
   const isSupport = kind === "support";
+
+  function clearFields() {
+    setMessage("");
+    setSteps("");
+    setDevice("");
+    setContact("");
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (sending) return;
     setSending(true);
     try {
+      const payload = {
+        kind,
+        message,
+        steps: isSupport ? "" : steps,
+        device: isSupport ? "" : device,
+        contact,
+      };
+
+      if (!isBrowserOnline()) {
+        enqueueFeedback(payload);
+        clearFields();
+        setQueuedOffline(true);
+        setSent(true);
+        showToast("この端末に残しました。つながったら正式に送ります");
+        return;
+      }
+
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kind,
-          message,
-          steps: isSupport ? "" : steps,
-          device: isSupport ? "" : device,
-          contact,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = (await res.json().catch(() => ({}))) as {
         error?: string;
@@ -46,17 +67,33 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
         delivered?: boolean;
       };
       if (!res.ok || !data.ok) {
-        showToast(data.error ?? "送信に失敗しました");
+        enqueueFeedback(payload);
+        clearFields();
+        setQueuedOffline(true);
+        setSent(true);
+        showToast(
+          data.error
+            ? `${data.error} いったん端末に残しました。`
+            : "送れなかったため、端末に残しました。つながったら送ります。"
+        );
         return;
       }
+      setQueuedOffline(false);
       setSent(true);
-      setMessage("");
-      setSteps("");
-      setDevice("");
-      setContact("");
+      clearFields();
       showToast("送信が完了しました");
     } catch {
-      showToast("送信に失敗しました。通信環境をご確認ください。");
+      enqueueFeedback({
+        kind,
+        message,
+        steps: isSupport ? "" : steps,
+        device: isSupport ? "" : device,
+        contact,
+      });
+      clearFields();
+      setQueuedOffline(true);
+      setSent(true);
+      showToast("送れなかったため、端末に残しました。つながったら送ります。");
     } finally {
       setSending(false);
     }
@@ -73,12 +110,14 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
           <CheckCircle2 className="mt-0.5 h-8 w-8 shrink-0 text-emerald-700 dark:text-emerald-300" />
           <div className="space-y-2">
             <p className="text-lg font-bold text-emerald-950 dark:text-emerald-50">
-              送信が完了しました
+              {queuedOffline ? "この端末に残しました" : "送信が完了しました"}
             </p>
             <p className="text-sm leading-relaxed text-emerald-900 dark:text-emerald-100">
-              {isSupport
-                ? "メッセージを受け取りました。内容を確認します。返信先を書いていただいた場合は、必要に応じてご連絡します。"
-                : "改善の声を受け取りました。内容を確認し、分かりやすさの改善に役立てます。"}
+              {queuedOffline
+                ? "ネットにつながったあと、正式に送ります。画面を閉じても大丈夫です。"
+                : isSupport
+                  ? "メッセージを受け取りました。内容を確認します。返信先を書いていただいた場合は、必要に応じてご連絡します。"
+                  : "改善の声を受け取りました。内容を確認し、分かりやすさの改善に役立てます。"}
             </p>
           </div>
         </div>
@@ -86,7 +125,10 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
           type="button"
           variant="outline"
           className="h-11 w-full bg-background"
-          onClick={() => setSent(false)}
+          onClick={() => {
+            setSent(false);
+            setQueuedOffline(false);
+          }}
         >
           もう一度送る
         </Button>
@@ -183,7 +225,7 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
         )}
       </Button>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        5文字以上書いてから送れます。送ると、「送信が完了しました」と表示されます。
+        5文字以上書いてから送れます。オフラインのときは端末に残し、つながったら正式に送ります。
       </p>
     </form>
   );

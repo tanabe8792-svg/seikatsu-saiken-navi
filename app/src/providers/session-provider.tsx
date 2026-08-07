@@ -73,6 +73,15 @@ import {
 } from "@/lib/auth/identity";
 import { subscribeToAuthChanges } from "@/lib/supabase/auth";
 import { mergeSessions } from "@/lib/supabase/config";
+import { isBrowserOnline, subscribeOnlineStatus } from "@/lib/offline/network";
+import {
+  clearOutboxOnReset,
+  clearSessionNeedsSync,
+  clearSharedCaseNeedsSync,
+  loadOutbox,
+  markSessionNeedsSync,
+  markSharedCaseNeedsSync,
+} from "@/lib/offline/outbox";
 
 type SessionAction = { type: "SET"; session: UserSession };
 
@@ -142,18 +151,83 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET", session: updated });
     saveSessionToStorage(updated);
 
+    const online = isBrowserOnline();
     const id = userIdRef.current;
+    const share = loadLocalCaseShare();
+    const needsShareSync = Boolean(
+      share &&
+        updated.caseFile &&
+        (share.isOwner || share.accessLevel === "edit") &&
+        isSupabaseConfigured()
+    );
+
+    if (!online) {
+      if (id && isSupabaseConfigured()) markSessionNeedsSync();
+      if (needsShareSync) markSharedCaseNeedsSync();
+      return;
+    }
+
     if (id && isSupabaseConfigured()) {
       try {
         await saveSessionToSupabase(id, updated);
+        clearSessionNeedsSync();
       } catch (error) {
         console.error("Failed to sync session:", error);
+        markSessionNeedsSync();
       }
     }
 
     // 共有ケースへ（所有者または編集可メンバー）— 失敗してもローカル保存は維持
+    if (needsShareSync && share && updated.caseFile) {
+      try {
+        if (share.isOwner && updated.caseFile.publicCaseId) {
+          await publishOwnedCase({
+            publicCaseId: updated.caseFile.publicCaseId,
+            internalCaseId: updated.caseFile.caseId,
+            caseFile: updated.caseFile,
+            municipalityCode: updated.caseFile.municipalityCode,
+          });
+        } else if (!share.isOwner) {
+          await updateSharedCaseFile(share.remoteCaseId, updated.caseFile);
+        }
+        clearSharedCaseNeedsSync();
+      } catch (error) {
+        console.error("Failed to sync shared case:", error);
+        markSharedCaseNeedsSync();
+      }
+    }
+  }, []);
+
+  const flushPendingRemoteSession = useCallback(async () => {
+    if (!isBrowserOnline()) return;
+    const box = loadOutbox();
+    if (!box.sessionNeedsSync && !box.sharedCaseNeedsSync) return;
+
+    const updated = sessionRef.current;
+    const id = userIdRef.current;
+    let sessionOk = !box.sessionNeedsSync;
+    let shareOk = !box.sharedCaseNeedsSync;
+
+    if (box.sessionNeedsSync && id && isSupabaseConfigured()) {
+      try {
+        await saveSessionToSupabase(id, updated);
+        clearSessionNeedsSync();
+        sessionOk = true;
+      } catch (error) {
+        console.error("Failed to flush session sync:", error);
+        sessionOk = false;
+      }
+    } else if (box.sessionNeedsSync && !id) {
+      // まだユーザーIDが無いときは次の機会へ
+      sessionOk = false;
+    } else {
+      clearSessionNeedsSync();
+      sessionOk = true;
+    }
+
     const share = loadLocalCaseShare();
     if (
+      box.sharedCaseNeedsSync &&
       share &&
       updated.caseFile &&
       (share.isOwner || share.accessLevel === "edit") &&
@@ -170,9 +244,23 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         } else if (!share.isOwner) {
           await updateSharedCaseFile(share.remoteCaseId, updated.caseFile);
         }
+        clearSharedCaseNeedsSync();
+        shareOk = true;
       } catch (error) {
-        console.error("Failed to sync shared case:", error);
+        console.error("Failed to flush shared case sync:", error);
+        shareOk = false;
       }
+    } else if (box.sharedCaseNeedsSync) {
+      clearSharedCaseNeedsSync();
+      shareOk = true;
+    }
+
+    if (sessionOk && shareOk && typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("offline-session-synced", {
+          detail: { sessionOk, shareOk },
+        })
+      );
     }
   }, []);
 
@@ -248,6 +336,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
           dispatch({ type: "SET", session: merged });
           saveSessionToStorage(merged);
         }
+        if (!cancelled) {
+          void flushPendingRemoteSession();
+        }
       } catch (error) {
         console.error("Session init failed:", error);
       }
@@ -263,12 +354,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         })
       : () => undefined;
 
+    const unsubscribeOnline = subscribeOnlineStatus((online) => {
+      if (online) void flushPendingRemoteSession();
+    });
+
     return () => {
       cancelled = true;
       window.clearTimeout(loadingGuard);
       unsubscribeAuth();
+      unsubscribeOnline();
     };
-  }, []);
+  }, [flushPendingRemoteSession]);
 
   const updateProfile = useCallback(
     (profile: Partial<UserProfile>) => {
@@ -489,6 +585,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const resetSession = useCallback(() => {
     clearWalkthroughProgress();
     clearLocalCaseShare();
+    clearOutboxOnReset();
     void import("@/lib/case-management/photo-store").then(({ clearAllPhotos }) =>
       clearAllPhotos().catch(() => undefined)
     );

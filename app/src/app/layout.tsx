@@ -5,6 +5,7 @@ import { BetaBanner } from "@/components/layout/beta-banner";
 import { SessionBreakReminder } from "@/components/layout/session-break-reminder";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { OfflineBanner } from "@/components/layout/offline-banner";
+import { OfflineSyncRunner } from "@/components/layout/offline-sync-runner";
 import { BottomChromeProvider } from "@/providers/bottom-chrome-provider";
 import { SessionProvider } from "@/providers/session-provider";
 import { SettingsProvider } from "@/providers/settings-provider";
@@ -48,6 +49,7 @@ export default function RootLayout({
               <SessionProvider>
                 <BottomChromeProvider>
                   <ToastProvider>
+                    <OfflineSyncRunner />
                     <a
                       href="#main-content"
                       className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"

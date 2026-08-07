@@ -10,6 +10,8 @@ import { Card } from "@/components/ui/card";
 import { useUserSession } from "@/hooks/use-user-session";
 import type { ChatMessage, UserProfile } from "@/lib/types";
 import { createMessageId } from "@/lib/session-storage";
+import { isBrowserOnline } from "@/lib/offline/network";
+import { enqueueChat } from "@/lib/offline/outbox";
 
 function createMessage(role: "user" | "assistant", content: string): ChatMessage {
   return {
@@ -79,6 +81,20 @@ export default function ChatPage() {
     const userMessage = createMessage("user", trimmed);
     const nextMessages = [...session.chatHistory, userMessage];
 
+    if (!isBrowserOnline()) {
+      applyChatResult({ messages: [userMessage] });
+      enqueueChat({
+        messages: nextMessages,
+        profile: session.profile,
+        existingActions: session.actions,
+      });
+      setError(
+        "オフラインのため、返答はまだ送れません。書いた内容はこの端末に残しました。ネットにつながると正式に返答を送ります。"
+      );
+      setSending(false);
+      return;
+    }
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -106,7 +122,16 @@ export default function ChatPage() {
 
       setIsComplete(Boolean(data.isComplete || data.actions?.length));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "エラーが発生しました");
+      applyChatResult({ messages: [userMessage] });
+      enqueueChat({
+        messages: nextMessages,
+        profile: session.profile,
+        existingActions: session.actions,
+      });
+      setError(
+        "送れなかったため、書いた内容を端末に残しました。つながったら返答を送ります。"
+      );
+      console.error(err);
     } finally {
       setSending(false);
     }

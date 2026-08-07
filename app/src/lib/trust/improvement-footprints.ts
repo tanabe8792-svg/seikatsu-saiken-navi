@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-offline-outbox",
+    date: "2026-08-07",
+    title: "オフラインでも入力を残せるようにしました",
+    summary:
+      "ネットが切れていても、状況や進捗・改善の声・AI相談の下書きはこの端末に残します。つながったあと、正式に反映・送信します。",
+  },
+  {
     id: "2026-08-07-persona-ux-clarity",
     date: "2026-08-07",
     title: "見つけやすさと次の一手を整えました",
