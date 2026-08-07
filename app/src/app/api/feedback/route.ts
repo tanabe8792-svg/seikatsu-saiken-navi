@@ -118,7 +118,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            "送信の準備がまだです。開発者側のメール設定が完了するまで、しばらくお待ちください。",
+            "いま送信の準備ができていません。しばらくしてから、もう一度お試しください。",
         },
         { status: 503 }
       );

@@ -13,6 +13,13 @@ export interface ImprovementFootprint {
 
 export const IMPROVEMENT_FOOTPRINTS: ImprovementFootprint[] = [
   {
+    id: "2026-08-07-check-urls",
+    date: "2026-08-07",
+    title: "確認ボタンと公式リンクを見直し",
+    summary:
+      "手順の確認が分かりやすいボタンになり、もう一度押すと戻せます。開けない公式リンクも、いま使える案内に差し替えました。",
+  },
+  {
     id: "2026-08-07-album-save",
     date: "2026-08-07",
     title: "撮った写真をアルバムにも残しやすく",

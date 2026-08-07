@@ -74,7 +74,7 @@ export const SUPPORT_PROGRAMS: SupportProgram[] = [
     ],
     requiredDocuments: ["罹災証明", "所得証明", "振込口座"],
     municipalityScope: { type: "national" },
-    sourceUrl: "https://www.mlit.go.jp/toshi/toshi-hukko-kenko/plan/000060682.html",
+    sourceUrl: "https://www.bousai.go.jp/taisaku/seikatsusaiken/",
     updatedAt: "2026-08-01",
   },
   {
@@ -168,8 +168,8 @@ export const SUPPORT_PROGRAMS: SupportProgram[] = [
     ],
     requiredDocuments: ["罹災証明", "ローン契約書", "確認不可"],
     municipalityScope: { type: "national" },
-    sourceUrl: "https://www.fsa.go.jp/policy/disaster/index.html",
-    updatedAt: "2026-08-01",
+    sourceUrl: "https://www.dgl.or.jp/guideline/",
+    updatedAt: "2026-08-07",
   },
   {
     id: "SP-BUSINESS-SME-RECOVERY",
@@ -246,7 +246,7 @@ export const SUPPORT_PROGRAMS: SupportProgram[] = [
     ],
     requiredDocuments: ["被害状況がわかる写真", "確認不可"],
     municipalityScope: { type: "national" },
-    sourceUrl: "https://www.sonpo.or.jp/news/disaster/",
+    sourceUrl: "https://www.sonpo.or.jp/news/notice/",
     updatedAt: "2026-08-05",
   },
   {

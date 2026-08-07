@@ -81,8 +81,8 @@ export const PROGRAM_DEADLINE_TEMPLATES: ProgramDeadlineTemplate[] = [
     calculation: {
       kind: "reference_only",
       sourceUrl:
-        "https://www.mlit.go.jp/toshi/toshi-hukko-kenko/plan/000060682.html",
-      updatedAt: "2026-08-01",
+        "https://www.bousai.go.jp/taisaku/seikatsusaiken/",
+      updatedAt: "2026-08-07",
       note: "災害ごとに適用期限が告示されるため公式ページで確認",
     },
     reminderDaysBefore: [30, 14, 7],
@@ -110,8 +110,8 @@ export const PROGRAM_DEADLINE_TEMPLATES: ProgramDeadlineTemplate[] = [
     calculation: {
       kind: "days_from_disaster",
       days: 30,
-      sourceUrl: "https://www.sonpo.or.jp/news/disaster/",
-      updatedAt: "2026-08-05",
+      sourceUrl: "https://www.sonpo.or.jp/news/notice/",
+      updatedAt: "2026-08-07",
       note: "契約により異なります。早めの連絡が望ましい場合があります。詳細は加入保険会社の案内で確認してください。",
     },
     reminderDaysBefore: [14, 7],
@@ -124,9 +124,9 @@ export const PROGRAM_DEADLINE_TEMPLATES: ProgramDeadlineTemplate[] = [
     label: "被災ローン減免 申請・相談期限",
     calculation: {
       kind: "reference_only",
-      sourceUrl: "https://www.fsa.go.jp/policy/disaster/index.html",
-      updatedAt: "2026-08-01",
-      note: "金融機関・制度ごとの期限は金融庁案内で確認",
+      sourceUrl: "https://www.dgl.or.jp/guideline/",
+      updatedAt: "2026-08-07",
+      note: "金融機関・制度ごとの期限は借入先とガイドライン公式で確認",
     },
     reminderDaysBefore: [14, 7],
     relatedActionIds: ["rw-j04-loan-relief"],

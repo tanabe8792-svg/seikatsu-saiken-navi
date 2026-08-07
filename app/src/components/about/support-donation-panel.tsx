@@ -9,11 +9,25 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * 活動費支援 — 金額の意味が分かるボタン群（Stripe / PayPay 等の外部リンク）
+ * 活動費支援 — 金額ボタン（Stripe / PayPay 等）。未設定時は近日案内のみ。
  */
 export function SupportDonationPanel() {
   const ready = hasAnySupportDonationLink();
   const payPayUrl = getSupportPayPayUrl();
+
+  if (!ready) {
+    return (
+      <div className="space-y-3 rounded-2xl border border-dashed border-border bg-muted/30 px-4 py-5">
+        <p className="text-base font-bold">活動費で応援する（準備中）</p>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {TRUST_CONTINUITY_SUPPORT.donationPending}
+        </p>
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          {TRUST_CONTINUITY_SUPPORT.paymentMethodsNote}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 rounded-2xl border border-border bg-gradient-to-b from-muted/40 to-background px-4 py-5">
@@ -75,16 +89,10 @@ export function SupportDonationPanel() {
         </a>
       ) : null}
 
-      {!ready ? (
-        <p className="rounded-xl border border-dashed border-border bg-muted/30 px-3 py-2.5 text-sm text-muted-foreground">
-          {TRUST_CONTINUITY_SUPPORT.donationPending}
-        </p>
-      ) : (
-        <p className="text-xs leading-relaxed text-muted-foreground">
-          {TRUST_CONTINUITY_SUPPORT.donationNote}
-          支払いが完了すると、応援したことをLINEやSNSで共有できる画面に進めます（任意です）。
-        </p>
-      )}
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        {TRUST_CONTINUITY_SUPPORT.donationNote}
+        支払いが完了すると、応援したことをLINEやSNSで共有できる画面に進めます（任意です）。
+      </p>
     </div>
   );
 }

@@ -61,9 +61,9 @@ const HIKAWA_CHAMBER = "https://hikawanet.com/contact";
 const HIKAWA_TOWN_QUAKE =
   "https://www.town.hikawa.kumamoto.jp/list00849.html";
 const JFC_HOME = "https://www.jfc.go.jp/";
-const FSA_DISASTER = "https://www.fsa.go.jp/policy/disaster/index.html";
+const FSA_DISASTER = "https://www.dgl.or.jp/guideline/";
 const MLIT_LIFE_REBUILD =
-  "https://www.mlit.go.jp/toshi/toshi-hukko-kenko/plan/000060682.html";
+  "https://www.bousai.go.jp/taisaku/seikatsusaiken/";
 const NTA_DISASTER =
   "https://www.nta.go.jp/taxes/shiraberu/saigai/index.htm";
 const PREF_BLUE_SHEET =
@@ -71,7 +71,7 @@ const PREF_BLUE_SHEET =
 const CITY_EMERGENCY_REPAIR =
   "https://www.city.kumamoto.jp/kiji00372143/index.html";
 const KYUDEN_EMERGENCY =
-  "https://www.kyuden.co.jp/emergency_index";
+  "https://www.kyuden.co.jp/td_teiden/kyushu.html";
 const SAIBUGAS_DISASTER =
   "https://www.saibugas.co.jp/";
 const SONPO_DISASTER =
@@ -346,7 +346,7 @@ export function getProcedureGuidanceForAction(
     case "rw-j04-loan-relief":
       return staticGuidance(
         "住宅ローン負担軽減の申請案内",
-        "金融庁の公式案内と、借入先の相談窓口へ直接つながるページです。",
+        "自然災害の債務整理ガイドライン公式と、借入先の相談窓口につながるページです。",
         "被災ローン減免などの枠組みは、金融機関ごとに手続きが違います。まずは借入先に「災害のローン相談」と伝え、公的案内で流れを確認します。",
         [
           {
@@ -356,10 +356,15 @@ export function getProcedureGuidanceForAction(
         ],
         withMunicipalitySite(profile, [
           {
-            label: "金融庁：災害時のローン・金融相談案内",
+            label: "自然災害債務整理ガイドライン（公式）",
             href: FSA_DISASTER,
             kind: "official",
             primary: true,
+          },
+          {
+            label: "金融庁トップ（関連案内の入口）",
+            href: "https://www.fsa.go.jp/",
+            kind: "guide",
           },
           {
             label: "熊本県被災者支援ナビ",
@@ -383,10 +388,15 @@ export function getProcedureGuidanceForAction(
         ],
         withMunicipalitySite(profile, [
           {
-            label: "国土交通省：被災者生活再建支援制度",
+            label: "内閣府：被災者生活再建支援制度",
             href: MLIT_LIFE_REBUILD,
             kind: "official",
             primary: true,
+          },
+          {
+            label: "国土交通省：住まい関連の案内",
+            href: "https://www.mlit.go.jp/jutakukentiku/house/",
+            kind: "guide",
           },
           {
             label: "熊本県被災者支援ナビ（申請の入口）",
@@ -484,7 +494,7 @@ export function getProcedureGuidanceForAction(
             primary: true,
           },
           {
-            label: "九州電力：停電・緊急情報",
+            label: "九州電力：停電情報（九州）",
             href: KYUDEN_EMERGENCY,
             kind: "consult",
           },

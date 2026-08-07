@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/providers/toast-provider";
 
@@ -76,8 +77,8 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
             </p>
             <p className="text-sm leading-relaxed text-emerald-900 dark:text-emerald-100">
               {isSupport
-                ? "メッセージは開発者のメールに届きました。内容を確認します。返信先を書いていただいた場合は、必要に応じてご連絡します。"
-                : "改善の声は開発者のメールに届きました。内容を確認し、サービス改善に活かします。"}
+                ? "メッセージを受け取りました。内容を確認します。返信先を書いていただいた場合は、必要に応じてご連絡します。"
+                : "改善の声を受け取りました。内容を確認し、サービス改善に活かします。"}
             </p>
           </div>
         </div>
@@ -152,13 +153,15 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
         >
           返信が必要なときの連絡先（任意）
         </label>
-        <Textarea
+        <Input
           id={`feedback-contact-${kind}`}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
           value={contact}
           onChange={(e) => setContact(e.target.value)}
-          rows={1}
           placeholder="メールアドレスなど（任意）"
-          className="text-base"
+          className="h-12 text-base"
         />
       </div>
 
@@ -180,7 +183,7 @@ export function FeedbackForm({ kind = "improvement" }: FeedbackFormProps) {
         )}
       </Button>
       <p className="text-xs leading-relaxed text-muted-foreground">
-        送信が成功すると、「送信が完了しました」と大きく表示されます。メールアドレスは画面には出しません。
+        5文字以上書いてから送れます。送信が成功すると、「送信が完了しました」と表示されます。
       </p>
     </form>
   );

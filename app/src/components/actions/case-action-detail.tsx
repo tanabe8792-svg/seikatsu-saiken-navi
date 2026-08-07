@@ -222,52 +222,58 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
                 </div>
               )}
               <div
-                className={`rounded-2xl border-2 px-4 py-4 transition-colors ${
+                className={`rounded-2xl border-2 px-3 py-3 transition-colors ${
                   done
-                    ? "border-brand-green/50 bg-emerald-50/80 dark:border-brand-green/40 dark:bg-emerald-950/30"
+                    ? "border-brand-green bg-emerald-100 dark:border-brand-green dark:bg-emerald-950/50"
                     : isCurrent && emphasize
-                      ? "border-brand-green bg-card ring-2 ring-brand-green/25"
+                      ? "border-brand-green bg-card ring-2 ring-brand-green/30"
                       : "border-border bg-card"
                 }`}
               >
                 <button
                   type="button"
-                  disabled={locked}
+                  disabled={false}
                   onClick={() => toggleStep(step.id)}
-                  className={`w-full text-left ${locked ? "opacity-80" : ""}`}
+                  className={`flex w-full items-start gap-3 rounded-xl px-2 py-2 text-left transition active:scale-[0.99] ${
+                    done
+                      ? "bg-emerald-50/80 dark:bg-emerald-950/20"
+                      : "hover:bg-muted/40"
+                  }`}
+                  aria-pressed={done}
                 >
-                  <div className="flex items-start gap-3">
+                  <span
+                    className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 text-base font-bold shadow-sm ${
+                      done
+                        ? "border-brand-green bg-brand-green text-white"
+                        : "border-brand-green/40 bg-background text-foreground"
+                    }`}
+                    aria-hidden
+                  >
+                    {done ? "✓" : numberFrom + index}
+                  </span>
+                  <div className="min-w-0 flex-1 space-y-1.5">
+                    <p className="text-base font-semibold leading-snug">
+                      {step.title}
+                    </p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {step.body}
+                    </p>
                     <span
-                      className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                      className={`mt-1 inline-flex min-h-11 w-full items-center justify-center rounded-xl border-2 px-3 py-2.5 text-sm font-semibold ${
                         done
-                          ? "bg-brand-green text-white"
-                          : isCurrent
-                            ? "bg-muted text-foreground"
-                            : "bg-muted/60 text-muted-foreground"
+                          ? "border-brand-green bg-brand-green text-white"
+                          : "border-brand-green/50 bg-background text-brand-green"
                       }`}
                     >
-                      {done ? "✓" : numberFrom + index}
+                      {done
+                        ? "確認済み（もう一度押すと戻せます）"
+                        : "読んだらここを押して確認"}
                     </span>
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <p className="text-base font-semibold">{step.title}</p>
-                      <p className="text-sm leading-relaxed text-muted-foreground">
-                        {step.body}
-                      </p>
-                      {!locked && (
-                        <p
-                          className={`pt-1 text-sm font-medium ${
-                            done ? "text-brand-green" : "text-primary"
-                          }`}
-                        >
-                          {done ? "確認済み（タップで戻せる）" : "読んだらタップしてチェック"}
-                        </p>
-                      )}
-                    </div>
                   </div>
                 </button>
 
                 <div
-                  className="mt-3 space-y-2 border-t pt-3"
+                  className="mt-3 space-y-2 border-t pt-3 px-1"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p className="text-xs font-medium text-muted-foreground">
@@ -406,7 +412,7 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             </div>
           )}
           <p className="text-xs leading-relaxed text-muted-foreground">
-            読んだ手順はタップしてチェックしてください。色が変わった印は、この端末に残ります。ページを戻っても消えません（データを消したときや「はじめから」を選んだとき以外）。
+            読んだ手順は、緑の「確認」ボタンを押してください。色が変わったら確認済みです。もう一度押すと戻せます（この端末に残ります）。
           </p>
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">
@@ -596,8 +602,8 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
           </h3>
           <p className="text-xs text-muted-foreground">
             {isPhotoEvidenceAction
-              ? "上から順に読んでチェックしてください。全部チェックすると、下でカメラが使えます。"
-              : "できたものにチェック。分かったこと・予定はメモに残せます。"}
+              ? "上から順に読んで、緑のボタンを押して確認してください。もう一度押すと戻せます。全部確認すると、下でカメラが使えます。"
+              : "読んだら緑のボタンを押して確認。もう一度押すと戻せます。分かったこと・予定はメモに残せます。"}
           </p>
           {renderStepList(guide.steps, {
             locked: isDone,
