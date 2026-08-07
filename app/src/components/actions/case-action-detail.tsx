@@ -59,6 +59,7 @@ import {
 import { SourceFreshnessNote } from "@/components/common/source-freshness-note";
 import { PhotoEvidenceCapture } from "@/components/actions/photo-evidence-capture";
 import { ProcedurePhaseRail, type ProcedurePhase } from "@/components/actions/procedure-phase-rail";
+import { VehicleDisasterReliefNote } from "@/components/actions/vehicle-disaster-relief-note";
 import { WalkthroughStepRail } from "@/components/actions/walkthrough-step-rail";
 import { useBottomChrome } from "@/providers/bottom-chrome-provider";
 
@@ -978,6 +979,10 @@ export function CaseActionDetail({ actionId }: CaseActionDetailProps) {
             />
           </CardContent>
         </Card>
+      )}
+
+      {actionId === "rw-j03-cert-prep" && (
+        <VehicleDisasterReliefNote compact />
       )}
 
       {followUpSteps.length > 0 && (

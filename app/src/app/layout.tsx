@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { BetaBanner } from "@/components/layout/beta-banner";
+import { SessionBreakReminder } from "@/components/layout/session-break-reminder";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { OfflineBanner } from "@/components/layout/offline-banner";
 import { BottomChromeProvider } from "@/providers/bottom-chrome-provider";
@@ -55,6 +56,7 @@ export default function RootLayout({
                     </a>
                     <OfflineBanner />
                     <BetaBanner />
+                    <SessionBreakReminder />
                     <div
                       id="main-content"
                       className="relative z-0 mx-auto min-h-screen max-w-lg isolate bg-background"
