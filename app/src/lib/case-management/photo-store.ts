@@ -225,10 +225,11 @@ export async function downloadPhotoToDevice(
 ): Promise<boolean> {
   const blob = await getPhotoBlob(photoId);
   if (!blob) return false;
-  return offerBlobToDeviceAlbum(
+  const result = await offerBlobToDeviceAlbum(
     blob,
     filename ?? `記録写真-${photoId}.jpg`
   );
+  return result !== "failed";
 }
 
 /**
