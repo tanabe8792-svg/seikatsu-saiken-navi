@@ -20,7 +20,7 @@ export function SupportDonationPanel() {
       <div className="space-y-2">
         <p className="text-base font-bold">活動費で応援する</p>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          任意です。無理のない金額で大丈夫です。開発・維持の足しに使わせていただきます。
+          任意です。金額を選ぶだけで大丈夫です。
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
           <PaymentChip label="Apple Pay" />
@@ -94,16 +94,10 @@ function TierContent({
   tier: (typeof SUPPORT_DONATION_TIERS)[number];
 }) {
   return (
-    <div className="min-w-0 flex-1 space-y-0.5">
-      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-        <span className="text-lg font-bold tabular-nums text-brand-green">
-          {tier.title}
-        </span>
-        <span className="text-sm font-medium">{tier.purpose}</span>
-      </div>
-      <p className="text-xs leading-relaxed text-muted-foreground">
-        {tier.detail}
-      </p>
+    <div className="min-w-0 flex-1">
+      <span className="text-lg font-bold tabular-nums text-brand-green">
+        {tier.title}
+      </span>
     </div>
   );
 }
